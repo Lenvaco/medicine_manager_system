@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.PermissionDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Permission">
+        <id column="permission_id" property="permissionId" />
+        <result column="permission_name" property="permissionName" />
+        <result column="parent_id" property="parentId" />
+        <result column="alias" property="alias" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="gmt_create" property="gmtCreate" />
+    </resultMap>
+    <select id="selectAllByRoleId" resultMap="BaseResultMap">
+       select
+          p.*
+       from  (select permission_id from role_permission where role_id = #{roleId}) as rp
+      left join  permission  as p
+      on
+        p.permission_id = rp.permission_id;
+    </select>
+
+</mapper>

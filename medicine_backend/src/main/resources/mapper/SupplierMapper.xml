@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.SupplierDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Supplier">
+        <id column="s_id" property="sId" />
+        <result column="s_name" property="sName" />
+        <result column="s_phone" property="sPhone" />
+        <result column="s_address" property="sAddress" />
+        <result column="s_description" property="sDescription" />
+        <result column="gmt_create" property="gmtCreate" />
+    </resultMap>
+
+</mapper>

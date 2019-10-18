@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.MenuDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Menu">
+        <id column="menu_id" property="menuId" />
+        <result column="menu_name" property="menuName" />
+        <result column="page_component" property="pageComponent" />
+        <result column="p_id" property="pId" />
+        <result column="menu_sort" property="menuSort" />
+        <result column="i_frame" property="IFrame" />
+        <result column="path" property="path" />
+        <result column="icon" property="icon" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="gmt_create" property="gmtCreate" />
+    </resultMap>
+    <select id="selectAllByRoleId" resultMap="BaseResultMap">
+        select m.*
+        from (select menu_id from role_menu where role_id = #{roleId}) as rm
+        left join menu as m
+        on m.menu_id = rm.menu_id;
+    </select>
+
+</mapper>

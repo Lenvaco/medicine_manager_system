@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.MedicineDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Medicine">
+        <id column="m_id" property="mId" />
+        <result column="m_name" property="mName" />
+        <result column="m_mode" property="mMode" />
+        <result column="m_efficacy" property="mEfficacy" />
+        <result column="m_description" property="mDescription" />
+        <result column="m_inventory" property="mInventory" />
+        <result column="m_caution" property="mCaution" />
+        <result column="p_create" property="pCreate" />
+        <result column="p_end" property="pEnd" />
+        <result column="gmt_create" property="gmtCreate" />
+    </resultMap>
+
+</mapper>

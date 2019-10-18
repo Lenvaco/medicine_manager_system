@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.98.137.65:3306/medicine_system?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: password
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      auto-commit: true
+      max-lifetime: 1000000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    database: 0
+    host: 47.98.137.65
+    port: 6379
+    password: password
+    #连接超时时间
+    timeout: 15000
+    lettuce:
+      pool:
+        min-idle: 0
+        max-active: 8
+        max-idle: 8
+        max-wait: 10000
+  jackson:
+    time-zone: GMT+8
+server:
+  port: 8081
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.medicine.manager.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#jwt
+jwt:
+  header: Authorization
+  secret: MySecret
+  expiration: 3600000
+  auth:
+    path: login
+
