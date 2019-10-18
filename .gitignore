@@ -6,6 +6,8 @@
 .project
 
 target
+.mvn
+mvn*
 .dea
 .imi
 .cmd
