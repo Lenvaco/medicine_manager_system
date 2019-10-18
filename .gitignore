@@ -1,1 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+target
+.dea
+.imi
+.cmd
+node_modules
+npm-debug.log
+package-lock.json
