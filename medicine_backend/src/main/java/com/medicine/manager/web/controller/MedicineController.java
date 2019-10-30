@@ -27,7 +27,7 @@ public class MedicineController {
 
 	@GetMapping(value = "medicine")
 	public ResponseEntity getMedicine(PageInfo pageInfo){
-		return new ResponseEntity(medicineService.page(new Page(pageInfo.getPageNo(), pageInfo.getPageSize()), null).getRecords(), HttpStatus.OK);
+		return new ResponseEntity(medicineService.page(new Page(pageInfo.getPage(), pageInfo.getSize()), null).getRecords(), HttpStatus.OK);
 	}
 	@PutMapping(value = "medicine", produces="application/json; charset=UTF-8")
 	public ResponseEntity updateMedicine(Medicine medicine){

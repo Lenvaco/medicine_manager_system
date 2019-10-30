@@ -11,6 +11,7 @@ import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
 import com.medicine.manager.service.JwtUserService;
 import com.medicine.manager.service.RedisService;
+import com.medicine.manager.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -44,7 +42,8 @@ public class AuthorizationController {
 	private RedisService redisService;
 	@Autowired
 	private JwtUserService jwtUserService;
-
+	@Autowired
+	private UserService userService;
 	@PostMapping(value = "login")
 	public ResponseEntity login(@Validated @RequestBody AuthorizationUser authorizationUser){
 		// 查询验证码
@@ -59,7 +58,6 @@ public class AuthorizationController {
 		}
 		final JwtUser jwtUser = (JwtUser) jwtUserService.loadUserByUsername(authorizationUser.getUsername());
 		if(!bCryptPasswordEncoder.matches(authorizationUser.getPassword(), jwtUser.getPassword())){
-			System.out.println("jwtUser.getPassword(), is " + jwtUser.getPassword() + "     authorizationUser.getPassword() is "+authorizationUser.getPassword() );
 			throw new AccountExpiredException("密码错误");
 		}
 		// 生成令牌
@@ -70,10 +68,15 @@ public class AuthorizationController {
 
 	@RequestMapping(value = "/captcha", method = RequestMethod.GET)
 	public ImageResult captcha() throws IOException {
+
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		String uuid = IdUtil.simpleUUID();
 		String verifyCode = drawCaptchaImage(byteArrayOutputStream);
-		redisService.saveCode(uuid,verifyCode);
+		try {
+			redisService.saveCode(uuid, verifyCode);
+		} catch (Exception ex){
+			throw new RuntimeException("获取验证码错误");
+		}
 		try {
 			return new ImageResult(uuid, BaseEncoding.base64().encode(byteArrayOutputStream.toByteArray()));
 		} catch (Exception ex) {

@@ -2,6 +2,7 @@ package com.medicine.manager.dao;
 
 import com.medicine.manager.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -14,4 +15,7 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface UserDao extends BaseMapper<User> {
 
+
+	User findByUsername(String username);
+	User findByEmail(String email);
 }

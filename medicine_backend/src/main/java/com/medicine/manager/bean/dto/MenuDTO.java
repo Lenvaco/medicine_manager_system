@@ -5,6 +5,7 @@ import com.medicine.manager.model.Menu;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,21 +16,23 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MenuDTO implements Serializable {
 	private static final long serialVersionUID = 5306631867619191707L;
 
 	private Long id;
 	private String name;
 	private String component;
-	private Long pid;
-	private Long menuSort;
+	private Long parentId;
+	private Long sort;
 	private Boolean iFrame;
 	private String path;
 	private String icon;
 	private List<MenuDTO> children;
-
+	private Date createTime;
 	@JsonIgnore
 	public static MenuDTO toDTO(Menu menu, List<MenuDTO> children) {
-		return new MenuDTO(menu.getMenuId(), menu.getMenuName(), menu.getPageComponent(), menu.getPId(), menu.getMenuSort(), menu.getIFrame(), menu.getPath(), menu.getIcon(), children);
+		return new MenuDTO(menu.getMId(), menu.getName(), menu.getComponent(),
+				menu.getParentId(), menu.getSort(), menu.getIFrame(), menu.getPath(), menu.getIcon(), children, menu.getCreateTime());
 	}
 }

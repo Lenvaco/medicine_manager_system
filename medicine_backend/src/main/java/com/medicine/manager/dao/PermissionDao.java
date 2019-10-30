@@ -14,5 +14,5 @@ import java.util.Set;
  * @since 2019-09-26
  */
 public interface PermissionDao extends BaseMapper<Permission> {
-	Set<Permission> selectAllByRoleId(Long roleId);
+	Set<Permission> selectAllByRoleId(Long rId);
 }

@@ -1,16 +1,22 @@
 package com.medicine.manager.service.impl;
 
 import com.medicine.manager.bean.JwtUser;
+import com.medicine.manager.bean.dto.DeptSmallDTO;
+import com.medicine.manager.bean.dto.JobSmallDTO;
 import com.medicine.manager.bean.dto.UserDTO;
 import com.medicine.manager.exception.BadRequestException;
+import com.medicine.manager.model.Role;
 import com.medicine.manager.service.JwtUserService;
 import com.medicine.manager.service.JwtPermissionService;
+import com.medicine.manager.service.RoleService;
 import com.medicine.manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 /**
  * @author lenvaco
@@ -21,7 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class JwtUserServiceImpl implements JwtUserService {
 	@Autowired
 	private UserService userService;
-
+	@Autowired
+	private RoleService roleService;
 	@Autowired
 	private JwtPermissionService jwtPermissionService;
 
@@ -40,11 +47,15 @@ public class JwtUserServiceImpl implements JwtUserService {
 				user.getId(),
 				user.getUsername(),
 				user.getPassword(),
+				user.getName(),
 				user.getEmail(),
 				user.getPhone(),
+				Optional.ofNullable(user.getDept()).map(DeptSmallDTO::getName).orElse(null),
+				Optional.ofNullable(user.getJob()).map(JobSmallDTO::getName).orElse(null),
 				jwtPermissionService.mapToGrantedAuthorities(user),
-				user.getGmt_modified(),
-				user.getGmt_create()
+				user.getEnabled(),
+				user.getModifyTime(),
+				user.getCreateTime()
 		);
 	}
 }

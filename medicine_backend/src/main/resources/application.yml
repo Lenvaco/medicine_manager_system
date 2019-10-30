@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.98.137.65:3306/medicine_system?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://47.98.137.65:3306/medicine?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: password
     type: com.zaxxer.hikari.HikariDataSource

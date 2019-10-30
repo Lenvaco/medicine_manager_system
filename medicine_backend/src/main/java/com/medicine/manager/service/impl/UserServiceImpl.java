@@ -4,30 +4,31 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.UserQuery;
+import com.medicine.manager.bean.dto.RoleSmallDTO;
 import com.medicine.manager.bean.dto.UserDTO;
 import com.medicine.manager.common.utils.ValidationUtil;
-import com.medicine.manager.dao.RoleDao;
+import com.medicine.manager.dao.DeptDao;
+import com.medicine.manager.dao.JobDao;
+import com.medicine.manager.dao.UserDao;
 import com.medicine.manager.exception.EntityExistException;
 import com.medicine.manager.exception.EntityNotFoundException;
 import com.medicine.manager.model.Role;
 import com.medicine.manager.model.User;
-import com.medicine.manager.dao.UserDao;
+import com.medicine.manager.service.DeptService;
 import com.medicine.manager.service.RoleService;
 import com.medicine.manager.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,38 +44,61 @@ import java.util.List;
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
 
 	@Autowired
+	private UserDao userDao;
+	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private DeptDao deptDao;
+	@Autowired
+	private JobDao jobDao;
 
 	@Override
 	public UserDTO findByUsername(String username) {
-		QueryWrapper queryWrapper = new QueryWrapper();
+
+		User user;
 		if(ValidationUtil.isEmail(username)) {
-			queryWrapper.eq("email", username);
+			user = userDao.findByEmail(username);
 		} else {
-			queryWrapper.eq("username", username);
+			user = userDao.findByUsername(username);
 		}
-		User user = getOne(queryWrapper, true);
 		if (user == null) {
 			throw new EntityNotFoundException(User.class,"username", username);
 		} else {
+			Set<Role> roles = roleService.findByUserId(user.getUId());
+			user.setRoles(roles);
 			return new UserDTO(user);
 		}
 	}
 
 	@Override
-	public List<UserDTO> queryAllUsers(IPage iPage) {
-		QueryWrapper queryWrapper = new QueryWrapper();
-		return Lists.transform(super.page(iPage).getRecords(), new Function<User, UserDTO>() {
+	public Object queryAllUsers(UserQuery userQuery, IPage iPage) {
+		QueryWrapper<User>userQueryWrapper = new QueryWrapper();
+		if(userQuery.getId() != null) {
+			userQueryWrapper.eq("u_id", userQuery.getId());
+		}
+		if(userQuery.getBlurry() != null) {
+			userQueryWrapper.or(wrapper -> wrapper.like("username", userQuery.getBlurry()).or().like("email", userQuery.getBlurry()));
+		}
+		if(userQuery.getDeptId() != null) {
+			userQueryWrapper.eq("d_id", userQuery.getDeptId());
+		}
+		userQueryWrapper.orderByAsc("u_id");
+		IPage page = super.page(iPage, userQueryWrapper);
+		Map map = new HashMap();
+		map.put("content", Lists.transform(page.getRecords(), new Function<User, UserDTO>() {
 			@Nullable
 			@Override
 			public UserDTO apply(@Nullable User user){
-				//根据user_id查询用户角色权限
-				queryWrapper.eq("u_id", user.getUId());
+				user.setDept(deptDao.findByDId(user.getDId()));
+				user.setJob(jobDao.findByJId(user.getJId()));
 				UserDTO userDTO = new UserDTO(user);
-				userDTO.setRole(roleService.getOne(queryWrapper));
+				userDTO.setRoles(roleService.findByUserId(user.getUId()).stream().map(role -> new RoleSmallDTO(role)).collect(Collectors.toSet()));
 				return userDTO;
 			}
-		});
+		}));
+
+		map.put("totalElements", page.getSize());
+		return map;
 	}
 
 	@Override
@@ -90,8 +114,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			throw new EntityExistException(User.class, "email", email);
 		}
 		Date now = new Date();
-		user.setGmtModified(now);
-		user.setGmtCreate(now);
+		user.setModifyTime(now);
+		user.setCreateTime(now);
 		return super.save(user);
 	}
 
@@ -105,11 +129,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			throw new EntityNotFoundException(User.class, "username", username);
 		}
 		updateWrapper = new UpdateWrapper<>();
-		((UpdateWrapper<User>) updateWrapper).set("gmt_modified", new Date());
+		((UpdateWrapper<User>) updateWrapper).set("modify_time", new Date());
 		((UpdateWrapper<User>) updateWrapper).set("email", user.getEmail());
-		if (user.getBirthday() != null){
-			((UpdateWrapper<User>) updateWrapper).set("birthday", user.getBirthday());
-		}
 		if (user.getPhone() != null) {
 			((UpdateWrapper<User>) updateWrapper).set("phone", user.getPhone());
 		}
@@ -121,9 +142,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		}
 		if(user.getSex() != null) {
 			((UpdateWrapper<User>) updateWrapper).set("sex", user.getSex());
-		}
-		if(user.getIdCard() != null) {
-			((UpdateWrapper<User>) updateWrapper).set("card", user.getIdCard());
 		}
 		//默认我们根据user_id来修改信息
 		((UpdateWrapper<User>) updateWrapper).eq("u_id", user.getUId());

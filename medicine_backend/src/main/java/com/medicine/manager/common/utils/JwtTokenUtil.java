@@ -180,7 +180,7 @@ public class JwtTokenUtil implements Serializable {
 		//        final Date expiration = getExpirationDateFromToken(token);
 		//        如果token存在，且token创建日期 > 最后修改密码的日期 则代表token有效
 		return (!isTokenExpired(token)
-				&& !isCreatedBeforeUpadate(created, user.getUpdateTime())
+				&& !isCreatedBeforeUpadate(created, user.getModifyTime())
 		);
 	}
 

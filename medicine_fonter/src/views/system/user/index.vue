@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
-    <!--form 组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
-    <el-row :gutter="20">
-      <!--部门数据-->
-      <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
-        <div class="head-container">
-          <el-input v-model="roleName" clearable placeholder="输入职位名称搜索" prefix-icon="el-icon-search" style="width: 100%;" class="filter-item" @input="getDeptDatas"/>
-        </div>
-        <el-tree :data="roles" :props="defaultProps" :expand-on-click-node="false" default-expand-all @node-click="handleNodeClick"/>
-      </el-col>
-      <!--用户数据-->
-      <el-col :xs="15" :sm="18" :md="20" :lg="20" :xl="20">
+      <!--form 组件-->
+      <userForm ref="form" :is-add="isAdd" />
+      <el-row :gutter="20">
+          <!--部门数据-->
+          <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
+              <div class="head-container">
+                  <el-input v-model="deptName" clearable placeholder="输入部门搜索" prefix-icon="el-icon-search" style="width: 100%;" class="filter-item" @input="getDeptDatas"/>
+              </div>
+              <el-tree :data="depts" :props="defaultProps" :expand-on-click-node="false" default-expand-all @node-click="handleNodeClick"/>
+          </el-col>
+          <!--用户数据-->
+          <el-col :xs="15" :sm="18" :md="20" :lg="20" :xl="20">
         <!--工具栏-->
         <div class="head-container">
-          <!-- 搜索 -->
-          <el-input v-model="query.blurry" clearable placeholder="输入名称或者邮箱搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-          <el-select v-model="query.enabled" clearable placeholder="状态" class="filter-item" style="width: 90px" @change="toQuery">
-            <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-          </el-select>
+        <!-- 搜索 -->
+            <el-input v-model="query.blurry" clearable placeholder="输入名称或者邮箱搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+            <el-select v-model="query.enabled" clearable placeholder="状态" class="filter-item" style="width: 90px" @change="toQuery">
+                <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+            </el-select>
           <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
           <!-- 新增 -->
           <div v-permission="['ADMIN','USER_ALL','USER_CREATE']" style="display: inline-block;margin: 0px 2px;">
@@ -42,28 +42,38 @@
           </div>
         </div>
         <!--表格渲染-->
-        <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-          <el-table-column prop="username" label="用户名"/>
-          <el-table-column prop="phone" label="电话"/>
-          <el-table-column :show-overflow-tooltip="true" prop="email" label="邮箱"/>
-          <el-table-column label="部门 / 岗位">
+        <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" max-width="250">
+          <af-table-column prop="name" fixed label="姓名"/>
+          <af-table-column prop="username" label="用户名"/>
+          <af-table-column prop="phone" label="电话"/>
+          <af-table-column label="性别">
+              <template slot-scope="scope">
+                 <span v-if="scope.row.sex == '1'">女</span>
+                 <span v-else>男</span>
+              </template>
+          </af-table-column>
+          <af-table-column :show-overflow-tooltip="true" prop="email" label="邮箱"/>
+
+            <af-table-column  label="状态" align="center">
+                <template slot-scope="scope">
+                    <div v-for="item in enabledTypeOptions" :key="item.id">
+                        <el-tag v-if="scope.row.enabled.toString() === item.key" :type="scope.row.enabled ? '' : 'info'">{{ item.display_name }}</el-tag>
+                    </div>
+                </template>
+            </af-table-column>
+          <af-table-column label="职位">
             <template slot-scope="scope">
-              <div>{{ scope.row.role.name }}</div>
+              <div>{{ scope.row.dept.name }} / {{ scope.row.job.name }}</div>
             </template>
-          </el-table-column>
-          <el-table-column label="状态" align="center">
-            <template slot-scope="scope">
-              <div v-for="item in dicts" :key="item.id">
-                <el-tag v-if="scope.row.enabled.toString() === item.value" :type="scope.row.enabled ? '' : 'info'">{{ item.label }}</el-tag>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期">
+          </af-table-column>
+          <af-table-column prop="address" label="地址"></af-table-column>
+
+          <af-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
-          </el-table-column>
-          <el-table-column v-if="checkPermission(['ADMIN','USER_ALL','USER_EDIT','USER_DELETE'])" label="操作" width="125" align="center" fixed="right">
+          </af-table-column>
+          <af-table-column fixed v-if="checkPermission(['ADMIN','USER_ALL','USER_EDIT','USER_DELETE'])" label="操作" width="125" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button v-permission="['ADMIN','USER_ALL','USER_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
               <el-popover
@@ -79,7 +89,7 @@
                 <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
               </el-popover>
             </template>
-          </el-table-column>
+          </af-table-column>
         </el-table>
         <!--分页组件-->
         <el-pagination
@@ -96,23 +106,28 @@
 
 <script>
   import checkPermission from '@/utils/permission'
+  import initData from '@/mixin/initData'
   import { del, downloadUser } from '@/api/user'
-  // import { getDepts } from '@/api/dept'
-  import { parseTime } from '@/utils/index'
-  import eForm from './form'
+  import { parseTime, downloadFile } from '@/utils/index'
+  import { getDepts } from '@/api/dept'
+  import userForm from './form'
   export default {
     name: 'User',
-    components: { eForm },
-    mixins: [initData, initDict],
+    components: { userForm },
+    mixins: [initData],
     data() {
       return {
         height: document.documentElement.clientHeight - 180 + 'px;', isAdd: false,
-        delLoading: false, roleName: '', depts: [], deptId: null,
+        delLoading: false, deptName: '', depts: [], deptId: null,
         defaultProps: {
           children: 'children',
           label: 'name'
         },
         downloadLoading: false,
+        sexOptions: [
+          { key: '0', display_name: '男' },
+          { key: '1', display_name: '女' }
+        ],
         enabledTypeOptions: [
           { key: 'true', display_name: '激活' },
           { key: 'false', display_name: '锁定' }
@@ -124,7 +139,7 @@
       this.$nextTick(() => {
         this.init()
         // 加载数据字典
-        this.getDict('user_status')
+        // this.getDict('user_status')
       })
     },
     mounted: function() {
@@ -138,13 +153,11 @@
       checkPermission,
       beforeInit() {
         this.url = 'api/users'
-        const sort = 'id,desc'
+/*        const sort = 'id,desc'*/
         const query = this.query
         const blurry = query.blurry
-        const enabled = query.enabled
-        this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
+        this.params = { page: this.page, size: this.size/*, sort: sort*/, deptId: this.deptId }
         if (blurry) { this.params['blurry'] = blurry }
-        if (enabled !== '' && enabled !== null) { this.params['enabled'] = enabled }
         return true
       },
       subDelete(id) {
@@ -217,7 +230,7 @@
         _this.getDepts()
         _this.getRoleLevel()
         _this.roleIds = []
-        _this.form = { id: data.id, username: data.username, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }, job: { id: data.job.id }}
+        _this.form = { id: data.id, username: data.username,name: data.name, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }, job: { id: data.job.id }}
         data.roles.forEach(function(data, index) {
           _this.roleIds.push(data.id)
         })

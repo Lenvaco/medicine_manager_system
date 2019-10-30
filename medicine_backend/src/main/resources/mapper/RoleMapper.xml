@@ -4,60 +4,23 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="RoleMap" type="com.medicine.manager.model.Role">
-        <id column="role_id" property="roleId" />
-        <result column="role_name" property="roleName" />
-        <result column="role_description" property="roleDescription" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="gmt_create" property="gmtCreate" />
-        <collection property="permissions"
-                    ofType="com.medicine.manager.model.Permission"
-                    column="role_id"
-                    select="com.medicine.manager.dao.PermissionDao.selectAllByRoleId">
-        </collection>
-        <collection property="menus"
-                    ofType="com.medicine.manager.model.Menu"
-                    column="role_id"
-                    select="com.medicine.manager.dao.MenuDao.selectAllByRoleId">
-        </collection>
+        <id column="r_id" property="rId" />
+        <result column="name" property="name" />
+        <result column="remark" property="remark" />
+        <result column="level" property="level" />
+        <result column="create_time" property="createTime" />
+        <collection property="permissions" column="r_id" ofType="com.medicine.manager.model.Permission" select="com.medicine.manager.dao.PermissionDao.selectAllByRoleId" />
     </resultMap>
+
     <select id="findByUserId" resultMap="RoleMap">
         select
             r.*
         from
             role as r
-        join
-            (select role_id from user_role where u_id = #{userId}) as ur
+        left join
+            (select r_id from user_role where user_role.u_id = #{u_id} ) as ur
         on
-            ur.role_id = r.role_id
+            ur.r_id = r.r_id
     </select>
-    <insert id="insertPermission">
-        insert into
-          role_permission (role_id, permission_id)
-        values
-        <foreach collection ="permissions" item="permission" index= "index" separator =",">
-            (
-              #{roleId}, #{permission.permissionId}
-            )
-        </foreach >
-    </insert>
-
-    <delete id="deletePermission">
-        delete from role_permission where role_id = #{roleId}
-    </delete>
-
-    <insert id="insertMenu">
-        insert into
-         role_menu (role_id, menu_id)
-        values
-        <foreach collection ="menus" item="menu" index= "index" separator =",">
-            (
-              #{roleId}, #{menu.menuId}
-            )
-        </foreach>
-    </insert>
-
-    <delete id="deleteMenu" >
-        delete from role_menu where role_id = #{roleId}
-    </delete>
 
 </mapper>

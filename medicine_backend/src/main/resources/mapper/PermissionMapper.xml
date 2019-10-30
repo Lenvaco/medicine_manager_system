@@ -4,20 +4,19 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Permission">
-        <id column="permission_id" property="permissionId" />
-        <result column="permission_name" property="permissionName" />
+        <id column="p_id" property="pId" />
+        <result column="name" property="name" />
         <result column="parent_id" property="parentId" />
         <result column="alias" property="alias" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="gmt_create" property="gmtCreate" />
+        <result column="create_time" property="createTime" />
     </resultMap>
     <select id="selectAllByRoleId" resultMap="BaseResultMap">
        select
           p.*
-       from  (select permission_id from role_permission where role_id = #{roleId}) as rp
+       from  (select p_id from role_permission where r_id = #{r_Id}) as rp
       left join  permission  as p
       on
-        p.permission_id = rp.permission_id;
+        p.p_id = rp.p_id;
     </select>
 
 </mapper>

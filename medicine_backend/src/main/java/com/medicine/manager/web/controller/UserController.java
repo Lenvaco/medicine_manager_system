@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.EncryptUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
 import com.medicine.manager.model.User;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.regex.Pattern;
@@ -38,33 +40,31 @@ public class UserController {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	private static final String PASSWORD_REGEX = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$";
-
 	@GetMapping(value = "/users")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT')")
-	public ResponseEntity getUsers(PageInfo pageInfo){
-		return new ResponseEntity(userService.queryAllUsers(new Page(pageInfo.getPageNo(), pageInfo.getPageSize())), HttpStatus.OK);
+	public ResponseEntity getUsers(UserQuery userQuery, PageInfo pageInfo){
+		return new ResponseEntity(userService.queryAllUsers(userQuery, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
 
 
 	@PostMapping(value = "/users")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_CREATE')")
-	public ResponseEntity createUser( @RequestBody User user){
-		if(user == null || user.getUId() == null  || user.getUsername() == null || user.getEmail() == null || (!Validator.isEmail(user.getEmail())) ) {
+	public ResponseEntity createUser(@Validated @RequestBody User user){
+		/*if(user == null || user.getUId() == null  || user.getUsername() == null || user.getEmail() == null || (!Validator.isEmail(user.getEmail())) ) {
 			throw new BadRequestException("请求参数错误!");
-		}
+		}*/
 		return new ResponseEntity(userService.save(user),HttpStatus.CREATED);
 	}
 
 	@PutMapping(value = "/users")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_UPDATE')")
-	public ResponseEntity updateUser( @RequestBody User user){
-		//判断基本必填信息是否正常
+	public ResponseEntity updateUser(@Validated @RequestBody User user){
+	/*	//判断基本必填信息是否正常
 		if(user == null || user.getUId() == null  || user.getUsername() == null
 				|| user.getEmail() == null || (!Validator.isEmail(user.getEmail()))
 				|| user.getPassword() == null || !Pattern.matches(PASSWORD_REGEX, user.getPassword())) {
 			throw new BadRequestException("请求参数错误!");
-		}
+		}*/
 		userService.update(user, null);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}

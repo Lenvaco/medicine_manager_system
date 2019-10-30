@@ -11,10 +11,64 @@
         <result column="phone" property="phone" />
         <result column="sex" property="sex" />
         <result column="email" property="email" />
-        <result column="id_card" property="idCard" />
+        <result column="enabled" property="enabled" />
         <result column="address" property="address" />
-        <result column="birthday" property="birthday" />
-        <result column="gmt_modified" property="gmtModified" />
-        <result column="gmt_create" property="gmtCreate" />
+        <result column="modify_time" property="modifyTime" />
+        <result column="create_time" property="createTime" />
+        <result column="j_id" property="jId" />
+        <result column="d_id" property="dId" />
     </resultMap>
+    <resultMap id="UserResultMap" type="com.medicine.manager.model.User" extends="BaseResultMap">
+        <!--<association property="dept" column="d_id" select="com.medicine.manager.dao.DeptDao.findByDId">
+        </association>-->
+        <association property="dept" javaType="com.medicine.manager.model.Dept">
+            <id column="d_id" property="dId" />
+            <result column="dept_name" property="name" />
+            <result column="parent_id" property="parentId" />
+            <result column="dept_create_time" property="createTime" />
+        </association>
+        <association property="job" javaType="com.medicine.manager.model.Job">
+            <id column="j_id" property="jId" />
+            <result column="job_name" property="name" />
+            <result column="sort" property="sort" />
+            <result column="job_create_time" property="createTime" />
+        </association>
+    </resultMap>
+
+    <select id="findByUsername" resultMap="UserResultMap">
+        SELECT
+            u.*,
+             d.d_id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
+             j.j_id, j.name as job_name, j.sort, j.create_time as job_create_time
+        FROM
+        (
+            SELECT
+                user.*
+            FROM  user
+            WHERE username = #{username}
+        ) AS u
+        LEFT JOIN dept d
+        ON u.d_id = d.d_id
+        LEFT JOIN  job j
+        ON u.j_id = j.j_id
+    </select>
+    <select id="findByEmail" resultMap="BaseResultMap">
+      SELECT
+            u.*,
+             d.d_id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
+             j.j_id, j.name as job_name, j.sort, j.create_time as job_create_time
+        FROM
+        (
+            SELECT
+                user.*
+            FROM  user
+            WHERE email = #{email}
+        ) AS u
+        LEFT JOIN dept d
+        ON u.d_id = d.d_id
+        LEFT JOIN  job j
+        ON u.j_id = j.j_id
+    </select>
+
+
 </mapper>

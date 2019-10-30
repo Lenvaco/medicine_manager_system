@@ -4,8 +4,8 @@ const api = {
 
     // swagger
     swaggerApi: baseUrl + '/swagger-ui.html',
-    // baseUrl，
-    baseApi: baseUrl
+  // baseUrl，
+  baseApi: baseUrl
   }
 }
 

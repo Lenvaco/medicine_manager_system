@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.JobDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Job">
+        <id column="j_id" property="jId" />
+        <result column="name" property="name" />
+        <result column="sort" property="sort" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+    <select id="findByJId" resultMap="BaseResultMap">
+        select * from job where j_id = #{j_id}
+    </select>
+</mapper>

@@ -1,16 +1,16 @@
-<!--
 <template>
   <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="570px">
     <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
       <el-form-item label="用户名" prop="name">
         <el-input v-model="form.name"/>
       </el-form-item>
-      <el-form-item label="状态" prop="enabled">
-        <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
-      </el-form-item>
+
       <el-form-item label="电话" prop="phone">
         <el-input v-model.number="form.phone" />
       </el-form-item>
+ <!--     <el-form-item label="状态" prop="enabled">
+        <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
+      </el-form-item>-->
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="form.email" />
       </el-form-item>
@@ -57,10 +57,10 @@
         type: Boolean,
         required: true
       },
-      dicts: {
+/*      dicts: {
         type: Array,
         required: true
-      }
+      }*/
     },
     data() {
       const validPhone = (rule, value, callback) => {
@@ -213,4 +213,3 @@
 <style scoped>
 
 </style>
--->

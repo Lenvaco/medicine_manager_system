@@ -48,7 +48,6 @@ public class MenuController {
 	@GetMapping(value = "/menus/build")
 	public ResponseEntity buildMenus(){
 		UserDTO user = userService.findByUsername(SecurityUtil.getUsername());
-//		UserDTO user = userService.findByUsername("1156434215");
 		List<MenuDTO> menuDTOList = menuService.findByRole(roleService.findByUserId(user.getId()));
 		List<MenuDTO> menuDTOTree = (List<MenuDTO>)menuService.buildTree(menuDTOList).get("content");
 		return new ResponseEntity(menuService.buildMenus(menuDTOTree),HttpStatus.OK);

@@ -23,7 +23,7 @@ public interface MenuService extends IService<Menu> {
 
 	List<MenuDTO> queryByPid(Long pId);
 
-	List<MenuDTO> findByRole(Role role);
+	List<MenuDTO> findByRole(Set<Role> roles);
 
 	Map buildTree(List<MenuDTO> menuDTOList);
 

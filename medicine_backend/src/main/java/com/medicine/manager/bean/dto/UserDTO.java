@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -22,7 +23,6 @@ public class UserDTO implements Serializable {
 
 	private String username;
 
-	@JsonIgnore
 	private String password;
 
 	private String name;
@@ -35,15 +35,19 @@ public class UserDTO implements Serializable {
 
 	private String address;
 
-	private Date birthday;
+	private Boolean enabled;
 
 	@ApiModelProperty(hidden = true)
-	private Role role;
+	private Set<RoleSmallDTO> roles;
 
-	@JsonIgnore
-	private Date gmt_modified;
+	private Date modifyTime;
 
-	private Date gmt_create;
+	private Date createTime;
+
+	private JobSmallDTO job;
+
+	private DeptSmallDTO dept;
+
 
 	public UserDTO(User user) {
 		this.id = user.getUId();
@@ -54,8 +58,11 @@ public class UserDTO implements Serializable {
 		this.sex = user.getSex();
 		this.email = user.getEmail();
 		this.address = user.getAddress();
-		this.birthday = user.getBirthday();
-		this.gmt_modified = user.getGmtModified();
-		this.gmt_create = user.getGmtCreate();
+		this.modifyTime = user.getModifyTime();
+		this.createTime = user.getCreateTime();
+		this.job = new JobSmallDTO(user.getJob());
+		this.dept = new DeptSmallDTO(user.getDept());
+		this.enabled = user.getEnabled();
+//		this.getRoles() = user.getRoles().stream().forEach(role -> return new RoleDTO(role));
 	}
 }

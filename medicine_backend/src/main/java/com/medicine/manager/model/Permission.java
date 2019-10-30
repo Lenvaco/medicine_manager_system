@@ -28,28 +28,25 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("permission")
-@ApiModel(value="Permission对象", description="权限表")
+@ApiModel(value="Permission类", description="权限表")
 public class Permission extends Model<Permission> {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "权限编号")
-    @TableId(value = "permission_id", type = IdType.ID_WORKER)
-    private Long permissionId;
+    @TableId(value = "p_id", type = IdType.ID_WORKER)
+    private Long pId;
 
-    @ApiModelProperty(value = "模块操作名")
-    private String permissionName;
-
-    @ApiModelProperty(value = "上一级权限")
-    private Long parentId;
+    @ApiModelProperty(value = "模块名")
+    private String name;
 
     @ApiModelProperty(value = "权限别名")
     private String alias;
 
-    @ApiModelProperty(value = "更改日期")
-    private Date gmtModified;
+    @ApiModelProperty(value = "上一级权限")
+    private Long parentId;
 
     @ApiModelProperty(value = "创建日期")
-    private Date gmtCreate;
+    private Date createTime;
 
 }

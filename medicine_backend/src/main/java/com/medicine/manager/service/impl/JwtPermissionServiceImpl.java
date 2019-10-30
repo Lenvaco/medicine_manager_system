@@ -23,9 +23,9 @@ public class JwtPermissionServiceImpl implements JwtPermissionService {
 	private RoleService roleService;
 	@Override
 	public Collection<GrantedAuthority> mapToGrantedAuthorities(UserDTO user) {
-		final Role role = roleService.findByUserId(user.getId());
-		return role.getPermissions().stream()
-				.map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
+		final Set<Role> roles = roleService.findByUserId(user.getId());
+		return roles.stream().flatMap(role -> role.getPermissions().stream())
+				.map(permission -> new SimpleGrantedAuthority(permission.getName()))
 				.collect(Collectors.toList());
 	}
 }

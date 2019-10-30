@@ -39,6 +39,7 @@ const user = {
           setToken(res.token, rememberMe)
           commit('SET_TOKEN', res.token)
           setUserInfo(res.user, commit)
+            console.log(res.user);
           // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
           commit('SET_LOAD_MENUS', true)
           resolve()
@@ -79,8 +80,6 @@ const user = {
 }
 
 export const setUserInfo = (res, commit) => {
-  console.log(res)
-  console.log(res.roles)
   // 如果没有任何权限，则赋予一个默认的权限，避免请求死循环
   if (res.roles.length === 0) {
     commit('SET_ROLES', ['ROLE_SYSTEM_DEFAULT'])

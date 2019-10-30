@@ -1,11 +1,11 @@
 package com.medicine.manager.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.bean.dto.UserDTO;
 import com.medicine.manager.model.User;
-import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
+import org.springframework.cache.annotation.CacheConfig;
 
 /**
  * <p>
@@ -15,10 +15,12 @@ import java.util.List;
  * @author lenvaco
  * @since 2019-09-26
  */
+@CacheConfig(cacheNames = "user")
 public interface UserService extends IService<User> {
+
 	UserDTO findByUsername(String username);
 
-	List queryAllUsers(IPage iPage);
+	Object queryAllUsers(UserQuery userQuery, IPage iPage);
 
 	boolean updatePasswordByUsername(String username, String newPassword);
 }

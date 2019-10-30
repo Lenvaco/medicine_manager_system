@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.manager.dao.DeptDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Dept">
+        <id column="d_id" property="dId" />
+        <result column="name" property="name" />
+        <result column="parent_id" property="parentId" />
+        <result column="create_time" property="createTime" />
+        <!--<collection property="roles" column="d_id" ofType="com.medicine.manager.model.Role" select="com.medicine.manager.dao.RoleDao.findByDId" />-->
+    </resultMap>
+<!--    <resultMap id="DeptResultMap" type="com.medicine.manager.model.Dept" extends="BaseResultMap">
+
+    </resultMap>-->
+    <select id="findByJId" resultMap="BaseResultMap">
+        SELECT
+            d_id, name, parent_id, create_time
+        FROM (
+                SELECT
+                    d_id
+                FROM job
+                WHERE j_id = #{j_id}
+              ) AS j
+          LEFT JOin
+              dept d
+          ON  j.d_id = d.d_id
+    </select>
+
+    <select id="findByDId" resultMap="BaseResultMap" >
+        select * from dept where d_id = #{d_id}
+    </select>
+</mapper>

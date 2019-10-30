@@ -24,10 +24,10 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("customer")
-@ApiModel(value="Customer对象", description="顾客表")
+@ApiModel(value="Customer类", description="顾客表")
 public class Customer extends Model<Customer> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2434382817377335275L;
 
     @ApiModelProperty(value = "顾客id")
     @TableId(value = "c_id", type = IdType.ID_WORKER)

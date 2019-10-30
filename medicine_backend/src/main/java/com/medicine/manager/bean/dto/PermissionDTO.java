@@ -12,15 +12,16 @@ import java.util.List;
 @Data
 public class PermissionDTO {
 
-	private Long permissionId;
+	private Long id;
 
-	private String permissionName;
+	private String name;
 
 	private Long parentId;
 
-	private String permissionDescription;
+	private String alias;
 
-	private Date gmtCreate;
+	private Date createTime;
 
 	private List<PermissionDTO> children;
+
 }

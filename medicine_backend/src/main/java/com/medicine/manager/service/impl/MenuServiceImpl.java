@@ -40,7 +40,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	@Autowired
 	private MenuDao menuDao;
 
-	private static final String PARENT_ID = "0";
+	private static final String PARENT_ID = "1";
 
 	@Override
 	@Cacheable(key = "#p0")
@@ -54,23 +54,26 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper();
 		queryWrapper.eq("p_id", pId);
 		List<MenuDTO> menuDTOList = new ArrayList<>();
-		for (Menu menu: super.list(queryWrapper)){
+		/*for (Menu menu: super.list(queryWrapper)){
 			menuDTOList.add(MenuDTO.toDTO(menu, null));
 		}
-		return menuDTOList;
-/*		return  Lists.transform(super.list(queryWrapper), new Function<Menu, MenuDTO>(){
+		return menuDTOList;*/
+		return  Lists.transform(super.list(queryWrapper), new Function<Menu, MenuDTO>(){
 			@Nullable
 			@Override
 			public MenuDTO apply(@Nullable Menu menu) {
 				return MenuDTO.toDTO(menu, null);
 			}
-		});*/
+		});
 	}
 
 	@Override
-	public List<MenuDTO> findByRole(Role role) {
+	public List<MenuDTO> findByRole(Set<Role> roles) {
 		Set<Menu> menus = new LinkedHashSet<>();
-		Set<Menu> menuSet = menuDao.selectAllByRoleId(role.getRoleId());menus.addAll(menuSet);
+		for (Role role : roles) {
+			menus.addAll(menuDao.selectAllByRoleId(role.getRId()));
+		}
+
 		return menus.stream().map(menu -> {
 			return MenuDTO.toDTO(menu, null);
 		}).collect(Collectors.toList());
@@ -79,13 +82,14 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 
 	@Override
 	public Map buildTree(List<MenuDTO> menuDTOList) {
+		menuDTOList = menuDTOList.stream().sorted(Comparator.comparing(MenuDTO::getSort)).collect(Collectors.toList());
 		List<MenuDTO> trees = new ArrayList<>();
 		for (MenuDTO menuDTO: menuDTOList) {
-			if (PARENT_ID.equals(menuDTO.getPid().toString())){
+			if (PARENT_ID.equals(menuDTO.getId().toString())){
 				trees.add(menuDTO);
 			}
 			for (MenuDTO mdt : menuDTOList){
-				if(mdt.getPid().equals(menuDTO.getId())) {
+				if(mdt.getParentId().equals(menuDTO.getId())) {
 					if(menuDTO.getChildren() == null ) {
 						menuDTO.setChildren(new ArrayList<>());
 					}
@@ -101,7 +105,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 
 	@Override
 	public List<MenuVo> buildMenus(List<MenuDTO> menuDTOTree) {
-		List<MenuVo> list = new LinkedList<>();
+		List<MenuVo> list = new ArrayList<>();
 		menuDTOTree.forEach(menuDTO -> {
 			if(menuDTO != null) {
 				List<MenuDTO> menuDTOChildren = menuDTO.getChildren();
@@ -109,10 +113,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 				menuVo.setName(menuDTO.getName());
 				menuVo.setPath(menuDTO.getPath());
 				if(!menuDTO.getIFrame()){
-					if(menuDTO.getPid().equals(0L)){
+					if(menuDTO.getParentId().equals(0L)){
 						//一级目录需要加斜杠，不然访问 会跳转404页面
-						menuDTO.setPath("/" + menuDTO.getPath());
-						menuDTO.setComponent(StrUtil.isEmpty(menuDTO.getComponent())?"Layout":menuDTO.getComponent());
+						menuVo.setPath("/" + menuDTO.getPath());
+						menuVo.setComponent(StrUtil.isEmpty(menuDTO.getComponent())?"Layout":menuDTO.getComponent());
 					}else if(!StrUtil.isEmpty(menuDTO.getComponent())){
 						menuVo.setComponent(menuDTO.getComponent());
 					}
@@ -122,7 +126,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 						menuVo.setRedirect("noredirect");
 						menuVo.setChildren(buildMenus(menuDTOChildren));
 						// 处理是一级菜单并且没有子菜单的情况
-					} else if(menuDTO.getPid().equals(0L)){
+					} else if(menuDTO.getParentId().equals(0L)){
 						MenuVo menuVo1 = new MenuVo();
 						menuVo1.setMeta(menuVo.getMeta());
 						// 非外链
@@ -154,11 +158,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 		menus.forEach(menu  -> {
 				if(menu != null) {
 					QueryWrapper queryWrapper = new QueryWrapper();
-					queryWrapper.eq("p_id", menu.getMenuId());
+					queryWrapper.eq("p_id", menu.getMId());
 					List<Menu> menuList = menuDao.selectList(queryWrapper);
 					Map<String, Object> menuMap = new HashMap<>();
-					menuMap.put("id",menu.getMenuId());
-					menuMap.put("label",menu.getMenuName());
+					menuMap.put("id",menu.getMId());
+					menuMap.put("label",menu.getMId());
 					if(menuList!=null && menuList.size()!=0){
 						menuMap.put("children",getMenuTree(menuList));
 					}

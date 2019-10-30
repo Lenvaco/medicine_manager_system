@@ -8,9 +8,11 @@ import '@/icons' // 引入icon
 import './router/index' // permission control
 import router from './router/routers'
 import '@/styles/index.scss' // global css
+import AFTableColumn from 'af-table-column'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(AFTableColumn);
 Vue.use(permission);
 
 new Vue({

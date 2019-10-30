@@ -9,20 +9,20 @@
           <div>
             <div style="text-align: center">
               <div class="avatar-img">
-                <img :src="Avatar"   class="avatar">
+                <img :src="avatar"   class="avatar">
               </div>
             </div>
             <ul class="user-info">
               <li><svg-icon icon-class="user" /> 用户名称 <div class="user-right">{{ user.name }}</div></li>
               <li><svg-icon icon-class="phone" /> 手机号码 <div class="user-right">{{ user.phone }}</div></li>
               <li><svg-icon icon-class="email" /> 用户邮箱 <div class="user-right">{{ user.email }}</div></li>
-              <li><svg-icon icon-class="role" /> 用户职责 <div class="user-right"> {{ user.role }} </div></li>
+              <li><svg-icon icon-class="role" /> 部门岗位 <div class="user-right"> {{ user.deptName }} / {{ user.jobName }}</div></li>
               <li><svg-icon icon-class="date" /> 创建日期 <div class="user-right">{{ parseTime(user.createTime) }}</div></li>
               <li>
-                <svg-icon icon-class="anq" /> 安全设置
+                <svg-icon icon-class="security" /> 安全设置
                 <div class="user-right">
                   <a @click="$refs.pass.dialog = true">修改密码</a>
-                  <!--<a @click="$refs.email.dialog = true">修改邮箱</a>-->
+                  <a @click="$refs.email.dialog = true">修改邮箱</a>
                 </div>
               </li>
             </ul>
@@ -48,7 +48,7 @@
     // components: { updatePass/*, updateEmail */},
     data() {
       return {
-        Avatar: Avatar,
+        avatar: Avatar,
         headers: {
           'Authorization': 'Bearer ' + getToken()
         }

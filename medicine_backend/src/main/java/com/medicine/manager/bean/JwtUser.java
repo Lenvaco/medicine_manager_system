@@ -25,15 +25,18 @@ import java.util.stream.Collectors;
 @ApiModel(value="JwtUser对象", description="")
 public class JwtUser implements UserDetails {
 	@JsonIgnore
-	@ApiModelProperty(value = "角色id")
+	@ApiModelProperty(value = "用户id")
 	private Long id;
 
-	@ApiModelProperty(value = "角色账号")
+	@ApiModelProperty(value = "用户账号")
 	private String username;
 
 	@JsonIgnore
 	@ApiModelProperty(value = "密码")
 	private String password;
+
+	@ApiModelProperty(value = "姓名")
+	private String name;
 
 	@ApiModelProperty(value = "邮箱")
 	private String email;
@@ -41,12 +44,19 @@ public class JwtUser implements UserDetails {
 	@ApiModelProperty(value = "电话")
 	private String phone;
 
-	@JsonIgnore
+	@ApiModelProperty(value = "部门名")
+	private String deptName;
+
+	@ApiModelProperty(value = "岗位名")
+	private String jobName;
+
 	@ApiModelProperty(value = "权限")
 	private Collection<GrantedAuthority> authorities;
 
+	private  Boolean enabled;
+
 	@JsonIgnore
-	private Date updateTime;
+	private Date modifyTime;
 
 	private Date createTime;
 
@@ -77,7 +87,7 @@ public class JwtUser implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 
 	public Collection getRoles() {

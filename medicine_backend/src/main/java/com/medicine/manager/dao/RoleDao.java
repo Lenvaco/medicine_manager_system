@@ -17,8 +17,9 @@ import java.util.Set;
  */
 public interface RoleDao extends BaseMapper<Role> {
 
-	Role findByUserId(Long userId);
+	Set<Role> findByUserId(Long u_id);
 
+	Set<Role> findByDId(Long dId);
 
 	boolean insertPermission(Long roleId, Set<Permission> permissions);
 

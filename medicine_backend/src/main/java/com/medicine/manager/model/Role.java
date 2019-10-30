@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,6 +16,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * <p>
@@ -28,29 +31,34 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("role")
-@ApiModel(value="Role对象", description="角色表")
+@ApiModel(value="Role类", description="角色表")
 public class Role extends Model<Role> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4286233630013858194L;
 
-    @ApiModelProperty(value = "角色编号")
-    @TableId(value = "role_id", type = IdType.ID_WORKER)
-    private Long roleId;
+    @ApiModelProperty(value = "角色id")
+    @TableId(value = "r_id", type = IdType.ID_WORKER)
+    private Long rId;
 
-    @ApiModelProperty(value = "角色名字")
-    private String roleName;
+    @NotBlank
+    @ApiModelProperty(value = "角色名")
+    private String name;
 
-    @ApiModelProperty(value = "角色描述")
-    private String roleDescription;
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    @ApiModelProperty(value = "级数")
+    private Integer level = 3;
+
+    @ApiModelProperty(value = "创建日期")
+    private Date createTime;
+
+    @JsonIgnore
+    private transient Set<User> users;
 
     private transient  Set<Permission> permissions;
 
     private transient  Set<Menu> menus;
 
-    @ApiModelProperty(value = "更改日期")
-    private Date gmtModified;
-
-    @ApiModelProperty(value = "创建日期")
-    private Date gmtCreate;
-
+    private transient Set<Dept> depts;
 }

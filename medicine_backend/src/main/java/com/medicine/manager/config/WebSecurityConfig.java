@@ -108,7 +108,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( HttpMethod.POST,"/auth/"+loginPath).anonymous()
                 .antMatchers("/auth/captcha").anonymous()
                 .antMatchers("/api/medicine").anonymous()
-                .antMatchers("/api/roles/**").anonymous()
                // swagger start
                 .antMatchers("/swagger-ui.html").anonymous()
                 .antMatchers("/swagger-resources/**").anonymous()

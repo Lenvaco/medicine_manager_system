@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("supplier")
-@ApiModel(value="Supplier对象", description="药品经销商表")
+@ApiModel(value="Supplier类", description="药品经销商表")
 public class Supplier extends Model<Supplier> {
 
     private static final long serialVersionUID = 1L;
