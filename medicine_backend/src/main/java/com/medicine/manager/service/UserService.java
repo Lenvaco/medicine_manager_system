@@ -1,5 +1,6 @@
 package com.medicine.manager.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.medicine.manager.bean.UserQuery;
@@ -17,6 +18,8 @@ import org.springframework.cache.annotation.CacheConfig;
  */
 @CacheConfig(cacheNames = "user")
 public interface UserService extends IService<User> {
+
+	boolean updateUser(User user, Wrapper<User> updateWrapper);
 
 	UserDTO findByUsername(String username);
 

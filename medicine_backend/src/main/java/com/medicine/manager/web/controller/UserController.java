@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.EncryptUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.UserPassVo;
 import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
@@ -77,18 +78,18 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/users/changePsd")
-	public ResponseEntity updatePass(@RequestParam(name = "oldPassword")String oldPassword, @RequestParam("newPassword") String newPassword){
+	public ResponseEntity updatePass(@RequestBody UserPassVo userPassVo){
 		//获取当前用户信息
 		UserDetails userDetails = SecurityUtil.getUserDetails();
 		//判断旧密码是否匹配
-		if(!bCryptPasswordEncoder.matches(oldPassword, userDetails.getPassword())) {
+		if(!bCryptPasswordEncoder.matches(userPassVo.getOldPassword(), userDetails.getPassword())) {
 			throw new BadRequestException("修改失败，旧密码错误");
 		}
 		//判断新旧密码是否相同
-		if(bCryptPasswordEncoder.matches(newPassword, userDetails.getPassword())) {
+		if(bCryptPasswordEncoder.matches(userPassVo.getNewPassword(), userDetails.getPassword())) {
 			throw new BadRequestException("新密码不能与旧密码相同");
 		}
-		userService.updatePasswordByUsername(userDetails.getUsername(), bCryptPasswordEncoder.encode(newPassword));
+		userService.updatePasswordByUsername(userDetails.getUsername(), bCryptPasswordEncoder.encode(userPassVo.getNewPassword()));
 		return new ResponseEntity(HttpStatus.OK);
 	}
 }

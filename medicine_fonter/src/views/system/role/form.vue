@@ -7,18 +7,6 @@
             <el-form-item label="角色级别" prop="sort">
                 <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 370px;"/>
             </el-form-item>
-            <el-form-item label="数据范围">
-                <el-select v-model="form.dataScope" style="width: 370px" placeholder="请选择数据范围" @change="changeScope">
-                    <el-option
-                        v-for="item in dateScopes"
-                        :key="item"
-                        :label="item"
-                        :value="item"/>
-                </el-select>
-            </el-form-item>
-            <el-form-item v-if="form.dataScope === '自定义'" label="数据权限">
-                <treeselect v-model="deptIds" :options="depts" multiple style="width: 370px" placeholder="请选择" />
-            </el-form-item>
             <el-form-item label="描述信息">
                 <el-input v-model="form.remark" style="width: 370px;" rows="5" type="textarea"/>
             </el-form-item>

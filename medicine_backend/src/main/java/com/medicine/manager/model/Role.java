@@ -37,7 +37,7 @@ public class Role extends Model<Role> {
     private static final long serialVersionUID = 4286233630013858194L;
 
     @ApiModelProperty(value = "角色id")
-    @TableId(value = "r_id", type = IdType.ID_WORKER)
+    @TableId(value = "r_id", type = IdType.AUTO)
     private Long rId;
 
     @NotBlank

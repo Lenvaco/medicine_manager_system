@@ -22,25 +22,28 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("job")
-@ApiModel(value="Job类", description="职业表")
+@ApiModel(value="Job类", description="岗位表")
 public class Job  extends Model<Job> {
 
 	private static final long serialVersionUID = 442993594527713917L;
 
-	@ApiModelProperty(value = "职业id")
-	@TableId(value = "j_id", type = IdType.ID_WORKER)
+	@ApiModelProperty(value = "岗位id")
+	@TableId(value = "j_id", type = IdType.AUTO)
 	private Long jId;
 
 	@NotBlank
-	@ApiModelProperty(value = "职业名")
+	@ApiModelProperty(value = "岗位名")
 	private String name;
 
 	@NotNull
 	@ApiModelProperty(value = "序列")
 	private Long sort;
 
+	@ApiModelProperty(value = "部门id")
+	private Long dId;
+
 	@ApiModelProperty(value = "部门")
-	private Dept dept;
+	private transient Dept dept;
 
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime;

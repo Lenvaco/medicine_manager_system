@@ -22,7 +22,6 @@
                 <svg-icon icon-class="security" /> 安全设置
                 <div class="user-right">
                   <a @click="$refs.pass.dialog = true">修改密码</a>
-                  <a @click="$refs.email.dialog = true">修改邮箱</a>
                 </div>
               </li>
             </ul>
@@ -30,22 +29,21 @@
         </el-card>
       </el-col>
     </el-row>
+      <updatePass ref="pass"/>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { regEmail } from '@/utils/index'
-  // import updatePass from './center/updatePass'
-  // import updateEmail from './center/updateEmail'
+  import updatePass from './center/updatePass'
   import { getToken } from '@/utils/auth'
   import store from '@/store'
   import { parseTime } from '@/utils/index'
-  // import initData from '@/mixins/initData'
   import Avatar from '@/assets/avatar/avatar.png'
   export default {
     name: 'Center',
-    // components: { updatePass/*, updateEmail */},
+    components: { updatePass },
     data() {
       return {
         avatar: Avatar,
@@ -60,9 +58,6 @@
       ])
     },
     created() {
-      this.$nextTick(() => {
-        this.init()
-      })
       store.dispatch('GetInfo').then(() => {})
     },
     methods: {

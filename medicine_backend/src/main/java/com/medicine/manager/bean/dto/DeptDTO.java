@@ -21,9 +21,12 @@ public class DeptDTO implements Serializable {
 	private List<DeptDTO> children;
 
 	public  DeptDTO(Dept dept) {
-		this.id = dept.getDId();
+		this.id = dept.getId();
 		this.name = dept.getName();
 		this.parentId = dept.getParentId();
 		this.createTime = dept.getCreateTime();
+	}
+	public String getLabel() {
+		return name;
 	}
 }

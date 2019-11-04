@@ -1,5 +1,6 @@
 package com.medicine.manager.bean.dto;
 
+import com.medicine.manager.model.Permission;
 import lombok.Data;
 
 import java.util.Date;
@@ -23,5 +24,11 @@ public class PermissionDTO {
 	private Date createTime;
 
 	private List<PermissionDTO> children;
-
+	public PermissionDTO(Permission permission) {
+		this.id = permission.getPId();
+		this.name = permission.getName();
+		this.parentId = permission.getParentId();
+		this.alias = permission.getAlias();
+		this.createTime = permission.getCreateTime();
+	}
 }

@@ -15,7 +15,7 @@ public class DeptSmallDTO implements Serializable {
 	private Long id;
 	private String name;
 	public DeptSmallDTO(Dept dept) {
-		this.id = dept.getDId();
+		this.id = dept.getId();
 		this.name = dept.getName();
 	}
 }

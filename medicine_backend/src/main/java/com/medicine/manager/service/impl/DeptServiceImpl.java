@@ -1,6 +1,7 @@
 package com.medicine.manager.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -26,15 +27,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 
 	private static final String PARENT_ID = "0";
 
-	@Autowired
-	private DeptDao deptDao;
 
 	@Override
 	public List<DeptDTO> queryAll(DeptQuery deptQuery){
 		QueryWrapper<Dept>queryWrapper = new QueryWrapper();
 		queryWrapper.orderByDesc("parent_id");
-		if(deptQuery != null) {
-			queryWrapper.like("name", deptQuery.getDeptName());
+		if(deptQuery != null && deptQuery.getName() != null) {
+			queryWrapper.like("name", deptQuery.getName());
 		}
 		return Lists.transform(this.list(queryWrapper), new Function<Dept, DeptDTO>() {
 			@Nullable
@@ -46,15 +45,34 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	}
 
 	@Override
+	public DeptDTO create(Dept dept) {
+		dept.setCreateTime(new Date());
+		save(dept);
+		return new DeptDTO(dept);
+	}
+
+	@Override
+	public void updateDept(Dept dept) {
+		UpdateWrapper<Dept> updateWrapper = new UpdateWrapper<>();
+		updateWrapper.set("name", dept.getName());
+		updateWrapper.set("parent_id", dept.getParentId());
+		updateWrapper.eq("id", dept.getId());
+		update(updateWrapper);
+	}
+
+	@Override
 	public Object buildTree(List<DeptDTO> deptDTOS) {
 		Set<DeptDTO> trees = new LinkedHashSet<>();
+		Set<DeptDTO> deptSet= new LinkedHashSet<>();
 		Object[] depts = deptDTOS.toArray();
-
+		boolean isChild;
 		for (int i = 0; i < deptDTOS.size(); i++) {
+			isChild = false;
 			DeptDTO deptDTO= deptDTOS.get(i);
 			List<DeptDTO> children = null;
 			for (int j = 0; j < deptDTOS.size(); j++) {
 				if(deptDTO.getId().equals(deptDTOS.get(j).getParentId())) {
+					isChild = true;
 					if (children == null) {
 						children = new ArrayList<>();
 					}
@@ -65,9 +83,12 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 			if (PARENT_ID.equals(deptDTO.getParentId().toString())) {
 				trees.add(((DeptDTO)depts[i]));
 			}
+			if(isChild) {
+				deptSet.add((DeptDTO)depts[i]);
+			}
 		}
-		for (int i = 0; i < depts.length; i++) {
-			System.err.println((DeptDTO)depts[i]);
+		if (CollectionUtils.isEmpty(trees)) {
+			trees = deptSet;
 		}
 		Map map = new HashMap();
 		map.put("totalElements",deptDTOS !=null ? deptDTOS.size() : 0);

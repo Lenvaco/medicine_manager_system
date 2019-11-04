@@ -31,8 +31,8 @@ public class Dept extends Model<Dept> {
 	private static final long serialVersionUID = 6966459077637312903L;
 
 	@ApiModelProperty(value = "部门id")
-	@TableId(value = "d_id", type = IdType.ID_WORKER)
-	private Long dId;
+	@TableId(value = "id", type = IdType.AUTO)
+	private Long id;
 
 	@NotBlank
 	@TableField(value="name")

@@ -7,3 +7,23 @@ export function getDepts(params) {
     params
   })
 }
+export function add(data) {
+    return request({
+        url: 'api/dept',
+        method: 'post',
+        data
+    })
+}
+export function edit(data) {
+    return request({
+        url: 'api/dept',
+        method: 'put',
+        data
+    })
+}
+export function del(id) {
+    return request({
+        url: 'api/dept/' + id,
+        method: 'delete'
+    })
+}

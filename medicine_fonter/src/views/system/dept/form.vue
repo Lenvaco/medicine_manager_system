@@ -7,8 +7,8 @@
      <!--       <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
                 <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
             </el-form-item>-->
-            <el-form-item v-if="form.pid !== 0" style="margin-bottom: 0px;" label="上级部门">
-                <treeselect v-model="form.pid" :options="depts" style="width: 370px;" placeholder="选择上级类目" />
+            <el-form-item v-if="form.parentId !== 0" style="margin-bottom: 0px;" label="上级部门">
+                <treeselect v-model="form.parentId" :options="depts" style="width: 370px;" placeholder="选择上级类目" />
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -40,7 +40,7 @@
                 form: {
                     id: '',
                     name: '',
-                    pid: 1,
+                    parentId: 1,
                     enabled: 'true'
                 },
                 rules: {
@@ -57,7 +57,7 @@
             doSubmit() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        if (this.form.pid !== undefined) {
+                        if (this.form.parentId !== undefined) {
                             this.loading = true
                             if (this.isAdd) {
                                 this.doAdd()
@@ -107,12 +107,11 @@
                 this.form = {
                     id: '',
                     name: '',
-                    pid: 1,
-                    enabled: 'true'
+                    parentId: 1,
                 }
             },
             getDepts() {
-                getDepts({ enabled: true }).then(res => {
+                getDepts().then(res => {
                     this.depts = res.content
                 })
             }

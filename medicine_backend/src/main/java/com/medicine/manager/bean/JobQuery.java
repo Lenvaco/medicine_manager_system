@@ -4,10 +4,10 @@ import lombok.Data;
 
 /**
  * @author lenvaco
- * @date 2019/10/29 22:59
+ * @date 2019/10/30 22:34
  */
 @Data
-public class DeptQuery {
+public class JobQuery {
 	private Long id;
 	private String name;
 }

@@ -9,7 +9,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.dto.PermissionDTO;
 import com.medicine.manager.bean.dto.RoleDTO;
+import com.medicine.manager.dao.DeptDao;
+import com.medicine.manager.dao.MenuDao;
+import com.medicine.manager.dao.PermissionDao;
 import com.medicine.manager.dao.RoleDao;
 import com.medicine.manager.exception.EntityExistException;
 import com.medicine.manager.exception.EntityNotFoundException;
@@ -36,20 +40,19 @@ import java.util.*;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleService {
-
 	@Autowired
-	private RoleDao roleDao;
+	private PermissionDao permissionDao;
+	@Autowired
+	private MenuDao menuDao;
 	@Override
 	public Set<Role> findByUserId(Long userId) {
-		return roleDao.findByUserId(userId);
+		return this.baseMapper.findByUserId(userId);
 	}
 
 	@Override
-	public Object queryAll(String burry, PageInfo pageInfo) {
+	public Object queryAll( PageInfo pageInfo) {
 		QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-		queryWrapper.and(wrapper -> wrapper.like("name", burry).or().like("remark", burry));
-		queryWrapper.ne("level", 1);
-		queryWrapper.orderByAsc("sort");
+		queryWrapper.orderByAsc("level");
 		IPage page = this.page(new Page(pageInfo.getPage(), pageInfo.getSize()), queryWrapper);
 		return new HashMap(){
 			{
@@ -57,7 +60,34 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 					@Nullable
 					@Override
 					public Object apply(@Nullable Object input) {
-						return new RoleDTO((Role)input);
+						Role role = (Role) input;
+						role.setMenus(menuDao.selectAllByRoleId(role.getRId()));
+						role.setPermissions(permissionDao.selectAllByRoleId(role.getRId()));
+						return new RoleDTO(role);
+					}
+				}));
+				put("totalElements", page.getSize());
+			}
+		};
+	}
+	@Override
+	public Object queryAll(String blurry, PageInfo pageInfo) {
+		QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+		if(blurry != null){
+			queryWrapper.like("name",blurry).or().like("remark", blurry);
+		}
+		queryWrapper.orderByAsc("level");
+		IPage page = this.page(new Page(pageInfo.getPage(), pageInfo.getSize()), queryWrapper);
+		return new HashMap(){
+			{
+				put("content", Lists.transform(page.getRecords(), new Function<Object, Object>() {
+					@Nullable
+					@Override
+					public Object apply(@Nullable Object input) {
+						Role role = (Role) input;
+						role.setMenus(menuDao.selectAllByRoleId(role.getRId()));
+						role.setPermissions(permissionDao.selectAllByRoleId(role.getRId()));
+						return new RoleDTO(role);
 					}
 				}));
 				put("totalElements", page.getSize());
@@ -103,10 +133,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updatePermission(Role role) {
 		Long roleId = role.getRId();
-		roleDao.deletePermission(roleId);
+		this.baseMapper.deletePermission(roleId);
 		final Set<Permission> permissions = role.getPermissions();
 		if(permissions != null && permissions.size() > 0) {
-			roleDao.insertPermission(roleId, permissions);
+			this.baseMapper.insertPermission(roleId, permissions);
 		}
 		return true;
 	}
@@ -115,10 +145,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateMenu(Role role) {
 		Long roleId =  role.getRId();
-		roleDao.deleteMenu(roleId);
+		this.baseMapper.deleteMenu(roleId);
 		final Set<Menu> menus = role.getMenus();
 		if(menus != null || menus.size() > 0) {
-			roleDao.insertMenu(roleId, menus);
+			this.baseMapper.insertMenu(roleId, menus);
 		}
 		return true;
 	}

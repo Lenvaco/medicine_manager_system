@@ -37,7 +37,7 @@ public class User extends Model<User> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户id")
-    @TableId(value = "u_id", type = IdType.ID_WORKER)
+    @TableId(value = "u_id", type = IdType.AUTO)
     private Long uId;
 
     @NotBlank

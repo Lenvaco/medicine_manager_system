@@ -4,30 +4,30 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Dept">
-        <id column="d_id" property="dId" />
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="parent_id" property="parentId" />
         <result column="create_time" property="createTime" />
-        <!--<collection property="roles" column="d_id" ofType="com.medicine.manager.model.Role" select="com.medicine.manager.dao.RoleDao.findByDId" />-->
+        <!--<collection property="roles" column="id" ofType="com.medicine.manager.model.Role" select="com.medicine.manager.dao.RoleDao.findByDId" />-->
     </resultMap>
 <!--    <resultMap id="DeptResultMap" type="com.medicine.manager.model.Dept" extends="BaseResultMap">
 
     </resultMap>-->
     <select id="findByJId" resultMap="BaseResultMap">
         SELECT
-            d_id, name, parent_id, create_time
+            id, name, parent_id, create_time
         FROM (
                 SELECT
-                    d_id
+                    id
                 FROM job
                 WHERE j_id = #{j_id}
               ) AS j
           LEFT JOin
               dept d
-          ON  j.d_id = d.d_id
+          ON  j.id = d.id
     </select>
 
-    <select id="findByDId" resultMap="BaseResultMap" >
-        select * from dept where d_id = #{d_id}
+    <select id="findById" resultMap="BaseResultMap" >
+        select * from dept where id = #{id}
     </select>
 </mapper>

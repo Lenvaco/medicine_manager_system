@@ -20,7 +20,9 @@ import java.util.Set;
 public interface RoleService extends IService<Role> {
 	Set<Role> findByUserId(Long userId);
 
-	Object queryAll(String burry, PageInfo pageInfo);
+	Object queryAll(PageInfo pageInfo);
+
+	Object queryAll(String blurry, PageInfo pageInfo);
 
 	boolean updatePermission(Role role);
 

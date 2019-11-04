@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -38,9 +39,9 @@ public class RoleDTO implements Serializable {
 		this.name = role.getName();
 		this.remark = role.getRemark();
 		this.level = role.getLevel();
-//		this.permissions = role.getPermissions().stream().map(permission -> { new PermissionDTO(permission)});
-//		this.menus = role.getMenus().stream().map();
-		this.depts = depts;
+		this.permissions = role.getPermissions().stream().map(permission ->  new PermissionDTO(permission)).collect(Collectors.toSet());
+		this.menus = role.getMenus().stream().map(menu ->  MenuDTO.toDTO(menu, null)).collect(Collectors.toSet());
+		this.depts = role.getDepts() != null? role.getDepts().stream().map(dept ->  new DeptDTO(dept)).collect(Collectors.toSet()) : null;
 		this.createTime = role.getCreateTime();
 	}
 }

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.Map;
+
 /**
  * <p>
  * 角色表 前端控制器
@@ -50,11 +52,21 @@ public class RoleController {
 	@GetMapping(value = "/roles/all")
 	@ApiOperation(value = "获取全部角色", notes = "获取全部角色信息", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
-	public ResponseEntity getAll(String burry, PageInfo pageInfo){
+	public ResponseEntity getAll( PageInfo pageInfo){
 		if(pageInfo == null ){
 			pageInfo = new PageInfo();
 		}
-		return new ResponseEntity(roleService.queryAll(burry,pageInfo), HttpStatus.OK);
+		return new ResponseEntity(roleService.queryAll(pageInfo), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/roles")
+	@ApiOperation(value = "获取全部角色", notes = "模糊查询获取全部角色信息", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
+	public ResponseEntity getAll(String blurry, PageInfo pageInfo){
+		if(pageInfo == null ){
+			pageInfo = new PageInfo();
+		}
+		return new ResponseEntity(roleService.queryAll(blurry, pageInfo), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/roles")

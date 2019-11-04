@@ -1,5 +1,6 @@
 package com.medicine.manager.bean.dto;
 
+import com.medicine.manager.model.Job;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,4 +19,12 @@ public class JobDTO implements Serializable {
 	private Long sort;
 	private DeptDTO dept;
 	private Date createTime;
+
+	public JobDTO(Job job) {
+		this.id = job.getJId();
+		this.name = job.getName();
+		this.sort = job.getSort();
+		this.dept = new DeptDTO(job.getDept());
+		this.createTime = job.getCreateTime();
+	}
 }

@@ -153,10 +153,9 @@
       checkPermission,
       beforeInit() {
         this.url = 'api/users'
-/*        const sort = 'id,desc'*/
         const query = this.query
         const blurry = query.blurry
-        this.params = { page: this.page, size: this.size/*, sort: sort*/, deptId: this.deptId }
+        this.params = { page: this.page, size: this.size, deptId: this.deptId }
         if (blurry) { this.params['blurry'] = blurry }
         return true
       },

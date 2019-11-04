@@ -30,13 +30,13 @@ export function edit(data) {
   })
 }
 
-export function updatePass(user) {
+export function changePsd(user) {
   const data = {
-    oldPass: user.oldPass,
-    newPass: user.newPass
+    oldPassword: user.oldPass,
+    newPassword: user.newPass
   }
   return request({
-    url: 'api/users/updatePass/',
+    url: 'api/users/changePsd',
     method: 'post',
     data
   })

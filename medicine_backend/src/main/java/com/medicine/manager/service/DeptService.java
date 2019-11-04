@@ -15,4 +15,8 @@ public interface DeptService extends IService<Dept> {
 	Object buildTree(List<DeptDTO> deptDTOS);
 
 	List<DeptDTO> queryAll(DeptQuery deptQuery);
+
+	DeptDTO create(Dept dept);
+
+	void updateDept(Dept dept);
 }

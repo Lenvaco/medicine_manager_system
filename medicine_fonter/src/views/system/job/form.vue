@@ -4,9 +4,6 @@
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" style="width: 370px;"/>
             </el-form-item>
-            <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
-                <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
-            </el-form-item>
             <el-form-item v-if="form.pid !== 0" style="margin-bottom: 0px;" label="上级部门">
                 <treeselect v-model="form.pid" :options="depts" style="width: 370px;" placeholder="选择上级类目" />
             </el-form-item>
@@ -29,10 +26,6 @@
                 type: Boolean,
                 required: true
             },
-            dicts: {
-                type: Array,
-                required: true
-            }
         },
         data() {
             return {

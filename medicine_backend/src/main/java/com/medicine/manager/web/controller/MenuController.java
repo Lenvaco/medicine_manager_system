@@ -60,8 +60,11 @@ public class MenuController {
 	 */
 	@GetMapping(value = "/menus/tree")
 //	@PreAuthorize("hasAnyRole('ADMIN','MENU_ALL','MENU_CREATE','MENU_EDIT','ROLES_SELECT','ROLES_ALL')")
-	@ApiOperation(value = "获取父级菜单", notes = "获取全部父级菜单", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "获取全部菜单", notes = "获取全部菜单", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity getMenuTree(){
-		return new ResponseEntity(menuService.queryByPid(0L), HttpStatus.OK);
+		List<Menu> menuList = menuService.list(new QueryWrapper<Menu>() {{
+			eq("parent_id", 0L);
+		}});
+		return new ResponseEntity(menuService.getMenuTree(menuList), HttpStatus.OK);
 	}
 }

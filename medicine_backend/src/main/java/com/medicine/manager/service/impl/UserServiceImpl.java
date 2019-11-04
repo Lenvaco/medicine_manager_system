@@ -89,7 +89,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			@Nullable
 			@Override
 			public UserDTO apply(@Nullable User user){
-				user.setDept(deptDao.findByDId(user.getDId()));
+				user.setDept(deptDao.findById(user.getDId()));
 				user.setJob(jobDao.findByJId(user.getJId()));
 				UserDTO userDTO = new UserDTO(user);
 				userDTO.setRoles(roleService.findByUserId(user.getUId()).stream().map(role -> new RoleSmallDTO(role)).collect(Collectors.toSet()));
@@ -121,7 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean update(User user, Wrapper<User> updateWrapper) {
+	public boolean updateUser(User user, Wrapper<User> updateWrapper) {
 		String username = user.getUsername();
 		UserDTO userDto = findByUsername(username);
 		//判断是否存在整个用户 ，并且根据username查出来的user_id是否相同

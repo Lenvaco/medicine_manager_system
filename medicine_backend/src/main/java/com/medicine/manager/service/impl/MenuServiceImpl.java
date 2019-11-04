@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @since 2019-09-26
  */
 @Service
-@CacheConfig(cacheNames = "menu")
+//@CacheConfig(cacheNames = "menu")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements MenuService, Serializable {
 
@@ -43,17 +43,17 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	private static final String PARENT_ID = "1";
 
 	@Override
-	@Cacheable(key = "#p0")
+//	@Cacheable(key = "#p0")
 	public MenuDTO queryById(Long id) {
 		return MenuDTO.toDTO(this.baseMapper.selectById(id), null);
 	}
 
 	@Override
-	@Cacheable(key = "'pId:' + #p0")
+//	@Cacheable(key = "'parentId:' + #p0")
 	public List<MenuDTO> queryByPid(Long pId) {
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper();
-		queryWrapper.eq("p_id", pId);
-		List<MenuDTO> menuDTOList = new ArrayList<>();
+		queryWrapper.eq("parent_id", pId);
+//		List<MenuDTO> menuDTOList = new ArrayList<>();
 		/*for (Menu menu: super.list(queryWrapper)){
 			menuDTOList.add(MenuDTO.toDTO(menu, null));
 		}
@@ -157,12 +157,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 
 		menus.forEach(menu  -> {
 				if(menu != null) {
-					QueryWrapper queryWrapper = new QueryWrapper();
-					queryWrapper.eq("p_id", menu.getMId());
-					List<Menu> menuList = menuDao.selectList(queryWrapper);
+					QueryWrapper<Menu>queryWrapper = new QueryWrapper();
+					queryWrapper.eq("parent_id", menu.getMId());
+					List<Menu> menuList = this.list(queryWrapper);
 					Map<String, Object> menuMap = new HashMap<>();
 					menuMap.put("id",menu.getMId());
-					menuMap.put("label",menu.getMId());
+					menuMap.put("label",menu.getName());
 					if(menuList!=null && menuList.size()!=0){
 						menuMap.put("children",getMenuTree(menuList));
 					}

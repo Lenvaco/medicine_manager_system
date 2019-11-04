@@ -32,7 +32,6 @@
                     </div>
                     <el-table v-loading="loading" :data="data" highlight-current-row size="small" style="width: 100%;" @current-change="handleCurrentChange">
                         <el-table-column prop="name" label="名称"/>
-                        <el-table-column prop="dataScope" label="数据权限"/>
                         <el-table-column prop="level" label="角色级别"/>
                         <el-table-column :show-overflow-tooltip="true" prop="remark" label="描述"/>
                         <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期">
@@ -134,7 +133,7 @@
     import { editPermission, editMenu, get } from '@/api/role'
     export default {
         name: 'Role',
-        components: { roleForm },
+        components: { roleForm  },
         mixins: [initData],
         data() {
             return {
@@ -147,21 +146,23 @@
             }
         },
         created() {
-            this.getPermissions()
-            this.getMenus()
             this.$nextTick(() => {
                 this.init()
             })
+            this.getMenus()
+            this.getPermissions()
+
+
         },
         methods: {
             parseTime,
             checkPermission,
             beforeInit() {
-                this.showButton = false
                 this.url = 'api/roles'
+                this.showButton = false
                 const query = this.query
                 const value = query.value
-                this.params = { page: this.page, size: this.size/*, sort: sort */}
+                this.params = { page: this.page, size: this.size }
                 if (value) { this.params['blurry'] = value }
                 // 清空权限与菜单的选中
                 this.$refs.permission.setCheckedKeys([])
@@ -293,10 +294,7 @@
                 this.isAdd = false
                 const _this = this.$refs.form
                 _this.deptIds = []
-                _this.form = { id: data.id, name: data.name, remark: data.remark, depts: data.depts, dataScope: data.dataScope, level: data.level }
-                if (_this.form.dataScope === '自定义') {
-                    _this.getDepts()
-                }
+                _this.form = { id: data.id, name: data.name, remark: data.remark, depts: data.depts, level: data.level }
                 for (let i = 0; i < _this.form.depts.length; i++) {
                     _this.deptIds[i] = _this.form.depts[i].id
                 }

@@ -29,10 +29,10 @@ public class MedicineBackendApplicationTests {
     public void contextLoads() {
         List<DeptDTO> list = new ArrayList<>();
         Dept dept = new Dept();
-        dept.setDId(1L);
+        dept.setId(1L);
         dept.setName("121");dept.setParentId(0L); dept.setCreateTime(new Date());
         list.add(new DeptDTO(dept));
-        dept.setDId(2L);
+        dept.setId(2L);
         list.add(new DeptDTO(dept));
         for (DeptDTO deptDTO:
              list) {

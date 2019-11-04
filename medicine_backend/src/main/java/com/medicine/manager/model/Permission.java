@@ -34,7 +34,7 @@ public class Permission extends Model<Permission> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "权限编号")
-    @TableId(value = "p_id", type = IdType.ID_WORKER)
+    @TableId(value = "p_id", type = IdType.AUTO)
     private Long pId;
 
     @ApiModelProperty(value = "模块名")

@@ -30,7 +30,7 @@ public class Customer extends Model<Customer> {
     private static final long serialVersionUID = 2434382817377335275L;
 
     @ApiModelProperty(value = "顾客id")
-    @TableId(value = "c_id", type = IdType.ID_WORKER)
+    @TableId(value = "c_id", type = IdType.AUTO)
     private Long cId;
 
     @ApiModelProperty(value = "姓名")
