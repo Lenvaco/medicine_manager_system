@@ -13,6 +13,8 @@ import com.medicine.manager.service.DeptService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
  * @date 2019/10/24 11:01
  */
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptService {
 
 	private static final String PARENT_ID = "0";
@@ -45,6 +48,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public DeptDTO create(Dept dept) {
 		dept.setCreateTime(new Date());
 		save(dept);
@@ -52,6 +56,7 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void updateDept(Dept dept) {
 		UpdateWrapper<Dept> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.set("name", dept.getName());

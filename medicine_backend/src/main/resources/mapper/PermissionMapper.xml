@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Permission">
-        <id column="p_id" property="pId" />
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="parent_id" property="parentId" />
         <result column="alias" property="alias" />
@@ -16,7 +16,7 @@
        from  (select p_id from role_permission where r_id = #{r_Id}) as rp
       left join  permission  as p
       on
-        p.p_id = rp.p_id;
+        p.id = rp.p_id;
     </select>
 
 </mapper>

@@ -71,7 +71,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	public List<MenuDTO> findByRole(Set<Role> roles) {
 		Set<Menu> menus = new LinkedHashSet<>();
 		for (Role role : roles) {
-			menus.addAll(menuDao.selectAllByRoleId(role.getRId()));
+			menus.addAll(menuDao.selectAllByRoleId(role.getId()));
 		}
 
 		return menus.stream().map(menu -> {
@@ -158,10 +158,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 		menus.forEach(menu  -> {
 				if(menu != null) {
 					QueryWrapper<Menu>queryWrapper = new QueryWrapper();
-					queryWrapper.eq("parent_id", menu.getMId());
+					queryWrapper.eq("parent_id", menu.getId());
 					List<Menu> menuList = this.list(queryWrapper);
 					Map<String, Object> menuMap = new HashMap<>();
-					menuMap.put("id",menu.getMId());
+					menuMap.put("id",menu.getId());
 					menuMap.put("label",menu.getName());
 					if(menuList!=null && menuList.size()!=0){
 						menuMap.put("children",getMenuTree(menuList));

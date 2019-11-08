@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.dto.RoleDTO;
 import com.medicine.manager.exception.BadRequestException;
+import com.medicine.manager.model.Permission;
 import com.medicine.manager.model.Role;
 import com.medicine.manager.service.RoleService;
 import io.swagger.annotations.ApiOperation;
@@ -43,7 +44,7 @@ public class RoleController {
 	@ApiOperation(value = "获取角色", notes = "根据roleId获取角色", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_SELECT')")
 	public ResponseEntity getRoles(@PathVariable Long roleId){
-		return new ResponseEntity(roleService.getById(roleId), HttpStatus.OK);
+		return new ResponseEntity(roleService.findByRoleId(roleId), HttpStatus.OK);
 	}
 	/**
 	 * 返回全部的角色，新增用户时下拉选择
@@ -73,7 +74,7 @@ public class RoleController {
 	@ApiOperation(value = "新增角色", notes = "新建新的角色", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_CREATE')")
 	public ResponseEntity create(@RequestBody Role role){
-		if (role.getRId() != null) {
+		if (role.getId() != null) {
 			throw new BadRequestException("RoleId should be null but failed!");
 		}
 		roleService.save(role);
@@ -83,10 +84,10 @@ public class RoleController {
 	@PutMapping(value = "/roles")
 	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_EDIT')")
 	public ResponseEntity update(@RequestBody Role role){
-		if(role == null || role.getRId() == null) {
+		if(role == null || role.getId() == null) {
 			throw new BadRequestException("Role id should not be null");
 		}
-		roleService.update(role, null);
+		roleService.updateRole(role);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 

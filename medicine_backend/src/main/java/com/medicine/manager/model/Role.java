@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -37,8 +38,8 @@ public class Role extends Model<Role> {
     private static final long serialVersionUID = 4286233630013858194L;
 
     @ApiModelProperty(value = "角色id")
-    @TableId(value = "r_id", type = IdType.AUTO)
-    private Long rId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
     @NotBlank
     @ApiModelProperty(value = "角色名")

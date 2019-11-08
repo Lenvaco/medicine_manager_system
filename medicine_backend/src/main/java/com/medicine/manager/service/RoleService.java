@@ -18,11 +18,15 @@ import java.util.Set;
  * @since 2019-09-26
  */
 public interface RoleService extends IService<Role> {
+
+	Role findByRoleId(Long id);
 	Set<Role> findByUserId(Long userId);
 
 	Object queryAll(PageInfo pageInfo);
 
 	Object queryAll(String blurry, PageInfo pageInfo);
+
+	boolean updateRole(Role role);
 
 	boolean updatePermission(Role role);
 

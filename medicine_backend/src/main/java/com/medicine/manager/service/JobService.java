@@ -3,6 +3,7 @@ package com.medicine.manager.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.medicine.manager.bean.JobQuery;
 import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.model.Dept;
 import com.medicine.manager.model.Job;
 
 /**
@@ -11,4 +12,8 @@ import com.medicine.manager.model.Job;
  */
 public interface JobService extends IService<Job> {
 	Object queryAll(JobQuery jobQuery, PageInfo pageInfo);
+
+	boolean create(Job job);
+
+	boolean updateJob(Job job);
 }

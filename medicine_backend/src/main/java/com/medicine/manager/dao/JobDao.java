@@ -11,5 +11,5 @@ import com.medicine.manager.model.Job;
  * @date 2019/10/21 0:12
  */
 public interface JobDao extends BaseMapper<Job> {
-	Job findByJId(Long j_id);
+	Job findById(Long id);
 }

@@ -4,12 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Job">
-        <id column="j_id" property="jId" />
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="sort" property="sort" />
         <result column="create_time" property="createTime" />
     </resultMap>
-    <select id="findByJId" resultMap="BaseResultMap">
-        select * from job where j_id = #{j_id}
+    <select id="findById" resultMap="BaseResultMap">
+        select * from job where id = #{id}
     </select>
 </mapper>

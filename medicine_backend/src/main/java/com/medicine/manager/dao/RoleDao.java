@@ -19,13 +19,4 @@ public interface RoleDao extends BaseMapper<Role> {
 
 	Set<Role> findByUserId(Long u_id);
 
-	Set<Role> findByDId(Long dId);
-
-	boolean insertPermission(Long roleId, Set<Permission> permissions);
-
-	boolean deletePermission(Long roleId);
-
-	boolean insertMenu(Long roleId, Set<Menu> menus);
-
-	boolean deleteMenu(Long roleId);
 }

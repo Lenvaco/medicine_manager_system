@@ -6,6 +6,8 @@ import com.medicine.manager.dao.PermissionDao;
 import com.medicine.manager.service.PermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,6 +23,7 @@ import java.util.Map;
  * @since 2019-09-26
  */
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class PermissionServiceImpl extends ServiceImpl<PermissionDao, Permission> implements PermissionService {
 	@Override
 	public List<Permission> findByParentId(Long parentId) {
@@ -33,9 +36,9 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionDao, Permission
 		List<Map<String,Object>> list = new LinkedList<>();
 		permissions.forEach(permission -> {
 					if (permission!=null){
-						List<Permission> permissionList = this.findByParentId(permission.getPId());
+						List<Permission> permissionList = this.findByParentId(permission.getId());
 						Map<String,Object> map = new HashMap<>();
-						map.put("id",permission.getPId());
+						map.put("id",permission.getId());
 						map.put("label",permission.getAlias());
 						if(permissionList!=null && permissionList.size()!=0){
 							map.put("children",getPermissionTree(permissionList));

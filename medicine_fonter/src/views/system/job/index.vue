@@ -68,7 +68,6 @@
 <script>
     import checkPermission from '@/utils/permission'
     import initData from '@/mixin/initData'
-    // import initDict from '@/mixins/initDict'
     import { del } from '@/api/job'
     import { parseTime } from '@/utils/index'
     import jobForm from './form'

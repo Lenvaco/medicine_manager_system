@@ -13,7 +13,6 @@ export default {
             }
             return new Promise((resolve, reject) => {
                 this.loading = true
-                console.log(this.params)
                 initData(this.url, this.params).then(res => {
                     this.total = res.totalElements
                     this.data = res.content

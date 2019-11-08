@@ -4,12 +4,29 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="RoleMap" type="com.medicine.manager.model.Role">
-        <id column="r_id" property="rId" />
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="remark" property="remark" />
         <result column="level" property="level" />
         <result column="create_time" property="createTime" />
-        <collection property="permissions" column="r_id" ofType="com.medicine.manager.model.Permission" select="com.medicine.manager.dao.PermissionDao.selectAllByRoleId" />
+        <collection property="permissions" column="id" select="com.medicine.manager.dao.PermissionDao.selectAllByRoleId" />
+      <!--  <collection property="depts" ofType="com.medicine.manager.model.Dept">
+            <id column="d_id" property="id" />
+            <result column="dept_name" property="name" />
+            <result column="dept_parent_id" property="parentId" />
+            <result column="dept_create_time" property="createTime" />
+        </collection>
+        <collection property="menus" ofType="com.medicine.manager.model.Menu" >
+            <id column="menu_id" property="id" />
+            <result column="menu_name" property="name" />
+            <result column="component" property="component" />
+            <result column="sort" property="sort" />
+            <result column="icon" property="icon" />
+            <result column="i_frame" property="IFrame" />
+            <result column="path" property="path" />
+            <result column="menu_parent_id" property="parentId" />
+            <result column="menu_create_time" property="createTime" />
+        </collection>-->
     </resultMap>
 
     <select id="findByUserId" resultMap="RoleMap">
@@ -20,7 +37,7 @@
         left join
             (select r_id from user_role where user_role.u_id = #{u_id} ) as ur
         on
-            ur.r_id = r.r_id
+            ur.r_id = r.id
     </select>
 
 </mapper>

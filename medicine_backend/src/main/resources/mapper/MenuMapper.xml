@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Menu">
-        <id column="m_id" property="mId" />
+        <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="component" property="component" />
         <result column="sort" property="sort" />
@@ -18,7 +18,7 @@
         select m.*
         from (select m_id from role_menu where r_id = #{roleId}) as rm
         left join menu as m
-        on m.m_id = rm.m_id;
+        on m.id = rm.m_id;
     </select>
 
 </mapper>

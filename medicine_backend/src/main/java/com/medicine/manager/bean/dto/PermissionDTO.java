@@ -25,7 +25,7 @@ public class PermissionDTO {
 
 	private List<PermissionDTO> children;
 	public PermissionDTO(Permission permission) {
-		this.id = permission.getPId();
+		this.id = permission.getId();
 		this.name = permission.getName();
 		this.parentId = permission.getParentId();
 		this.alias = permission.getAlias();

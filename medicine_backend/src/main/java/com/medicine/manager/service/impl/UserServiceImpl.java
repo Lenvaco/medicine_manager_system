@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
 
 	@Autowired
@@ -90,7 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			@Override
 			public UserDTO apply(@Nullable User user){
 				user.setDept(deptDao.findById(user.getDId()));
-				user.setJob(jobDao.findByJId(user.getJId()));
+				user.setJob(jobDao.findById(user.getJId()));
 				UserDTO userDTO = new UserDTO(user);
 				userDTO.setRoles(roleService.findByUserId(user.getUId()).stream().map(role -> new RoleSmallDTO(role)).collect(Collectors.toSet()));
 				return userDTO;

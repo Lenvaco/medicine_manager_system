@@ -90,6 +90,7 @@
                         :default-checked-keys="menuIds"
                         :props="defaultProps"
                         accordion
+                        check-strictly
                         show-checkbox
                         node-key="id"/>
                 </el-card>
@@ -113,6 +114,7 @@
                         :data="permissions"
                         :default-checked-keys="permissionIds"
                         :props="defaultProps"
+                        check-strictly
                         show-checkbox
                         accordion
                         node-key="id"/>
@@ -293,11 +295,11 @@
             edit(data) {
                 this.isAdd = false
                 const _this = this.$refs.form
-                _this.deptIds = []
-                _this.form = { id: data.id, name: data.name, remark: data.remark, depts: data.depts, level: data.level }
-                for (let i = 0; i < _this.form.depts.length; i++) {
-                    _this.deptIds[i] = _this.form.depts[i].id
-                }
+                // _this.deptIds = []
+                _this.form = { id: data.id, name: data.name, remark: data.remark,  level: data.level }
+              /*  for (let i = 0; i < _this.depts.length; i++) {
+                    _this.deptIds[i] = _this.depts[i].id
+                }*/
                 _this.dialog = true
             }
         }

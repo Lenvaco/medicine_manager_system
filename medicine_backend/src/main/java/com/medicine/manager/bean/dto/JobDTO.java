@@ -21,7 +21,7 @@ public class JobDTO implements Serializable {
 	private Date createTime;
 
 	public JobDTO(Job job) {
-		this.id = job.getJId();
+		this.id = job.getId();
 		this.name = job.getName();
 		this.sort = job.getSort();
 		this.dept = new DeptDTO(job.getDept());

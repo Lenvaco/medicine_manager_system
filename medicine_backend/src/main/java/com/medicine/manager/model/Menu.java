@@ -36,8 +36,8 @@ public class Menu extends Model<Menu> {
 	private static final long serialVersionUID = 1669812014417725675L;
 
 	@ApiModelProperty(value = "菜单id")
-    @TableId(value = "m_id", type = IdType.AUTO)
-    private Long mId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
 
 	@NotBlank
     @ApiModelProperty(value = "菜单名称")

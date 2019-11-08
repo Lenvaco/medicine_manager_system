@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,8 +29,8 @@ public class Job  extends Model<Job> {
 	private static final long serialVersionUID = 442993594527713917L;
 
 	@ApiModelProperty(value = "岗位id")
-	@TableId(value = "j_id", type = IdType.AUTO)
-	private Long jId;
+	@TableId(value = "id", type = IdType.AUTO)
+	private Long id;
 
 	@NotBlank
 	@ApiModelProperty(value = "岗位名")
@@ -40,6 +41,8 @@ public class Job  extends Model<Job> {
 	private Long sort;
 
 	@ApiModelProperty(value = "部门id")
+	@NotNull(message = "不允许不选部门")
+	@JsonProperty(value = "dId")
 	private Long dId;
 
 	@ApiModelProperty(value = "部门")

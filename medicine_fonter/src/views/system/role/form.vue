@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd ? '新增角色' : '编辑角色'" append-to-body width="500px">
+    <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd? '新增角色' : '编辑角色'" append-to-body width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
             <el-form-item label="角色名称" prop="name">
                 <el-input v-model="form.name" style="width: 370px;"/>
@@ -33,9 +33,9 @@
         },
         data() {
             return {
-                dateScopes: ['全部', '本级', '自定义'],
-                loading: false, dialog: false, depts: [], deptIds: [],
-                form: { name: '', depts: [], remark: '', dataScope: '本级', level: 3 },
+
+                loading: false, dialog: false,
+                form: { id: '', name: '', remark: '', level: 3 },
                 rules: {
                     name: [
                         { required: true, message: '请输入名称', trigger: 'blur' }
@@ -48,31 +48,17 @@
                 this.resetForm()
             },
             doSubmit() {
-                if (this.form.dataScope === '自定义' && this.deptIds.length === 0) {
-                    this.$message({
-                        message: '自定义数据权限不能为空',
-                        type: 'warning'
-                    })
-                } else {
-                    this.form.depts = []
-                    if (this.form.dataScope === '自定义') {
-                        for (let i = 0; i < this.deptIds.length; i++) {
-                            this.form.depts.push({
-                                id: this.deptIds[i]
-                            })
-                        }
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        this.loading = true
+                        if (this.isAdd) {
+                            this.doAdd()
+                        } else this.doEdit()
+                    } else {
+                        return false
                     }
-                    this.$refs['form'].validate((valid) => {
-                        if (valid) {
-                            this.loading = true
-                            if (this.isAdd) {
-                                this.doAdd()
-                            } else this.doEdit()
-                        } else {
-                            return false
-                        }
-                    })
-                }
+                })
+
             },
             doAdd() {
                 add(this.form).then(res => {
@@ -90,6 +76,7 @@
                 })
             },
             doEdit() {
+                console.log(" do edit ...")
                 edit(this.form).then(res => {
                     this.resetForm()
                     this.$notify({
@@ -107,18 +94,13 @@
             resetForm() {
                 this.dialog = false
                 this.$refs['form'].resetFields()
-                this.form = { name: '', depts: [], remark: '', dataScope: '本级', level: 3 }
+                this.form = { name: '', remark: '', level: 3 }
             },
             getDepts() {
                 getDepts({ enabled: true }).then(res => {
                     this.depts = res.content
                 })
             },
-            changeScope() {
-                if (this.form.dataScope === '自定义') {
-                    this.getDepts()
-                }
-            }
         }
     }
 </script>

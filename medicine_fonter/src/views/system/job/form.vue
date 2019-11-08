@@ -1,11 +1,14 @@
 <template>
-    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增部门' : '编辑部门'" width="500px">
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增岗位' : '编辑岗位'" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" style="width: 370px;"/>
             </el-form-item>
-            <el-form-item v-if="form.pid !== 0" style="margin-bottom: 0px;" label="上级部门">
-                <treeselect v-model="form.pid" :options="depts" style="width: 370px;" placeholder="选择上级类目" />
+            <el-form-item label="排序" prop="sort">
+                <el-input-number v-model.number="form.sort" :min="0" :max="999" controls-position="right" style="width: 370px;"/>
+            </el-form-item>
+            <el-form-item label="所属部门">
+                <treeselect v-model="deptId" :options="depts" style="width: 370px" placeholder="选择部门" />
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -16,7 +19,8 @@
 </template>
 
 <script>
-    import { add, edit, getDepts } from '@/api/dept'
+    import { getDepts } from '@/api/dept'
+    import { add, edit } from '@/api/job'
     import Treeselect from '@riophae/vue-treeselect'
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     export default {
@@ -29,16 +33,21 @@
         },
         data() {
             return {
-                loading: false, dialog: false, depts: [],
+                loading: false, dialog: false, depts: [], deptId: null,
                 form: {
                     id: '',
                     name: '',
-                    pid: 1,
-                    enabled: 'true'
+                    sort: 999,
+                    createTime: '',
+                    dId: '',
+                    dept: { id: '' }
                 },
                 rules: {
                     name: [
                         { required: true, message: '请输入名称', trigger: 'blur' }
+                    ],
+                    sort: [
+                        { required: true, message: '请输入序号', trigger: 'blur', type: 'number' }
                     ]
                 }
             }
@@ -48,23 +57,25 @@
                 this.resetForm()
             },
             doSubmit() {
+                this.form.dept.id = this.deptId
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        if (this.form.pid !== undefined) {
+                        if (this.deptId === null || this.deptId === undefined) {
+                            this.$message({
+                                message: '所属部门不能为空',
+                                type: 'warning'
+                            })
+                        } else {
                             this.loading = true
                             if (this.isAdd) {
                                 this.doAdd()
                             } else this.doEdit()
-                        } else {
-                            this.$message({
-                                message: '上级部门不能为空',
-                                type: 'warning'
-                            })
                         }
                     }
                 })
             },
             doAdd() {
+                this.form.dId = this.form.dept.id;
                 add(this.form).then(res => {
                     this.resetForm()
                     this.$notify({
@@ -80,6 +91,7 @@
                 })
             },
             doEdit() {
+                this.form.dId = this.form.dept.id;
                 edit(this.form).then(res => {
                     this.resetForm()
                     this.$notify({
@@ -96,12 +108,16 @@
             },
             resetForm() {
                 this.dialog = false
+                this.isRoleAdd = false;
                 this.$refs['form'].resetFields()
+                this.deptId = null
                 this.form = {
                     id: '',
                     name: '',
-                    pid: 1,
-                    enabled: 'true'
+                    sort: 999,
+                    enabled: 'true',
+                    createTime: '',
+                    dept: { id: '' }
                 }
             },
             getDepts() {
@@ -113,6 +129,8 @@
     }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+    /deep/ .el-input-number .el-input__inner {
+        text-align: left;
+    }
 </style>

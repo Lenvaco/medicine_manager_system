@@ -20,7 +20,7 @@ public class RoleSmallDTO implements Serializable {
 	private Integer level;
 
 	public RoleSmallDTO(Role role) {
-		this.id = role.getRId();
+		this.id = role.getId();
 		this.name = role.getName();
 		this.level = role.getLevel();
 	}

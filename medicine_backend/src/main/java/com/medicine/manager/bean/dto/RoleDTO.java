@@ -35,7 +35,7 @@ public class RoleDTO implements Serializable {
 	private Date createTime;
 
 	public RoleDTO(Role role) {
-		this.id = role.getRId();
+		this.id = role.getId();
 		this.name = role.getName();
 		this.remark = role.getRemark();
 		this.level = role.getLevel();

@@ -22,13 +22,13 @@
         <!--<association property="dept" column="id" select="com.medicine.manager.dao.DeptDao.findByDId">
         </association>-->
         <association property="dept" javaType="com.medicine.manager.model.Dept">
-            <id column="id" property="id" />
+            <id column="dept_id" property="id" />
             <result column="dept_name" property="name" />
             <result column="parent_id" property="parentId" />
             <result column="dept_create_time" property="createTime" />
         </association>
         <association property="job" javaType="com.medicine.manager.model.Job">
-            <id column="j_id" property="jId" />
+            <id column="job_id" property="id" />
             <result column="job_name" property="name" />
             <result column="sort" property="sort" />
             <result column="job_create_time" property="createTime" />
@@ -38,8 +38,8 @@
     <select id="findByUsername" resultMap="UserResultMap">
         SELECT
             u.*,
-             d.id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
-             j.j_id, j.name as job_name, j.sort, j.create_time as job_create_time
+             d.id as dept_id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
+             j.id as job_id, j.name as job_name, j.sort, j.create_time as job_create_time
         FROM
         (
             SELECT
@@ -50,13 +50,13 @@
         LEFT JOIN dept d
         ON u.d_id = d.id
         LEFT JOIN  job j
-        ON u.j_id = j.j_id
+        ON u.j_id = j.id
     </select>
     <select id="findByEmail" resultMap="BaseResultMap">
       SELECT
             u.*,
-             d.id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
-             j.j_id, j.name as job_name, j.sort, j.create_time as job_create_time
+             d.id as dept_id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
+             j.id as job_id, j.name as job_name, j.sort, j.create_time as job_create_time
         FROM
         (
             SELECT
@@ -67,7 +67,7 @@
         LEFT JOIN dept d
         ON u.d_id = d.id
         LEFT JOIN  job j
-        ON u.j_id = j.j_id
+        ON u.j_id = j.id
     </select>
 
 

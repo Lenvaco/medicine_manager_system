@@ -32,7 +32,7 @@ public class MenuDTO implements Serializable {
 	private Date createTime;
 	@JsonIgnore
 	public static MenuDTO toDTO(Menu menu, List<MenuDTO> children) {
-		return new MenuDTO(menu.getMId(), menu.getName(), menu.getComponent(),
+		return new MenuDTO(menu.getId(), menu.getName(), menu.getComponent(),
 				menu.getParentId(), menu.getSort(), menu.getIFrame(), menu.getPath(), menu.getIcon(), children, menu.getCreateTime());
 	}
 }

@@ -15,7 +15,7 @@ public class JobSmallDTO implements Serializable {
 	private Long id;
 	private String name;
 	public JobSmallDTO(Job job) {
-		this.id = job.getJId();
+		this.id = job.getId();
 		this.name = job.getName();
 	}
 }
