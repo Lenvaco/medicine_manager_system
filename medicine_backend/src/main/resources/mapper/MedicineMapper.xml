@@ -3,17 +3,16 @@
 <mapper namespace="com.medicine.manager.dao.MedicineDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.medicine.manager.model.Medicine">
-        <id column="m_id" property="mId" />
-        <result column="m_name" property="mName" />
-        <result column="m_mode" property="mMode" />
-        <result column="m_efficacy" property="mEfficacy" />
-        <result column="m_description" property="mDescription" />
-        <result column="m_inventory" property="mInventory" />
-        <result column="m_caution" property="mCaution" />
-        <result column="p_create" property="pCreate" />
-        <result column="p_end" property="pEnd" />
-        <result column="gmt_create" property="gmtCreate" />
+    <resultMap id="medicineDTO" type="com.medicine.manager.model.Medicine">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="mode" property="mode"/>
+        <result column="efficacy" property="efficacy"/>
+        <result column="description" property="description"/>
+        <result column="caution" property="caution"/>
+        <result column="inventory" property="inventory" />
+        <result column="product_time" property="productTime" />
+        <result column="expire_time" property="expireTime"/>
     </resultMap>
 
 </mapper>

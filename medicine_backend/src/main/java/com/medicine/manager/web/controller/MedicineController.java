@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,20 +28,23 @@ public class MedicineController {
 	private MedicineService medicineService;
 
 	@GetMapping(value = "medicine")
-	public ResponseEntity getMedicine(PageInfo pageInfo){
-		return new ResponseEntity(medicineService.page(new Page(pageInfo.getPage(), pageInfo.getSize()), null).getRecords(), HttpStatus.OK);
+	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_SELECT')")
+	public ResponseEntity getMedicine(String medicineName, PageInfo pageInfo){
+		return new ResponseEntity(medicineService.queryMedicine(medicineName, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
-	@PutMapping(value = "medicine", produces="application/json; charset=UTF-8")
-	public ResponseEntity updateMedicine(Medicine medicine){
-		if(medicine.getMInventory() < 0) {
-			throw new IllegalArgumentException("库存量不能为负数");
-		}
-		medicineService.updateById(medicine);
+	@PostMapping(value = "medicine")
+	public ResponseEntity createMedicine(@Validated Medicine medicine){
+		medicineService.createMedicine(medicine);
+		return new ResponseEntity(HttpStatus.CREATED);
+	}
+	@PutMapping(value = "medicine/{id}")
+	public ResponseEntity updateMedicine(@PathVariable Long id, @Validated Medicine medicine){
+		medicineService.updateMedicineById(id, medicine);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@DeleteMapping(value = "medicine/{id}")
 	public ResponseEntity insertMedicine(@PathVariable Long id){
-		medicineService.removeById(id);
+		medicineService.removeMedicineById(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 }

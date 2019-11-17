@@ -19,11 +19,15 @@ import org.springframework.cache.annotation.CacheConfig;
 @CacheConfig(cacheNames = "user")
 public interface UserService extends IService<User> {
 
-	boolean updateUser(User user, Wrapper<User> updateWrapper);
+	void saveUser(UserDTO userDTO);
+
+	void updateUser(UserDTO userDTO);
 
 	UserDTO findByUsername(String username);
 
 	Object queryAllUsers(UserQuery userQuery, IPage iPage);
 
 	boolean updatePasswordByUsername(String username, String newPassword);
+
+	void deleteUserById(Long id);
 }

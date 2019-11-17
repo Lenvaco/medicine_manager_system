@@ -4,8 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.medicine.manager.model.Role;
 import com.medicine.manager.model.User;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
@@ -15,22 +21,28 @@ import java.util.Set;
  * @author lenvaco
  * @date 2019/9/29 10:14
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserDTO implements Serializable {
 
+	private static final long serialVersionUID = 5491128699082883311L;
 	@ApiModelProperty(hidden = true)
 	private Long id;
-
+	@NotBlank
 	private String username;
 
 	private String password;
-
+	@NotBlank
+	@Length(min = 2, max = 14)
 	private String name;
-
+	@NotBlank
+	@Pattern(regexp = "^1[3|4|5|7|8][0-9]\\d{8}$")
 	private String phone;
 
 	private String sex;
-
+	@NotBlank
+	@Pattern(regexp = "^([a-zA-Z0-9]+[-_\\.]?)+@[a-zA-Z0-9]+\\.[a-z]+$")
 	private String email;
 
 	private String address;
@@ -64,5 +76,9 @@ public class UserDTO implements Serializable {
 		this.dept = new DeptSmallDTO(user.getDept());
 		this.enabled = user.getEnabled();
 //		this.getRoles() = user.getRoles().stream().forEach(role -> return new RoleDTO(role));
+	}
+	@JsonIgnore
+	public User toUser() {
+		return new User(id, username, password, name, phone, sex, email, address, enabled, dept.getId(), job.getId());
 	}
 }

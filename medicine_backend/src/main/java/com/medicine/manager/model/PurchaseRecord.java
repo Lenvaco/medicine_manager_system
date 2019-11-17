@@ -31,25 +31,26 @@ public class PurchaseRecord extends Model<PurchaseRecord> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "采购记录id")
-    @TableId(value = "p_id", type = IdType.ID_WORKER)
-    private Long pId;
+    @TableId(value = "id", type = IdType.ID_WORKER)
+    private Long id;
 
     @ApiModelProperty(value = "药品id")
-    private Long mId;
+    private Long medicineId;
 
     @ApiModelProperty(value = "供应商id")
-    private Long sId;
+    private Long supplierId;
 
-    @ApiModelProperty(value = "采购总数")
-    private Integer pCount;
+    @ApiModelProperty(value = "采购人员id")
+    private Integer userId;
+
+    @ApiModelProperty(value = "采购数目")
+    private Integer purchaseCount;
+
 
     @ApiModelProperty(value = "采购单价")
-    private BigDecimal pPrice;
+    private BigDecimal purchasePrice;
 
-    @ApiModelProperty(value = "采购人员")
-    private Long uId;
-
-    @ApiModelProperty(value = "采购日期")
-    private Date purchaseTime;
+    @ApiModelProperty(value = "采购时间")
+    private Date createTime;
 
 }

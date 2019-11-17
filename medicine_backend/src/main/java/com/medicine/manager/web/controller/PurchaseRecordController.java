@@ -4,6 +4,7 @@ package com.medicine.manager.web.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Controller;
  * @author lenvaco
  * @since 2019-09-26
  */
-@Controller
-@RequestMapping("/purchaseRecord")
+@RestController
+@RequestMapping("/api")
 public class PurchaseRecordController {
 
 }

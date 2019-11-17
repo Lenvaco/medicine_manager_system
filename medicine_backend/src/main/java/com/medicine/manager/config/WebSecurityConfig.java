@@ -36,6 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
     /**
      * 自定义基于JWT的安全过滤器
      */
@@ -46,16 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtUserService jwtUserService;
 
 
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        // 设置默认的加密方式
-        return new BCryptPasswordEncoder();
-    }
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jwtUserService)
-                .passwordEncoder(passwordEncoder());
+                .passwordEncoder(bCryptPasswordEncoder);
     }
     @Bean
     GrantedAuthorityDefaults grantedAuthorityDefaults() {

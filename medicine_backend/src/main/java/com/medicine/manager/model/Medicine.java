@@ -11,6 +11,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * <p>
@@ -30,35 +35,39 @@ public class Medicine extends Model<Medicine> {
     private static final long serialVersionUID = -4234855453233544533L;
 
     @ApiModelProperty(value = "药品id")
-    @TableId(value = "m_id", type = IdType.ID_WORKER)
-    private Long mId;
+    @TableId(value = "id", type = IdType.INPUT)
+    private Long id;
 
-    @ApiModelProperty(value = "药品名称")
-    private String mName;
+    @NotBlank
+    @ApiModelProperty(value = "药品名")
+    private String name;
 
+    @NotBlank
     @ApiModelProperty(value = "使用方法（0内服1外用）")
-    private String mMode;
+    private String mode;
 
+    @NotBlank
     @ApiModelProperty(value = "使用功效")
-    private String mEfficacy;
+    private String efficacy;
 
-    @ApiModelProperty(value = "药品组成")
-    private String mDescription;
+    @NotBlank
+    @ApiModelProperty(value = "组成成份")
+    private String description;
 
+    @NotBlank
     @ApiModelProperty(value = "注意事项")
-    private String mCaution;
+    private String caution;
 
+    @NotNull
+    @Size
     @ApiModelProperty(value = "库存量")
-    private Integer mInventory;
+    private Integer inventory;
 
+    @NotNull
     @ApiModelProperty(value = "生产日期")
-    private Date pCreate;
+    private Date productTime;
 
-    @ApiModelProperty(value = "有效截止期")
-    private Date pEnd;
-
-    @ApiModelProperty(value = "创建日期")
-    private Date gmtCreate;
-
-
+    @NotNull
+    @ApiModelProperty(value = "有效日期")
+    private Date expireTime;
 }

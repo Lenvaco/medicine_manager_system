@@ -1,5 +1,6 @@
 package com.medicine.manager.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.model.Customer;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CustomerService extends IService<Customer> {
 
+	Object queryCustomers(String customerName, Page page);
+	boolean createCustomer(Customer customer);
+	boolean updateCustomer(Long id, Customer customer);
+	boolean removeCustomerById(Long id);
 }

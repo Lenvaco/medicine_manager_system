@@ -3,13 +3,68 @@
 <mapper namespace="com.medicine.manager.dao.SaleRecordDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.medicine.manager.model.SaleRecord">
-        <id column="s_id" property="sId" />
-        <result column="m_id" property="mId" />
-        <result column="c_id" property="cId" />
+    <resultMap id="SalRecordDTO" type="com.medicine.manager.bean.dto.SaleRecordDTO">
+        <id column="id" property="id" />
         <result column="sale_count" property="saleCount" />
         <result column="sale_price" property="salePrice" />
         <result column="sale_time" property="saleTime" />
-    </resultMap>
+        <association property="medicineSmallDTO" javaType="com.medicine.manager.bean.dto.MedicineSmallDTO">
+        <result column="medicine_id" property="id"/>
+        <result column="medicine_name" property="name" />
+    </association>
+        <association property="customerSmallDTO" javaType="com.medicine.manager.bean.dto.CustomerSmallDTO">
+            <result column="customer_id" property="id"/>
+            <result column="customer_name" property="name" />
+        </association>
+        <association property="userSmallDTO" javaType="com.medicine.manager.bean.dto.UserSmallDTO">
+            <result column="user_id" property="id"/>
+            <result column="user_name" property="name" />
+        </association>
 
+    </resultMap>
+    <select id="queryByMap" resultMap="SalRecordDTO">
+        SELECT
+          sr.*,
+          m.name AS medicine_name,
+          c.name AS  customer_name,
+          u.name AS user_name
+        FROM
+          sale_record AS sr
+        LEFT JOIN medicine AS m
+        ON sr.medicine_id = m.id
+        LEFT JOIN customer AS c
+        ON sr.customer_id = c.id
+        LEFT JOIN user AS  u
+        ON sr.user_id = u.u_id
+        <where>
+            <if test="name != null">
+               AND sr.name LIKE concat(concat('%',#{name}),'%')
+            </if>
+            <if test="startTime != null">
+                AND sr.saleTime &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND sr.saleTime &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY sr.saleTime DESC
+        LIMIT #{pageNo}, #{pageSize}
+    </select>
+    <select id="selectCountByMap" resultType="java.lang.Long">
+        SELECT
+          COUNT(id)
+        FROM
+          sale_record
+        <where>
+            <if test="name != null">
+                AND name LIKE concat(concat('%',#{name}),'%')
+            </if>
+            <if test="startTime != null">
+                AND sr.saleTime &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND sr.saleTime &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
 </mapper>

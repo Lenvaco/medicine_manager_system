@@ -30,28 +30,30 @@ public class Customer extends Model<Customer> {
     private static final long serialVersionUID = 2434382817377335275L;
 
     @ApiModelProperty(value = "顾客id")
-    @TableId(value = "c_id", type = IdType.AUTO)
-    private Long cId;
+    @TableId(value = "id", type = IdType.ID_WORKER)
+    private Long id;
 
     @ApiModelProperty(value = "姓名")
-    private String cName;
+    private String name;
 
     @ApiModelProperty(value = "性别")
-    private String cSex;
+    private String sex;
 
     @ApiModelProperty(value = "年龄")
-    private Integer cAge;
+    private Integer age;
 
     @ApiModelProperty(value = "地址")
-    private String cAddresss;
+    private String address;
 
     @ApiModelProperty(value = "电话")
-    private String cPhone;
+    private String phone;
 
     @ApiModelProperty(value = "症状")
-    private String cSymptom;
+    private String symptom;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
     @ApiModelProperty(value = "创建日期")
-    private Date gmtCreate;
-
+    private Date createTime;
 }

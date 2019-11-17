@@ -1,9 +1,11 @@
 package com.medicine.manager.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.dao.MedicineDao;
 import com.medicine.manager.model.Medicine;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,23 +29,35 @@ import java.util.List;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> implements MedicineService {
-	@Autowired
-	private MedicineDao medicineDao;
-/*
 
 	@Override
-	public List<Medicine> selectAllByNameLike(String nameLike, IPage ipage) {
-		QueryWrapper<Medicine> queryWrapper = new QueryWrapper();
-		queryWrapper.like("m_name", nameLike);
-		return medicineDao.selectPage(ipage, queryWrapper).getRecords();
+	public Object queryMedicine(String medicineName, Page page) {
+		QueryWrapper<Medicine> queryWrapper = new QueryWrapper<>();
+		if(!StrUtil.isBlank(medicineName)) {
+			queryWrapper.like("name", medicineName);
+		}
+		IPage iPage = page(page, queryWrapper);
+		return new HashMap(){{
+			put("content", iPage.getRecords());
+			put("totalElements", iPage.getTotal());
+		}};
 	}
 
 	@Override
-	public List<Medicine> selectAll(IPage page) {
-		return medicineDao.selectPage(page, null).getRecords();
+	@Transactional(rollbackFor = Exception.class)
+	public boolean createMedicine(Medicine medicine) {
+		return save(medicine);
 	}
-*/
 
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean updateMedicineById(Long id, Medicine medicine) {
+		return false;
+	}
 
-
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean removeMedicineById(Long id) {
+		return false;
+	}
 }

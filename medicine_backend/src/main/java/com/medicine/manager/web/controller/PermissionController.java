@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Controller;
  * @author lenvaco
  * @since 2019-09-26
  */
-@Controller
+@RestController
 @RequestMapping("/api")
 public class PermissionController {
 

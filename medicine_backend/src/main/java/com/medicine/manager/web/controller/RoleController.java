@@ -1,9 +1,12 @@
 package com.medicine.manager.web.controller;
 
 
+import cn.hutool.core.lang.Dict;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.dto.RoleDTO;
+import com.medicine.manager.bean.dto.RoleSmallDTO;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
 import com.medicine.manager.model.Permission;
 import com.medicine.manager.model.Role;
@@ -20,7 +23,10 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -30,7 +36,7 @@ import java.util.Map;
  * @author lenvaco
  * @since 2019-09-26
  */
-@Controller
+@RestController
 @RequestMapping("/api")
 public class RoleController {
 	@Autowired
@@ -79,6 +85,11 @@ public class RoleController {
 		}
 		roleService.save(role);
 		return new ResponseEntity(HttpStatus.CREATED);
+	}
+	@GetMapping(value = "/roles/level")
+	public ResponseEntity getLevel(){
+		List<Integer> levels = roleService.findByUserId(SecurityUtil.getUserId()).stream().map(Role::getLevel).collect(Collectors.toList());
+		return new ResponseEntity(Dict.create().set("level", Collections.min(levels)),HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/roles")

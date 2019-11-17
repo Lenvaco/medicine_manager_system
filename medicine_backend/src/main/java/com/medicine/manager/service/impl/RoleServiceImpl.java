@@ -77,7 +77,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 						return new RoleDTO(role);
 					}
 				}));
-				put("totalElements", page.getSize());
+				put("totalElements", page.getTotal());
 			}
 		};
 	}

@@ -1,7 +1,11 @@
 package com.medicine.manager.dao;
 
+import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.model.SaleRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -12,5 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2019-09-26
  */
 public interface SaleRecordDao extends BaseMapper<SaleRecord> {
-
+	List<SaleRecordDTO> queryByMap(Map queryMap);
+	Long selectCountByMap(Map queryMap);
 }

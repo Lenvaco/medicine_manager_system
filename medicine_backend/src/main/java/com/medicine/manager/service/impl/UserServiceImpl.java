@@ -1,6 +1,5 @@
 package com.medicine.manager.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -18,17 +17,22 @@ import com.medicine.manager.exception.EntityExistException;
 import com.medicine.manager.exception.EntityNotFoundException;
 import com.medicine.manager.model.Role;
 import com.medicine.manager.model.User;
-import com.medicine.manager.service.DeptService;
+import com.medicine.manager.model.UserRole;
 import com.medicine.manager.service.RoleService;
+import com.medicine.manager.service.UserRoleService;
 import com.medicine.manager.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 	private DeptDao deptDao;
 	@Autowired
 	private JobDao jobDao;
-
+	@Autowired
+	private UserRoleService userRoleService;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private static final String DEFAULT_PASSWORD = "abc123456";
 	@Override
 	public UserDTO findByUsername(String username) {
 
@@ -78,10 +86,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			userQueryWrapper.eq("u_id", userQuery.getId());
 		}
 		if(userQuery.getBlurry() != null) {
-			userQueryWrapper.or(wrapper -> wrapper.like("username", userQuery.getBlurry()).or().like("email", userQuery.getBlurry()));
+			userQueryWrapper.or(wrapper -> wrapper.like("name", userQuery.getBlurry()).or().like("email", userQuery.getBlurry()));
 		}
 		if(userQuery.getDeptId() != null) {
 			userQueryWrapper.eq("d_id", userQuery.getDeptId());
+		}
+		if(userQuery.getEnabled() != null) {
+			userQueryWrapper.eq("enabled", userQuery.getEnabled());
 		}
 		userQueryWrapper.orderByAsc("u_id");
 		IPage page = super.page(iPage, userQueryWrapper);
@@ -98,55 +109,67 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			}
 		}));
 
-		map.put("totalElements", page.getSize());
+		map.put("totalElements", page.getTotal());
 		return map;
 	}
-
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean save(User user) {
+	public void saveUser(UserDTO userDTO) {
 		//username 和 email 都不能已经被使用
-		String username  = user.getUsername();
-		if(null != findByUsername(username)) {
+		String username  = userDTO.getUsername();
+		if(null != userDao.findByUsername(username)) {
 			throw new EntityExistException(User.class, "username", username);
 		}
-		String email = user.getEmail();
-		if(null != findByUsername(email)) {
+		String email = userDTO.getEmail();
+		if(null != userDao.findByEmail(email)) {
 			throw new EntityExistException(User.class, "email", email);
 		}
+		User user = userDTO.toUser();
+//		user.setPassword(bCryptPasswordEncoder.encode(DEFAULT_PASSWORD));
 		Date now = new Date();
 		user.setModifyTime(now);
 		user.setCreateTime(now);
-		return super.save(user);
+		user.setPassword(bCryptPasswordEncoder.encode(DEFAULT_PASSWORD));
+		save(user);
+		Long id = findByUsername(username).getId();
+		userRoleService.saveBatch(userDTO.getRoles().stream().map(
+				roleSmallDTO -> new UserRole(id, roleSmallDTO.getId())
+		).collect(Collectors.toList()));
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean updateUser(User user, Wrapper<User> updateWrapper) {
-		String username = user.getUsername();
-		UserDTO userDto = findByUsername(username);
-		//判断是否存在整个用户 ，并且根据username查出来的user_id是否相同
-		if(null == userDto && !userDto.getId().equals(user.getUId())) {
+	public void updateUser(UserDTO userDTO) {
+		String username = userDTO.getUsername();
+		User user = userDao.findByEmail(userDTO.getEmail());
+		//判断是否存在这个个用户 ，并且根据username查出来的user_id是否相同
+		if(null == user && !user.getUId().equals(userDTO.getId())) {
 			throw new EntityNotFoundException(User.class, "username", username);
 		}
-		updateWrapper = new UpdateWrapper<>();
-		((UpdateWrapper<User>) updateWrapper).set("modify_time", new Date());
-		((UpdateWrapper<User>) updateWrapper).set("email", user.getEmail());
-		if (user.getPhone() != null) {
-			((UpdateWrapper<User>) updateWrapper).set("phone", user.getPhone());
+		UpdateWrapper<User>  updateWrapper = new UpdateWrapper<>();
+		updateWrapper.set("modify_time", new Date());
+		updateWrapper.set("email", userDTO.getEmail());
+		updateWrapper.set("phone", userDTO.getPhone());
+		updateWrapper.set("name", userDTO.getName());
+		updateWrapper.set("j_id", userDTO.getJob().getId());
+		updateWrapper.set("d_id", userDTO.getDept().getId());
+		if( userDTO.getAddress() != null) {
+			updateWrapper.set("address", userDTO.getAddress());
 		}
-		if( user.getAddress() != null) {
-			((UpdateWrapper<User>) updateWrapper).set("address", user.getAddress());
+		if(userDTO.getSex() != null) {
+			updateWrapper.set("sex", userDTO.getSex());
 		}
-		if(user.getName() != null) {
-			((UpdateWrapper<User>) updateWrapper).set("name", user.getName());
-		}
-		if(user.getSex() != null) {
-			((UpdateWrapper<User>) updateWrapper).set("sex", user.getSex());
+		if(userDTO.getAddress() != null) {
+			updateWrapper.set("address", userDTO.getAddress());
 		}
 		//默认我们根据user_id来修改信息
-		((UpdateWrapper<User>) updateWrapper).eq("u_id", user.getUId());
-		return super.update(updateWrapper);
+		updateWrapper.eq("u_id", userDTO.getId());
+		update(updateWrapper);
+		UpdateWrapper<UserRole> userRoleUpdateWrapper = new UpdateWrapper<>();
+		userRoleUpdateWrapper.eq("u_id", userDTO.getId());
+		userRoleService.remove(userRoleUpdateWrapper);
+		userRoleService.saveBatch(userDTO.getRoles().stream().map(roleSmallDTO -> new UserRole(userDTO.getId(), roleSmallDTO.getId())).collect(Collectors.toList()));
+
 	}
 
 	@Override
@@ -156,5 +179,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		updateWrapper.set("password", newPassword);
 		updateWrapper.eq("username", username);
 		return update(updateWrapper);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteUserById(Long id) {
+		UpdateWrapper<UserRole>updateWrapper = new UpdateWrapper();
+		updateWrapper.eq("u_id", id);
+		userRoleService.remove(updateWrapper);
+		removeById(id);
 	}
 }

@@ -1,13 +1,11 @@
 package com.medicine.manager.web.controller;
 
 
-import cn.hutool.core.lang.Validator;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.EncryptUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.UserPassVo;
 import com.medicine.manager.bean.UserQuery;
+import com.medicine.manager.bean.dto.UserDTO;
 import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
 import com.medicine.manager.model.User;
@@ -22,8 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.regex.Pattern;
-
 /**
  * <p>
  * 系统用户表 前端控制器
@@ -32,7 +28,7 @@ import java.util.regex.Pattern;
  * @author lenvaco
  * @since 2019-09-26
  */
-@Controller
+@RestController
 @RequestMapping("/api")
 public class UserController {
 
@@ -50,30 +46,22 @@ public class UserController {
 
 	@PostMapping(value = "/users")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_CREATE')")
-	public ResponseEntity createUser(@Validated @RequestBody User user){
-		/*if(user == null || user.getUId() == null  || user.getUsername() == null || user.getEmail() == null || (!Validator.isEmail(user.getEmail())) ) {
-			throw new BadRequestException("请求参数错误!");
-		}*/
-		return new ResponseEntity(userService.save(user),HttpStatus.CREATED);
+	public ResponseEntity createUser(@Validated @RequestBody UserDTO userDTO){
+		userService.saveUser(userDTO);
+		return new ResponseEntity(HttpStatus.CREATED);
 	}
 
 	@PutMapping(value = "/users")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_UPDATE')")
-	public ResponseEntity updateUser(@Validated @RequestBody User user){
-	/*	//判断基本必填信息是否正常
-		if(user == null || user.getUId() == null  || user.getUsername() == null
-				|| user.getEmail() == null || (!Validator.isEmail(user.getEmail()))
-				|| user.getPassword() == null || !Pattern.matches(PASSWORD_REGEX, user.getPassword())) {
-			throw new BadRequestException("请求参数错误!");
-		}*/
-		userService.update(user, null);
-		return new ResponseEntity(HttpStatus.CREATED);
+	public ResponseEntity updateUser(@Validated @RequestBody UserDTO userDto){
+		userService.updateUser(userDto);
+		return new ResponseEntity(HttpStatus.OK);
 	}
-	@DeleteMapping(value = "/users/{roleId}")
+	@DeleteMapping(value = "/users/{userId}")
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	public ResponseEntity delete(@PathVariable Long roleId){
+	public ResponseEntity delete(@PathVariable Long userId){
 		//根据用户id删除角色
-		userService.removeById(roleId);
+		userService.deleteUserById(userId);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 

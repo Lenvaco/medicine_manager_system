@@ -1,7 +1,9 @@
 package com.medicine.manager.bean.dto;
 
 import com.medicine.manager.model.Role;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -9,6 +11,8 @@ import java.io.Serializable;
  * @author lenvaco
  * @date 2019/10/21 15:31
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class RoleSmallDTO implements Serializable {
 

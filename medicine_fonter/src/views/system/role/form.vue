@@ -76,7 +76,6 @@
                 })
             },
             doEdit() {
-                console.log(" do edit ...")
                 edit(this.form).then(res => {
                     this.resetForm()
                     this.$notify({

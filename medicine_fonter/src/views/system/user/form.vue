@@ -1,23 +1,28 @@
 <template>
   <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="570px">
     <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
-      <el-form-item label="用户名" prop="name">
+        <el-form-item label="账号" prop="username">
+            <el-input :disabled="!isAdd" v-model="form.username"/>
+        </el-form-item>
+        <el-form-item label="姓名" prop="name">
         <el-input v-model="form.name"/>
       </el-form-item>
-
+        <el-form-item label="状态" prop="enabled">
+            <el-radio v-for="item in enabledTypeOptions" :key="item.id" v-model="form.enabled" :label="item.key" >{{item.display_name}}</el-radio>
+        </el-form-item>
       <el-form-item label="电话" prop="phone">
         <el-input v-model.number="form.phone" />
       </el-form-item>
- <!--     <el-form-item label="状态" prop="enabled">
-        <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
-      </el-form-item>-->
+        <el-form-item label="性别" prop="enabled">
+            <el-radio v-for="item in sexOptions" :key="item.id" v-model="form.sex" :label="item.key" >{{item.display_name}}</el-radio>
+        </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="form.email" />
       </el-form-item>
-      <el-form-item label="部门">
+      <el-form-item required label="部门">
         <treeselect v-model="deptId" :options="depts" style="width: 178px" placeholder="选择部门" @select="selectFun" />
       </el-form-item>
-      <el-form-item label="岗位">
+      <el-form-item required label="岗位">
         <el-select v-model="jobId" style="width: 178px" placeholder="请先选择部门">
           <el-option
             v-for="(item, index) in jobs"
@@ -26,7 +31,7 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item style="margin-bottom: 0px;" label="角色">
+      <el-form-item required label="角色">
         <el-select v-model="roleIds" style="width: 450px;" multiple placeholder="请选择">
           <el-option
             v-for="(item, index) in roles"
@@ -36,6 +41,18 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
+       <el-form-item style="margin-bottom: 0px;" label="地址">
+           <el-input
+               type="textarea"
+               style="width: 450px;"
+               :rows="2"
+               maxlength="90"
+               show-word-limit
+               placeholder="请输入具体地址"
+               v-model="form.address"
+               clearable>
+           </el-input>
+       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -47,7 +64,10 @@
 <script>
 
   import { add, edit } from '@/api/user'
+  import { getDepts } from '@/api/dept'
   import { getAll, getLevel } from '@/api/role'
+  import { validateUsername } from '@/utils/validator'
+  import { getAllJob } from '@/api/job'
   import Treeselect from '@riophae/vue-treeselect'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   export default {
@@ -57,10 +77,6 @@
         type: Boolean,
         required: true
       },
-/*      dicts: {
-        type: Array,
-        required: true
-      }*/
     },
     data() {
       const validPhone = (rule, value, callback) => {
@@ -73,12 +89,24 @@
         }
       }
       return {
-        dialog: false, loading: false, form: { username: '', email: '', enabled: 'false', roles: [], job: { id: '' }, dept: { id: '' }, phone: null },
+        dialog: false, loading: false, form: { name: '', username: '', email: '', sex : '', enabled: false, address: '', roles: [], job: { id: '' }, dept: { id: '' }, phone: null },
         roleIds: [], roles: [], depts: [], deptId: null, jobId: null, jobs: [], level: 3,
+          sexOptions: [
+              { key: '0', display_name: '男' },
+              { key: '1', display_name: '女' }
+          ],
+          enabledTypeOptions: [
+              { key: true, display_name: '激活' },
+              { key: false, display_name: '锁定' }
+          ],
         rules: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
+            username: [
+                {required: true, trigger: 'blur', message: '用户名不能为空'},
+                {validator: validateUsername, trigger: 'blur'},
+            ],
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' },
+            { min: 2, max: 14, message: '长度在 2 到 14 个字符', trigger: 'blur' }
           ],
           email: [
             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
@@ -87,9 +115,7 @@
           phone: [
             { required: true, trigger: 'blur', validator: validPhone }
           ],
-          enabled: [
-            { required: true, message: '状态不能为空', trigger: 'blur' }
-          ]
+
         }
       }
     },
@@ -139,7 +165,7 @@
           this.resetForm()
           this.$notify({
             title: '添加成功',
-            message: '默认密码：123456',
+            message: '默认密码：abc123456',
             type: 'success',
             duration: 2500
           })
@@ -171,11 +197,11 @@
         this.deptId = null
         this.jobId = null
         this.roleIds = []
-        this.form = { username: '', email: '', enabled: 'false', roles: [], job: { id: '' }, dept: { id: '' }, phone: null }
+        this.form = { username: '', email: '', sex: '0', enabled: false, roles: [], job: { id: '' }, dept: { id: '' }, phone: null }
       },
       getRoles() {
         getAll().then(res => {
-          this.roles = res
+          this.roles = res.content
         }).catch(err => {
           console.log(err.response.data.message)
         })
@@ -188,7 +214,7 @@
         })
       },
       getDepts() {
-        getDepts({ enabled: true }).then(res => {
+        getDepts().then(res => {
           this.depts = res.content
         })
       },

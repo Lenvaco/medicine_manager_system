@@ -10,4 +10,5 @@ import lombok.Data;
 public class JobQuery {
 	private Long id;
 	private String name;
+	private Long deptId;
 }

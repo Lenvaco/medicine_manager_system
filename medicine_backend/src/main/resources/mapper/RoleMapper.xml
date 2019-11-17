@@ -33,9 +33,9 @@
         select
             r.*
         from
-            role as r
-        left join
             (select r_id from user_role where user_role.u_id = #{u_id} ) as ur
+        left join
+            role as r
         on
             ur.r_id = r.id
     </select>

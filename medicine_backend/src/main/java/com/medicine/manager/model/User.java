@@ -10,13 +10,17 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
@@ -28,6 +32,8 @@ import javax.validation.constraints.Pattern;
  * @since 2019-09-26
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("user")
@@ -37,6 +43,7 @@ public class User extends Model<User> {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "用户id")
+    @NotNull
     @TableId(value = "u_id", type = IdType.AUTO)
     private Long uId;
 
@@ -44,7 +51,6 @@ public class User extends Model<User> {
     @ApiModelProperty(value = "用户账号")
     private String username;
 
-    @NotBlank
     @ApiModelProperty(value = "密码")
     private String password;
 
@@ -52,7 +58,7 @@ public class User extends Model<User> {
     @ApiModelProperty(value = "姓名")
     private String name;
 
-    @NotBlank
+    @Pattern(regexp = "^((0\\d{2,3}-\\d{7,8})|(1[34578]\\d{9}))$", message = "电话格式错误")
     @ApiModelProperty(value = "电话号码")
     private String phone;
 
@@ -88,4 +94,18 @@ public class User extends Model<User> {
 
     private Long dId;
     private Long jId;
+
+    public User(@NotNull Long uId, @NotBlank String username, String password, @NotBlank String name, @NotBlank String phone, @NotBlank String sex, @NotBlank @Pattern(regexp = "([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}", message = "格式错误") String email, String address, Boolean enabled, Long dId, Long jId) {
+        this.uId = uId;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.phone = phone;
+        this.sex = sex;
+        this.email = email;
+        this.address = address;
+        this.enabled = enabled;
+        this.dId = dId;
+        this.jId = jId;
+    }
 }

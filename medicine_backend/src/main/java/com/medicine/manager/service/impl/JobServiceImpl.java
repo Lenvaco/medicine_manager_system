@@ -41,6 +41,9 @@ public class JobServiceImpl extends ServiceImpl<JobDao, Job> implements JobServi
 		if (jobQuery != null && jobQuery.getName() != null) {
 			queryWrapper.like("name", jobQuery.getName());
 		}
+		if(jobQuery.getDeptId() != null) {
+			queryWrapper.eq("d_id", jobQuery.getDeptId());
+		}
 		queryWrapper.orderByAsc("sort");
 		IPage<Job> page = this.page(new Page<>(pageInfo.getPage(), pageInfo.getSize()), queryWrapper);
 		List<Object> objectList = Lists.transform(page.getRecords(), new Function<Job, Object>() {

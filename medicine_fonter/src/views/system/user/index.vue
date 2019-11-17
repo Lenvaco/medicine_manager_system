@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
       <!--form 组件-->
-      <userForm ref="form" :is-add="isAdd" />
+      <userForm ref="form" :is-add="isAdd"/>
       <el-row :gutter="20">
           <!--部门数据-->
           <el-col :xs="9" :sm="6" :md="4" :lg="4" :xl="4">
@@ -15,7 +15,7 @@
         <!--工具栏-->
         <div class="head-container">
         <!-- 搜索 -->
-            <el-input v-model="query.blurry" clearable placeholder="输入名称或者邮箱搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+            <el-input v-model="query.blurry" clearable placeholder="输入用户名或者邮箱搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
             <el-select v-model="query.enabled" clearable placeholder="状态" class="filter-item" style="width: 90px" @change="toQuery">
                 <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
             </el-select>
@@ -57,7 +57,7 @@
             <af-table-column  label="状态" align="center">
                 <template slot-scope="scope">
                     <div v-for="item in enabledTypeOptions" :key="item.id">
-                        <el-tag v-if="scope.row.enabled.toString() === item.key" :type="scope.row.enabled ? '' : 'info'">{{ item.display_name }}</el-tag>
+                        <el-tag v-if="scope.row.enabled === item.key" :type="scope.row.enabled ? '' : 'info'">{{ item.display_name }}</el-tag>
                     </div>
                 </template>
             </af-table-column>
@@ -129,8 +129,8 @@
           { key: '1', display_name: '女' }
         ],
         enabledTypeOptions: [
-          { key: 'true', display_name: '激活' },
-          { key: 'false', display_name: '锁定' }
+          { key: true, display_name: '激活' },
+          { key: false, display_name: '锁定' }
         ]
       }
     },
@@ -157,6 +157,8 @@
         const blurry = query.blurry
         this.params = { page: this.page, size: this.size, deptId: this.deptId }
         if (blurry) { this.params['blurry'] = blurry }
+          const enabled = query.enabled
+          if (enabled !== '' && enabled !== null) { this.params['enabled'] = enabled }
         return true
       },
       subDelete(id) {
@@ -178,7 +180,7 @@
         })
       },
       getDeptDatas() {
-        const sort = 'id,desc'
+        const sort = 'id'
         const params = { sort: sort }
         if (this.deptName) { params['name'] = this.deptName }
         getDepts(params).then(res => {
@@ -223,13 +225,14 @@
         }))
       },
       edit(data) {
+          console.log(data)
         this.isAdd = false
         const _this = this.$refs.form
         _this.getRoles()
         _this.getDepts()
         _this.getRoleLevel()
         _this.roleIds = []
-        _this.form = { id: data.id, username: data.username,name: data.name, phone: data.phone, email: data.email, enabled: data.enabled.toString(), roles: [], dept: { id: data.dept.id }, job: { id: data.job.id }}
+        _this.form = { id: data.id, username: data.username,name: data.name, phone: data.phone, email: data.email, sex: data.sex, enabled: data.enabled, address: data.address, roles: [], dept: { id: data.dept.id }, job: { id: data.job.id }}
         data.roles.forEach(function(data, index) {
           _this.roleIds.push(data.id)
         })

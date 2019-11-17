@@ -4,12 +4,8 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.RoleMenu">
-        <id column="s_id" property="sId" />
         <result column="m_id" property="mId" />
-        <result column="c_id" property="cId" />
-        <result column="sale_count" property="saleCount" />
-        <result column="sale_price" property="salePrice" />
-        <result column="sale_time" property="saleTime" />
+        <result column="r_id" property="rId" />
     </resultMap>
 
 </mapper>

@@ -24,7 +24,6 @@ public class DeptController {
 	@GetMapping(value = "/dept")
 	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT','DEPT_ALL','DEPT_SELECT')")
 	public ResponseEntity getDepts( DeptQuery deptQuery){
-		System.err.println("dept query name is "+ deptQuery);
 		return new ResponseEntity(deptService.buildTree(deptService.queryAll(deptQuery)), HttpStatus.OK);
 	}
 	@PostMapping(value = "/dept")

@@ -28,17 +28,20 @@ import lombok.experimental.Accessors;
 @ApiModel(value="SaleRecord类", description="销售记录表")
 public class SaleRecord extends Model<SaleRecord> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1132455035730902134L;
 
     @ApiModelProperty(value = "销售记录id")
-    @TableId(value = "s_id", type = IdType.ID_WORKER)
-    private Long sId;
+    @TableId(value = "id", type = IdType.ID_WORKER)
+    private Long id;
 
     @ApiModelProperty(value = "药品id")
-    private Long mId;
+    private Long medicineId;
 
     @ApiModelProperty(value = "顾客id")
-    private Long cId;
+    private Long customerId;
+
+    @ApiModelProperty(value = "采购人员id")
+    private Long userId;
 
     @ApiModelProperty(value = "销售总数")
     private Integer saleCount;

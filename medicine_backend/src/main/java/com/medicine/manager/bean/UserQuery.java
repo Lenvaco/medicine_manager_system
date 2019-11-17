@@ -18,4 +18,6 @@ public class UserQuery implements Serializable {
 	private Long deptId;
 
 	private String blurry;
+
+	private Boolean enabled;
 }

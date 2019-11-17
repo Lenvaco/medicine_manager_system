@@ -1,6 +1,7 @@
 package com.medicine.manager.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.model.Medicine;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,5 +18,8 @@ import java.util.function.Predicate;
  * @since 2019-09-26
  */
 public interface MedicineService extends IService<Medicine> {
-
+	Object queryMedicine(String medicineName, Page page);
+	boolean createMedicine(Medicine medicine);
+	boolean updateMedicineById(Long id, Medicine medicine);
+	boolean removeMedicineById(Long id);
 }

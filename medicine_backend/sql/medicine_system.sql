@@ -72,20 +72,73 @@ CREATE TABLE IF NOT EXISTS role_menu (
 	key menu_id_index(menu_id)
 )ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '角色-菜单表';
 
+CREATE TABLE IF NOT EXISTS supplier(
+	id bigint unsigned primary key comment '供应商id',
+	name varchar(50) not null comment '供应商名称',
+	phone varchar(15) not null comment  '电话',
+	address varchar(100) not null comment '地址',
+	description varchar(150) comment '简介',
+	cooperation_time datetime not null comment '合作时间',
+	key supplier_name_index(name)
+)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '供应商表';
+
+create table if not exists  medicine (
+	id bigint unsigned  primary key comment '药品id',
+	name varchar(15) not null comment '药品名',
+	mode tinyint not null comment '0内服1外服',
+	efficacy varchar(100) not null comment '使用功效',
+	description varchar(150) not null comment '组成成分',
+	caution varchar(100) not null comment '注意事项',
+	inventory int unsigned not null comment '库存量',
+	product_time datetime not null comment '生产时间',
+	expire_time datetime not null comment '有效日期',
+	key medicine_name_index(name)
+)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '药品表';
+
+create table if not exists  customer (
+	id bigint unsigned primary key comment '顾客id',
+	name varchar(18) not null comment '姓名',
+	sex char(1) not null comment '性别',
+	age tinyint unsigned comment '年龄',
+	address varchar(100) comment '地址',
+	phone varchar(15) comment '电话',
+	symptom varchar(100) comment '症状',
+	remark varchar(150) comment '备注',
+	create_time datetime not null comment '创建时间',
+	key customer_name_index(name)
+)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '顾客表';
+
+create table if not exists  purchase_record (
+	id bigint unsigned  primary key comment '采购记录id',
+	medicine_id bigint unsigned not null comment '药品id',
+	supplier_id bigint unsigned not null comment '供应商id',
+	user_id bigint unsigned comment '采购人员id',
+	purchase_count bigint unsigned not null comment '采购数目',
+	purchase_price decimal(5,2) not null comment '采购单价',
+	create_time date not null comment '采购时间',
+	KEY sale_medicine_id_index(medicine_id),
+	KEY sale_supplier_id_index(supplier_id),
+	KEY sale_user_id_index(user_id)
+)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '采购记录表';
+
+CREATE TABLE IF NOT EXISTS `sale_record` (
+	id bigint unsigned PRIMARY KEY COMMENT  '销售记录id',
+	medicine_id bigint unsigned NOT NULL COMMENT '药品id',
+	customer_id bigint unsigned NOT NULL  COMMENT '顾客id',
+	user_id bigint unsigned comment '采购人员id',
+	sale_count int unsigned NOT NULL COMMENT '销售总数',
+	sale_price decimal(5,2) NOT NULL COMMENT  '销售价格',
+	sale_time datetime NOT NULL  COMMENT '销售时间',
+	KEY sale_medicine_id_index(medicine_id),
+	KEY sale_customer_id_index(customer_id),
+	KEY sale_user_id_index(user_id)
+)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT '销售记录表';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
 
 CREATE TABLE IF NOT EXISTS  `customer`(
