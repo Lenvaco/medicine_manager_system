@@ -8,19 +8,18 @@
         <result column="sale_count" property="saleCount" />
         <result column="sale_price" property="salePrice" />
         <result column="sale_time" property="saleTime" />
-        <association property="medicineSmallDTO" javaType="com.medicine.manager.bean.dto.MedicineSmallDTO">
-        <result column="medicine_id" property="id"/>
-        <result column="medicine_name" property="name" />
-    </association>
-        <association property="customerSmallDTO" javaType="com.medicine.manager.bean.dto.CustomerSmallDTO">
+        <association property="medicine" javaType="com.medicine.manager.bean.dto.MedicineSmallDTO">
+            <result column="medicine_id" property="id"/>
+            <result column="medicine_name" property="name" />
+        </association>
+        <association property="customer" javaType="com.medicine.manager.bean.dto.CustomerSmallDTO">
             <result column="customer_id" property="id"/>
             <result column="customer_name" property="name" />
         </association>
-        <association property="userSmallDTO" javaType="com.medicine.manager.bean.dto.UserSmallDTO">
+        <association property="user" javaType="com.medicine.manager.bean.dto.UserSmallDTO">
             <result column="user_id" property="id"/>
             <result column="user_name" property="name" />
         </association>
-
     </resultMap>
     <select id="queryByMap" resultMap="SalRecordDTO">
         SELECT
@@ -41,13 +40,13 @@
                AND sr.name LIKE concat(concat('%',#{name}),'%')
             </if>
             <if test="startTime != null">
-                AND sr.saleTime &gt;= #{startTime}
+                AND sr.sale_time &gt;= #{startTime}
             </if>
             <if test="endTime != null">
-                AND sr.saleTime &lt;= #{endTime}
+                AND sr.sale_time &lt;= #{endTime}
             </if>
         </where>
-        ORDER BY sr.saleTime DESC
+        ORDER BY sr.sale_time DESC
         LIMIT #{pageNo}, #{pageSize}
     </select>
     <select id="selectCountByMap" resultType="java.lang.Long">
@@ -60,10 +59,10 @@
                 AND name LIKE concat(concat('%',#{name}),'%')
             </if>
             <if test="startTime != null">
-                AND sr.saleTime &gt;= #{startTime}
+                AND sale_time &gt;= #{startTime}
             </if>
             <if test="endTime != null">
-                AND sr.saleTime &lt;= #{endTime}
+                AND sale_time &lt;= #{endTime}
             </if>
         </where>
     </select>

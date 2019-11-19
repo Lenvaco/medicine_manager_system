@@ -4,12 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.medicine.manager.model.Supplier">
-        <id column="s_id" property="sId" />
-        <result column="s_name" property="sName" />
-        <result column="s_phone" property="sPhone" />
-        <result column="s_address" property="sAddress" />
-        <result column="s_description" property="sDescription" />
-        <result column="gmt_create" property="gmtCreate" />
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="description" property="description" />
+        <result column="cooperation_time" property="cooperationTime" />
     </resultMap>
 
 </mapper>

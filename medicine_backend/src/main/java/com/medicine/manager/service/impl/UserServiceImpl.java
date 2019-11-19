@@ -151,6 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		updateWrapper.set("email", userDTO.getEmail());
 		updateWrapper.set("phone", userDTO.getPhone());
 		updateWrapper.set("name", userDTO.getName());
+		updateWrapper.set("enabled", userDTO.getEnabled());
 		updateWrapper.set("j_id", userDTO.getJob().getId());
 		updateWrapper.set("d_id", userDTO.getDept().getId());
 		if( userDTO.getAddress() != null) {

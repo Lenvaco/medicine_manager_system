@@ -1,14 +1,20 @@
 <template>
-    <el-dialog :visible.sync="dialog" :close-on-click-modal="false" :before-close="cancel" :title="isAdd? '新增角色' : '编辑角色'" append-to-body width="500px">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-            <el-form-item label="角色名称" prop="name">
-                <el-input v-model.trim="form.name" style="width: 370px;"/>
+    <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增销售记录' : '编辑销售记录'" width="500px">
+        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="105px">
+            <el-form-item label="药品编号" prop="medicine.id">
+                <el-input v-model.number="form.medicine.id"/>
             </el-form-item>
-            <el-form-item label="角色级别" prop="sort">
-                <el-input-number v-model.number="form.level" :min="1" controls-position="right" style="width: 370px;"/>
+            <el-form-item label="顾客编号" prop="customer.id">
+                <el-input v-model.number="form.customer.id" />
             </el-form-item>
-            <el-form-item label="描述信息">
-                <el-input v-model.trim="form.remark" style="width: 370px;" rows="5" type="textarea"/>
+            <el-form-item label="销售人员编号"  prop="user.id">
+                <el-input v-model.number="form.user.id"/>
+            </el-form-item>
+            <el-form-item label="数目" prop="saleCount">
+                <el-input v-model.number="form.saleCount"/>
+            </el-form-item>
+            <el-form-item label="单价" prop="salePrice">
+                <el-input v-model.number="form.salePrice"/>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -19,26 +25,33 @@
 </template>
 
 <script>
-    import { getDepts } from '@/api/dept'
-    import { add, edit } from '@/api/role'
+    import { add, edit } from '@/api/supplier'
     import Treeselect from '@riophae/vue-treeselect'
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     export default {
-        components: { Treeselect },
+        components: {Treeselect},
         props: {
             isAdd: {
                 type: Boolean,
                 required: true
-            }
+            },
         },
         data() {
             return {
-
                 loading: false, dialog: false,
-                form: { id: '', name: '', remark: '', level: 3 },
+                form: {id: '', medicine:{ id: '', name: ''}, customer:{ id: '', name: ''}, user:{ id: '', name: ''}, saleCount: null,  salePrice: null, saleTime: ''},
                 rules: {
-                    name: [
-                        { required: true, message: '请输入名称', trigger: 'blur' }
+                    'medicine.id' : [
+                        {required: true, message: '必须输入药品编号' , trigger: 'blur'}
+                    ],
+                    'customer.id' : [
+                        {required: true, message: '必须输入顾客编号' , trigger: 'blur'}
+                    ],
+                    'user.id' : [
+                        {required: true, message: '必须输入销售人员编号', trigger: 'blur'}
+                    ],
+                    saleCount : [
+                        {required: true, message: '必须输入销售数目', trigger: 'blur'}
                     ]
                 }
             }
@@ -50,15 +63,14 @@
             doSubmit() {
                 this.$refs['form'].validate((valid) => {
                     if (valid) {
-                        this.loading = true
                         if (this.isAdd) {
                             this.doAdd()
                         } else this.doEdit()
+
                     } else {
                         return false
                     }
                 })
-
             },
             doAdd() {
                 add(this.form).then(res => {
@@ -93,12 +105,7 @@
             resetForm() {
                 this.dialog = false
                 this.$refs['form'].resetFields()
-                this.form = { name: '', remark: '', level: 3 }
-            },
-            getDepts() {
-                getDepts({ enabled: true }).then(res => {
-                    this.depts = res.content
-                })
+                this.form = {id: '', medicine:{ id: '', name: ''}, customer:{ id: '', name: ''}, user:{ id: '', name: ''}, saleCount: null,  salePrice: null, saleTime: ''}
             },
         }
     }

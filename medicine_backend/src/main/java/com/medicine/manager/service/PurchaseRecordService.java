@@ -1,5 +1,7 @@
 package com.medicine.manager.service;
 
+import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.model.PurchaseRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface PurchaseRecordService extends IService<PurchaseRecord> {
 
+	Object queryPurchaseRecord(RecordQuery recordQuery, PageInfo pageInfo);
+
+	boolean createPurchase(PurchaseRecord purchaseRecord);
+
+	boolean updatePurchaseById(Long id, PurchaseRecord purchaseRecord);
+
+	boolean removePurchaseById(Long id);
 }

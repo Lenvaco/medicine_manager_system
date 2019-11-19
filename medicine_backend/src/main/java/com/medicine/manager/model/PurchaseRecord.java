@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,6 +22,7 @@ import lombok.experimental.Accessors;
  * @author lenvaco
  * @since 2019-09-26
  */
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -41,7 +43,7 @@ public class PurchaseRecord extends Model<PurchaseRecord> {
     private Long supplierId;
 
     @ApiModelProperty(value = "采购人员id")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty(value = "采购数目")
     private Integer purchaseCount;
@@ -51,6 +53,6 @@ public class PurchaseRecord extends Model<PurchaseRecord> {
     private BigDecimal purchasePrice;
 
     @ApiModelProperty(value = "采购时间")
-    private Date createTime;
+    private Date purchaseTime;
 
 }

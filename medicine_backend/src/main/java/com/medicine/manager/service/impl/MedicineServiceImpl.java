@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.medicine.manager.bean.MedicineQuery;
 import com.medicine.manager.dao.MedicineDao;
 import com.medicine.manager.model.Medicine;
 import com.medicine.manager.service.MedicineService;
@@ -31,10 +32,16 @@ import java.util.List;
 public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> implements MedicineService {
 
 	@Override
-	public Object queryMedicine(String medicineName, Page page) {
+	public Object queryMedicine(MedicineQuery medicineQuery, Page page) {
+
 		QueryWrapper<Medicine> queryWrapper = new QueryWrapper<>();
-		if(!StrUtil.isBlank(medicineName)) {
-			queryWrapper.like("name", medicineName);
+		if(medicineQuery != null) {
+			if (!StrUtil.isBlank(medicineQuery.getName())) {
+				queryWrapper.like("name", medicineQuery.getName());
+			}
+			if(medicineQuery.getProductDate() != null) {
+				queryWrapper.ge("product_time", medicineQuery.getProductDate());
+			}
 		}
 		IPage iPage = page(page, queryWrapper);
 		return new HashMap(){{

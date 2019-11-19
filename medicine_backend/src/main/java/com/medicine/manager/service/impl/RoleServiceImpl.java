@@ -1,6 +1,5 @@
 package com.medicine.manager.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,15 +8,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.medicine.manager.bean.PageInfo;
-import com.medicine.manager.bean.dto.PermissionDTO;
 import com.medicine.manager.bean.dto.RoleDTO;
-import com.medicine.manager.dao.*;
+import com.medicine.manager.dao.MenuDao;
+import com.medicine.manager.dao.PermissionDao;
+import com.medicine.manager.dao.RoleDao;
 import com.medicine.manager.exception.EntityExistException;
 import com.medicine.manager.exception.EntityNotFoundException;
 import com.medicine.manager.model.*;
 import com.medicine.manager.service.RoleMenuService;
 import com.medicine.manager.service.RolePermissionService;
 import com.medicine.manager.service.RoleService;
+import com.medicine.manager.service.UserRoleService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 	private RoleMenuService roleMenuService;
 	@Autowired
 	private RolePermissionService rolePermissionService;
+	@Autowired
+	private UserRoleService userRoleService;
 
 	@Override
 	public Role findByRoleId(Long id) {
@@ -168,5 +171,17 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 			roleMenuService.saveBatch(roleMenuList);
 		}
 		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean removeRoleById(Long roleId) {
+		UpdateWrapper<RoleMenu> roleMenuUpdateWrapper = new UpdateWrapper<>();
+		roleMenuUpdateWrapper.eq("r_id", roleId);
+		UpdateWrapper<RolePermission>  rolePermissionUpdateWrapper = new UpdateWrapper<>();
+		rolePermissionUpdateWrapper.eq("r_id", roleId);
+		UpdateWrapper<UserRole> userRoleUpdateWrapper = new UpdateWrapper<>();
+		userRoleUpdateWrapper.eq("r_id", roleId);
+		return removeById(roleId) && roleMenuService.remove(roleMenuUpdateWrapper) && rolePermissionService.remove(rolePermissionUpdateWrapper) && userRoleService.remove(userRoleUpdateWrapper);
 	}
 }

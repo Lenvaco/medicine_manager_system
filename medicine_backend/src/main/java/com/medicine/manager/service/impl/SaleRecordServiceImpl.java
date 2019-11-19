@@ -1,15 +1,22 @@
 package com.medicine.manager.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.SaleRecordDTO;
+import com.medicine.manager.model.Customer;
 import com.medicine.manager.model.SaleRecord;
 import com.medicine.manager.dao.SaleRecordDao;
+import com.medicine.manager.model.User;
+import com.medicine.manager.service.CustomerService;
+import com.medicine.manager.service.MedicineService;
 import com.medicine.manager.service.SaleRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.medicine.manager.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,7 +42,12 @@ import java.util.Map;
 public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord> implements SaleRecordService {
 
 	@Autowired
-	private SaleRecordDao saleRecordDao;
+	private UserService userService;
+	@Autowired
+	private MedicineService medicineService;
+	@Autowired
+	private CustomerService customerService;
+
 	@Override
 	public Object querySaleRecord(RecordQuery recordQuery, PageInfo pageInfo) {
 		Map<String, Object> queryMap = new HashMap<>();
@@ -50,8 +62,8 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 		}
 		queryMap.put("pageNo", pageInfo.getPage());
 		queryMap.put("pageSize", pageInfo.getSize());
-		List<SaleRecordDTO> saleRecordDTOList = saleRecordDao.queryByMap(queryMap);
-		Long totalRecord = saleRecordDao.selectCountByMap(queryMap);
+		List<SaleRecordDTO> saleRecordDTOList = this.baseMapper.queryByMap(queryMap);
+		Long totalRecord = this.baseMapper.selectCountByMap(queryMap);
 		saleRecordDTOList.forEach(saleRecordDTO -> {
 			saleRecordDTO.setSumPrice(saleRecordDTO.getSalePrice().multiply(new BigDecimal(saleRecordDTO.getSaleCount())));
 		});
@@ -64,6 +76,9 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean create(SaleRecord saleRecord) {
+		if (!isSaleRecordOk(saleRecord)) {
+			throw  new IllegalArgumentException("输入的编号错误");
+		}
 		saleRecord.setSaleTime(new Date());
 		return save(saleRecord);
 	}
@@ -71,6 +86,9 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateSaleRecord(Long id,SaleRecord saleRecord) {
+		if (!isSaleRecordOk(saleRecord)) {
+			throw  new IllegalArgumentException("输入的编号错误");
+		}
 		UpdateWrapper<SaleRecord> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
 		return update(saleRecord, updateWrapper);
@@ -81,5 +99,9 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 	@Transactional(rollbackFor = Exception.class)
 	public boolean deleteSaleRecordById(Long id) {
 		return removeById(id);
+	}
+
+	public boolean isSaleRecordOk(SaleRecord saleRecord) {
+		return  customerService.getById(saleRecord.getCustomerId()) != null && medicineService.getById(saleRecord.getMedicineId()) != null && userService.getById(saleRecord.getUserId()) != null;
 	}
 }

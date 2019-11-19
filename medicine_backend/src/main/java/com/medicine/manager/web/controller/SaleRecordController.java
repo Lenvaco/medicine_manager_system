@@ -3,12 +3,14 @@ package com.medicine.manager.web.controller;
 
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
+import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.model.SaleRecord;
 import com.medicine.manager.service.SaleRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -38,19 +40,19 @@ public class SaleRecordController {
 
 	@PostMapping("/sale")
 	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_CREATE')")
-	public ResponseEntity createSaleRecord(SaleRecord saleRecord){
-		saleRecordService.create(saleRecord);
+	public ResponseEntity createSaleRecord(@Validated SaleRecordDTO saleRecordDTO){
+		saleRecordService.create(saleRecordDTO.toSaleRecord());
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/sale/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_UPDATE')")
-	public ResponseEntity updateSaleRecord(@PathVariable Long id, SaleRecord saleRecord){
-		saleRecordService.updateSaleRecord(id, saleRecord);
+	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_EDIT')")
+	public ResponseEntity updateSaleRecord(@PathVariable Long id, @Validated SaleRecordDTO saleRecordDTO){
+		saleRecordService.updateSaleRecord(id, saleRecordDTO.toSaleRecord());
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@DeleteMapping("/sale/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_UPDATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_DELETE')")
 	public ResponseEntity deleteSaleRecord(@PathVariable Long id){
 		saleRecordService.deleteSaleRecordById(id);
 		return new ResponseEntity(HttpStatus.OK);

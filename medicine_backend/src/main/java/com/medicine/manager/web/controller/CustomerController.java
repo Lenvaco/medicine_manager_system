@@ -41,7 +41,7 @@ public class CustomerController {
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	@PutMapping(value = "/customer/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_UPDATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_EDIT')")
 	public ResponseEntity updateCustomer(@PathVariable @NotNull Long id, Customer customer){
 		customerService.updateCustomer(id, customer);
 		return new ResponseEntity(HttpStatus.OK);

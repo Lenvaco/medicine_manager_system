@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Data
 public class MedicineSmallDTO implements Serializable {
 	private static final long serialVersionUID = -4854176566090341354L;
+	@NotNull
 	private Long id;
 	private Long name;
 }

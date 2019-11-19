@@ -2,7 +2,7 @@
     <el-dialog :append-to-body="true" :close-on-click-modal="false" :before-close="cancel" :visible.sync="dialog" :title="isAdd ? '新增岗位' : '编辑岗位'" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" style="width: 370px;"/>
+                <el-input v-model.trim="form.name" style="width: 370px;"/>
             </el-form-item>
             <el-form-item label="排序" prop="sort">
                 <el-input-number v-model.number="form.sort" :min="0" :max="999" controls-position="right" style="width: 370px;"/>

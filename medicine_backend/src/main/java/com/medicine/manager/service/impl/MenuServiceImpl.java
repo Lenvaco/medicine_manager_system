@@ -40,7 +40,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	@Autowired
 	private MenuDao menuDao;
 
-	private static final String PARENT_ID = "1";
+	private static final String ROOT_ID = "0";
 
 	@Override
 //	@Cacheable(key = "#p0")
@@ -85,7 +85,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 		menuDTOList = menuDTOList.stream().sorted(Comparator.comparing(MenuDTO::getSort)).collect(Collectors.toList());
 		List<MenuDTO> trees = new ArrayList<>();
 		for (MenuDTO menuDTO: menuDTOList) {
-			if (PARENT_ID.equals(menuDTO.getId().toString())){
+			if (ROOT_ID.equals(menuDTO.getParentId().toString())){
 				trees.add(menuDTO);
 			}
 			for (MenuDTO mdt : menuDTOList){

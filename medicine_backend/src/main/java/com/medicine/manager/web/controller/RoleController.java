@@ -105,7 +105,7 @@ public class RoleController {
 	@DeleteMapping(value = "/roles/{roleId}")
 	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_DELETE')")
 	public ResponseEntity delete(@PathVariable Long roleId){
-		roleService.removeById(roleId);
+		roleService.removeRoleById(roleId);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 

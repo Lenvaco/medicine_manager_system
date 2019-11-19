@@ -32,8 +32,8 @@ public class SupplierController {
 
 	@GetMapping(value = "/supplier")
 	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_SELECT')")
-	public ResponseEntity getSuppliers(String supplierName, PageInfo pageInfo){
-		return new ResponseEntity(supplierService.querySuppliers(supplierName, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
+	public ResponseEntity getSuppliers(String name, PageInfo pageInfo){
+		return new ResponseEntity(supplierService.querySuppliers(name, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/supplier")
@@ -44,7 +44,7 @@ public class SupplierController {
 	}
 
 	@PutMapping("/supplier/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_UPDATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_EDIT')")
 	public ResponseEntity updateSupplier(@PathVariable Long id, @Validated Supplier supplier){
 		supplierService.updateSupplier(id, supplier);
 		return new ResponseEntity(HttpStatus.CREATED);

@@ -5,7 +5,7 @@
             <el-input :disabled="!isAdd" v-model="form.username"/>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-        <el-input v-model="form.name"/>
+        <el-input v-model.trim="form.name"/>
       </el-form-item>
         <el-form-item label="状态" prop="enabled">
             <el-radio v-for="item in enabledTypeOptions" :key="item.id" v-model="form.enabled" :label="item.key" >{{item.display_name}}</el-radio>
@@ -89,7 +89,7 @@
         }
       }
       return {
-        dialog: false, loading: false, form: { name: '', username: '', email: '', sex : '', enabled: false, address: '', roles: [], job: { id: '' }, dept: { id: '' }, phone: null },
+        dialog: false, loading: false, form: { name: '', username: '', email: '', sex : '0', enabled: false, address: '', roles: [], job: { id: '' }, dept: { id: '' }, phone: null },
         roleIds: [], roles: [], depts: [], deptId: null, jobId: null, jobs: [], level: 3,
           sexOptions: [
               { key: '0', display_name: '男' },

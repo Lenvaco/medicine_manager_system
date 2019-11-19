@@ -32,4 +32,5 @@ public interface RoleService extends IService<Role> {
 
 	boolean updateMenu(Role role);
 
+	boolean removeRoleById(Long roleId);
 }

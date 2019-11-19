@@ -52,7 +52,7 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/users")
-	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_UPDATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_EDIT')")
 	public ResponseEntity updateUser(@Validated @RequestBody UserDTO userDto){
 		userService.updateUser(userDto);
 		return new ResponseEntity(HttpStatus.OK);

@@ -17,5 +17,6 @@ import java.util.Map;
  */
 public interface SaleRecordDao extends BaseMapper<SaleRecord> {
 	List<SaleRecordDTO> queryByMap(Map queryMap);
+
 	Long selectCountByMap(Map queryMap);
 }
