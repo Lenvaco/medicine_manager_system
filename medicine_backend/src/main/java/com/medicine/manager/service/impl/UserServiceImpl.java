@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.bean.dto.RoleSmallDTO;
 import com.medicine.manager.bean.dto.UserDTO;
+import com.medicine.manager.common.utils.FileUtil;
 import com.medicine.manager.common.utils.ValidationUtil;
 import com.medicine.manager.dao.DeptDao;
 import com.medicine.manager.dao.JobDao;
@@ -16,9 +17,11 @@ import com.medicine.manager.dao.UserDao;
 import com.medicine.manager.exception.EntityExistException;
 import com.medicine.manager.exception.EntityNotFoundException;
 import com.medicine.manager.model.Role;
+import com.medicine.manager.model.SaleRecord;
 import com.medicine.manager.model.User;
 import com.medicine.manager.model.UserRole;
 import com.medicine.manager.service.RoleService;
+import com.medicine.manager.service.SaleRecordService;
 import com.medicine.manager.service.UserRoleService;
 import com.medicine.manager.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +32,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,6 +62,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 	private UserRoleService userRoleService;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private SaleRecordService saleRecordService;
 	private static final String DEFAULT_PASSWORD = "abc123456";
 	@Override
 	public UserDTO findByUsername(String username) {
@@ -78,7 +82,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 			return new UserDTO(user);
 		}
 	}
-
 	@Override
 	public Object queryAllUsers(UserQuery userQuery, IPage iPage) {
 		QueryWrapper<User>userQueryWrapper = new QueryWrapper();
@@ -184,10 +187,66 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void deleteUserById(Long id) {
-		UpdateWrapper<UserRole>updateWrapper = new UpdateWrapper();
-		updateWrapper.eq("u_id", id);
-		userRoleService.remove(updateWrapper);
-		removeById(id);
+	public boolean deleteUserById(Long id) {
+		UpdateWrapper<UserRole>userRoleUpdateWrapper = new UpdateWrapper();
+		userRoleUpdateWrapper.eq("u_id", id);
+		userRoleService.remove(userRoleUpdateWrapper);
+		UpdateWrapper<SaleRecord> saleRecordUpdateWrapper = new UpdateWrapper<>();
+		saleRecordUpdateWrapper.eq("user_id", id);
+		saleRecordUpdateWrapper.set("user_id", null);
+		return  removeById(id) && saleRecordService.update(saleRecordUpdateWrapper);
+	}
+
+	@Override
+	public void download(List<UserDTO> userDTOS, HttpServletResponse response)throws IOException {
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (UserDTO userDTO : userDTOS) {
+//			List roles = userDTO.getRoles().stream().map(RoleSmallDTO::getName).collect(Collectors.toList());
+			Map<String,Object> map = new LinkedHashMap<>();
+			map.put("编号", userDTO.getId());
+			map.put("账号", userDTO.getUsername());
+			map.put("姓名", userDTO.getName());
+			map.put("性别", "1".equals(userDTO.getSex())? "女" : "男");
+			map.put("电话号码", userDTO.getPhone());
+			map.put("邮箱", userDTO.getEmail());
+			map.put("地址", userDTO.getAddress());
+			map.put("状态", userDTO.getEnabled() ? "启用" : "禁用");
+//			map.put("角色", roles);
+			map.put("部门", userDTO.getDept().getName());
+			map.put("岗位", userDTO.getJob().getName());
+//			map.put("最后修改密码的时间", userDTO.getModifyTime());
+			map.put("创建日期", userDTO.getCreateTime());
+			list.add(map);
+		}
+		FileUtil.downloadExcel(list, response);
+	}
+
+	@Override
+	public List<UserDTO> queryAllUsers(UserQuery userQuery) {
+		QueryWrapper<User>userQueryWrapper = new QueryWrapper();
+		if(userQuery.getId() != null) {
+			userQueryWrapper.eq("u_id", userQuery.getId());
+		}
+		if(userQuery.getBlurry() != null) {
+			userQueryWrapper.or(wrapper -> wrapper.like("name", userQuery.getBlurry()).or().like("email", userQuery.getBlurry()));
+		}
+		if(userQuery.getDeptId() != null) {
+			userQueryWrapper.eq("d_id", userQuery.getDeptId());
+		}
+		if(userQuery.getEnabled() != null) {
+			userQueryWrapper.eq("enabled", userQuery.getEnabled());
+
+		}
+		return Lists.transform(list(userQueryWrapper), new Function<User, UserDTO>() {
+			@Nullable
+			@Override
+			public UserDTO apply(@Nullable User user) {
+				user.setDept(deptDao.findById(user.getDId()));
+				user.setJob(jobDao.findById(user.getJId()));
+				UserDTO userDTO = new UserDTO(user);
+				userDTO.setRoles(roleService.findByUserId(user.getUId()).stream().map(role -> new RoleSmallDTO(role)).collect(Collectors.toSet()));
+				return userDTO;
+			}
+		});
 	}
 }

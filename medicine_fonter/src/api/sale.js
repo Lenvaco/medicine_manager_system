@@ -7,7 +7,7 @@ export function add(data) {
         data
     })
 }
-export function downloadSupplier() {
+export function downloadSaleRecord() {
     return request({
         url: 'api/sale/download',
         method: 'get',
@@ -16,7 +16,7 @@ export function downloadSupplier() {
 }
 export function edit(data) {
     return request({
-        url: 'api/sale',
+        url: 'api/sale/' + data.id,
         method: 'put',
         data
     })

@@ -12,6 +12,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p>
  * 顾客表
@@ -34,17 +37,18 @@ public class Customer extends Model<Customer> {
     private Long id;
 
     @ApiModelProperty(value = "姓名")
+    @NotBlank
     private String name;
-
+    @NotBlank
     @ApiModelProperty(value = "性别")
     private String sex;
-
+    @NotNull
     @ApiModelProperty(value = "年龄")
     private Integer age;
 
     @ApiModelProperty(value = "地址")
     private String address;
-
+    @NotBlank
     @ApiModelProperty(value = "电话")
     private String phone;
 

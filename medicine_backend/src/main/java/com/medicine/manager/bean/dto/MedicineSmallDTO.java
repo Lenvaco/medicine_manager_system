@@ -11,10 +11,13 @@ import java.io.Serializable;
  * @author lenvaco
  * @date 2019/11/17 14:42
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class MedicineSmallDTO implements Serializable {
 	private static final long serialVersionUID = -4854176566090341354L;
 	@NotNull
 	private Long id;
-	private Long name;
+	private String name;
+	private Long saleCount;
 }

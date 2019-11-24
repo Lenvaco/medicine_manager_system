@@ -14,5 +14,5 @@ public class SupplierSmallDTO implements Serializable {
 	private static final long serialVersionUID = -6188541573214250464L;
 	@NotNull
 	private Long id;
-	private Long name;
+	private String name;
 }

@@ -15,8 +15,9 @@ export function downloadSupplier() {
     })
 }
 export function edit(data) {
+
     return request({
-        url: 'api/supplier',
+        url: 'api/supplier/' + data.id,
         method: 'put',
         data
     })

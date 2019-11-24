@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.PurchaseRecordDTO;
+import com.medicine.manager.common.utils.FileUtil;
 import com.medicine.manager.dao.PurchaseRecordDao;
 import com.medicine.manager.model.PurchaseRecord;
 import com.medicine.manager.service.MedicineService;
@@ -18,11 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -43,6 +44,21 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 	private MedicineService medicineService;
 	@Autowired
 	private SupplierService supplierService;
+
+	@Override
+	public List<PurchaseRecordDTO> queryPurchaseRecord(RecordQuery recordQuery) {
+		Map<String, Object> queryMap = new HashMap<>();
+		if (!StrUtil.isEmpty(recordQuery.getName())) {
+			queryMap.put("name", recordQuery.getName());
+		}
+		if (recordQuery.getStartTime() != null) {
+			queryMap.put("startTime", recordQuery.getStartTime());
+		}
+		if (recordQuery.getEndTime() != null) {
+			queryMap.put("endTime", recordQuery.getEndTime());
+		}
+		return this.baseMapper.queryByMap(queryMap);
+	}
 
 	@Override
 	public Object queryPurchaseRecord(RecordQuery recordQuery, PageInfo pageInfo) {
@@ -72,19 +88,19 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean createPurchase(PurchaseRecord purchaseRecord) {
-		if (isPurchaseRecordOk(purchaseRecord)) {
+		if (!isPurchaseRecordOk(purchaseRecord)) {
 			throw new IllegalArgumentException("输入的编号错误");
 		}
-		purchaseRecord.setPurchaseTime(new Date());
-		return false;
+		return  medicineService.increInventory(purchaseRecord.getMedicineId(), (long)purchaseRecord.getPurchaseCount()) && save(purchaseRecord);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updatePurchaseById(Long id, PurchaseRecord purchaseRecord) {
-		if (isPurchaseRecordOk(purchaseRecord)) {
+		if (!isPurchaseRecordOk(purchaseRecord)) {
 			throw new IllegalArgumentException("输入的编号错误");
 		}
+		purchaseRecord.setPurchaseTime(null);
 		UpdateWrapper<PurchaseRecord> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
 		return update(purchaseRecord, updateWrapper);
@@ -94,6 +110,27 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removePurchaseById(Long id) {
 		return removeById(id);
+	}
+
+	@Override
+	public void download(List<PurchaseRecordDTO> purchaseRecordDTOS, HttpServletResponse response) throws IOException {
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (PurchaseRecordDTO purchaseRecordDTO : purchaseRecordDTOS) {
+			Map<String,Object> map = new LinkedHashMap<>();
+			map.put("采购记录编号", purchaseRecordDTO.getId());
+			map.put("药品编号", purchaseRecordDTO.getMedicine() != null? purchaseRecordDTO.getMedicine().getId() : "");
+			map.put("药品名", purchaseRecordDTO.getMedicine() != null? purchaseRecordDTO.getMedicine().getName() : "");
+			map.put("供应商编号", purchaseRecordDTO.getSupplier() != null? purchaseRecordDTO.getSupplier().getId() : "");
+			map.put("供应商名", purchaseRecordDTO.getSupplier() != null? purchaseRecordDTO.getSupplier().getName() : "");
+			map.put("采购人员编号", purchaseRecordDTO.getUser() != null? purchaseRecordDTO.getUser().getId() : "");
+			map.put("采购人员姓名", purchaseRecordDTO.getUser() != null? purchaseRecordDTO.getUser().getName() : "");
+			map.put("采购总数", purchaseRecordDTO.getPurchaseCount());
+			map.put("采购价格", purchaseRecordDTO.getPurchasePrice());
+			map.put("总金额", purchaseRecordDTO.getPurchasePrice().multiply(new BigDecimal(purchaseRecordDTO.getPurchaseCount())));
+			map.put("采购时间", purchaseRecordDTO.getPurchaseTime());
+			list.add(map);
+		}
+		FileUtil.downloadExcel(list, response);
 	}
 
 	public boolean isPurchaseRecordOk(PurchaseRecord purchaseRecord) {

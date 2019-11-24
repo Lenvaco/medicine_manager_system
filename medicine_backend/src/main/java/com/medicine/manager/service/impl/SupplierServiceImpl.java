@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.medicine.manager.common.utils.FileUtil;
 import com.medicine.manager.model.Supplier;
 import com.medicine.manager.dao.SupplierDao;
 import com.medicine.manager.service.SupplierService;
@@ -15,9 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * <p>
@@ -31,6 +32,15 @@ import java.util.Map;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class SupplierServiceImpl extends ServiceImpl<SupplierDao, Supplier> implements SupplierService {
+
+	@Override
+	public List<Supplier> querySuppliers(String name) {
+		QueryWrapper<Supplier> queryWrapper = new QueryWrapper<>();
+		if (!StrUtil.isBlank(name)) {
+			queryWrapper.like("name", name);
+		}
+		return list(queryWrapper);
+	}
 
 	@Override
 	public Object querySuppliers(String supplierName, Page page) {
@@ -62,5 +72,21 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierDao, Supplier> impl
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removeSupplierById(Long id) {
 		return removeById(id);
+	}
+
+	@Override
+	public void download(List<Supplier> suppliers, HttpServletResponse response) throws IOException {
+		List<Map<String, Object>> list = new ArrayList<>();
+		for (Supplier supplier : suppliers) {
+			Map<String,Object> map = new LinkedHashMap<>();
+			map.put("供应商编号", supplier.getId());
+			map.put("供应商名称", supplier.getName());
+			map.put("电话", supplier.getPhone());
+			map.put("地址", supplier.getAddress());
+			map.put("简介", supplier.getDescription());
+			map.put("合作时间", supplier.getCooperationTime());
+			list.add(map);
+		}
+		FileUtil.downloadExcel(list, response);
 	}
 }

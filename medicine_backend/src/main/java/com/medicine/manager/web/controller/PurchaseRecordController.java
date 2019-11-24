@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * <p>
  * 采购记录表 前端控制器
@@ -37,20 +40,25 @@ public class PurchaseRecordController {
 	}
 	@PostMapping("purchase")
 	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_CREATE')")
-	public ResponseEntity createPurchaseRecord(@Validated PurchaseRecordDTO purchaseRecordDTO){
+	public ResponseEntity createPurchaseRecord(@RequestBody @Validated PurchaseRecordDTO purchaseRecordDTO){
 		purchaseRecordService.createPurchase(purchaseRecordDTO.toPurchaseRecord());
 		return new ResponseEntity( HttpStatus.CREATED);
 	}
 	@PutMapping("purchase/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_EDIT')")
-	public ResponseEntity updatePurchaseRecord(@PathVariable Long id, @Validated PurchaseRecordDTO purchaseRecordDTO){
+	public ResponseEntity updatePurchaseRecord(@PathVariable Long id, @RequestBody @Validated PurchaseRecordDTO purchaseRecordDTO){
 		purchaseRecordService.updatePurchaseById(id, purchaseRecordDTO.toPurchaseRecord());
 		return new ResponseEntity(HttpStatus.OK);
 	}
-	@GetMapping("purchase/{id}")
+	@DeleteMapping("purchase/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_DELETE')")
 	public ResponseEntity deletePurchaseRecord(@PathVariable Long id){
 		purchaseRecordService.removePurchaseById(id);
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	@GetMapping("purchase/download")
+	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_SELECT')")
+	public void download(RecordQuery recordQuery, HttpServletResponse response) throws IOException {
+		purchaseRecordService.download(purchaseRecordService.queryPurchaseRecord(recordQuery), response);
 	}
 }

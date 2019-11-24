@@ -14,5 +14,12 @@
         <result column="product_time" property="productTime" />
         <result column="expire_time" property="expireTime"/>
     </resultMap>
-
+    <update id="increInventory">
+        UPDATE
+          medicine
+        SET
+          inventory = inventory + #{inventory}
+        WHERE
+          id = #{id}
+    </update>
 </mapper>

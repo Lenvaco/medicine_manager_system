@@ -11,8 +11,8 @@
                 class="el-range-editor--small demonstration"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 style="height: 30.5px;"
-                start-placeholder="起始日期"
-                end-placeholder="结束日期"/>
+                start-placeholder="销售起始时间"
+                end-placeholder="销售结束时间"/>
             <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
             <!-- 新增 -->
             <div v-permission="['ADMIN','SALE_ALL','SALE_CREATE']" style="display: inline-block;margin: 0px 2px;">
@@ -39,7 +39,7 @@
         <saleForm ref="form" :is-add="isAdd"/>
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-            <el-table-column prop="id" label="销售编号"/>
+            <el-table-column prop="id" width="160px" label="销售编号"/>
             <el-table-column label="药品名" >
                 <template slot-scope="scope">
                     <span>{{scope.row.medicine.name}}</span>
@@ -58,7 +58,7 @@
             <el-table-column prop="saleCount" label="数目" />
             <el-table-column prop="salePrice" label="单价" />
             <el-table-column prop="sumPrice" label="总价" />
-            <el-table-column label="销售时间">
+            <el-table-column :show-overflow-tooltip="true" label="销售时间">
                 <template slot-scope="scope">
                     <span>{{ parseTime(scope.row.saleTime) }}</span>
                 </template>
@@ -95,8 +95,8 @@
 <script>
     import checkPermission from '@/utils/permission'
     import initData from '@/mixin/initData'
-    import { del, downloadSupplier } from '@/api/supplier'
-    import { parseTime } from '@/utils/index'
+    import { del, downloadSaleRecord } from '@/api/sale'
+    import { parseTime, downloadFile } from '@/utils/index'
     import saleForm from './form'
     export default {
         name: 'Sale',
@@ -173,14 +173,14 @@
                     saleCount: data.saleCount,
                     salePrice: data.salePrice,
                     sumPrice: data.sumPrice,
-                    saleTime: data.saleTime
+                    saleTime: parseTime(data.saleTime)
                 }
                 _this.dialog = true
             },
             // 导出
             download() {
                 this.downloadLoading = true
-                downloadSupplier().then(result => {
+                downloadSaleRecord().then(result => {
                     downloadFile(result, '销售记录', 'xlsx')
                     this.downloadLoading = false
                 }).catch(() => {

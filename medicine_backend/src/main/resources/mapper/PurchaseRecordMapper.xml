@@ -8,15 +8,15 @@
         <result column="purchase_count" property="purchaseCount" />
         <result column="purchase_price" property="purchasePrice" />
         <result column="purchase_time" property="purchaseTime" />
-        <association property="medicineSmallDTO" javaType="com.medicine.manager.bean.dto.MedicineSmallDTO">
+        <association property="medicine" javaType="com.medicine.manager.bean.dto.MedicineSmallDTO">
             <result column="medicine_id" property="id"/>
             <result column="medicine_name" property="name" />
         </association>
-        <association property="supplierSmallDTO" javaType="com.medicine.manager.bean.dto.SupplierSmallDTO">
+        <association property="supplier" javaType="com.medicine.manager.bean.dto.SupplierSmallDTO">
             <result column="supplier_id" property="id"/>
             <result column="supplier_name" property="name" />
         </association>
-        <association property="userSmallDTO" javaType="com.medicine.manager.bean.dto.UserSmallDTO">
+        <association property="user" javaType="com.medicine.manager.bean.dto.UserSmallDTO">
             <result column="user_id" property="id"/>
             <result column="user_name" property="name" />
         </association>
@@ -37,26 +37,7 @@
         ON pr.user_id = u.u_id
         <where>
             <if test="name != null">
-                AND pr.name LIKE concat(concat('%',#{name}),'%')
-            </if>
-            <if test="startTime != null">
-                AND pr.purchase_time &gt;= #{startTime}
-            </if>
-            <if test="endTime != null">
-                AND pr.purchase_time &lt;= #{endTime}
-            </if>
-        </where>
-        ORDER BY pr.purchase_time DESC
-        LIMIT #{pageNo}, #{pageSize}
-    </select>
-    <select id="selectCountByMap" resultType="java.lang.Long">
-        SELECT
-          COUNT(id)
-        FROM
-          purchase_record
-        <where>
-            <if test="name != null">
-                AND name LIKE concat(concat('%',#{name}),'%')
+                AND m.name LIKE concat(concat('%',#{name}),'%')
             </if>
             <if test="startTime != null">
                 AND purchase_time &gt;= #{startTime}
@@ -65,5 +46,34 @@
                 AND purchase_time &lt;= #{endTime}
             </if>
         </where>
+        ORDER BY purchase_time DESC
+        <if test="pageNo != null and pageSize != null">
+            LIMIT #{pageNo}, #{pageSize}
+        </if>
+    </select>
+    <select id="selectCountByMap" resultType="java.lang.Long">
+        SELECT
+          COUNT(pr.id)
+        FROM
+          purchase_record AS pr
+        LEFT JOIN medicine AS m
+        ON pr.medicine_id = m.id
+        <where>
+            <if test="name != null">
+                AND m.name LIKE concat(concat('%',#{name}),'%')
+            </if>
+            <if test="startTime != null">
+                AND purchase_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND purchase_time &lt;= #{startTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectSummaryPrice" resultType="java.math.BigDecimal">
+        SELECT
+          SUM(purchase_count * purchase_price)
+      FROM
+        purchase_record
     </select>
 </mapper>

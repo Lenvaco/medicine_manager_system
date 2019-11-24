@@ -1,8 +1,10 @@
 package com.medicine.manager.bean.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.medicine.manager.model.SaleRecord;
 import lombok.Data;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,8 +24,10 @@ public class SaleRecordDTO implements Serializable {
 	@NotNull
 	private Integer saleCount;
 	@NotNull
+	@DecimalMin("0")
 	private BigDecimal salePrice;
 	private BigDecimal sumPrice;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")
 	private Date saleTime;
 
 	public SaleRecord toSaleRecord(){

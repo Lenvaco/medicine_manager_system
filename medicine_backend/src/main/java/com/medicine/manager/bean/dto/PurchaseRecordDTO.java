@@ -1,8 +1,11 @@
 package com.medicine.manager.bean.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.medicine.manager.model.PurchaseRecord;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -18,20 +21,22 @@ public class PurchaseRecordDTO implements Serializable {
 	private static final long serialVersionUID = -5196554675365558377L;
 	private Long id;
 	@NotNull
-	private MedicineSmallDTO medicineSmallDTO;
+	private MedicineSmallDTO medicine;
 	@NotNull
-	private SupplierSmallDTO supplierSmallDTO;
+	private SupplierSmallDTO supplier;
 	@NotNull
-	private UserSmallDTO userSmallDTO;
+	private UserSmallDTO user;
 	@NotNull
-	@Size
 	private Integer purchaseCount;
 	@NotNull
+	@DecimalMin("0")
 	private BigDecimal purchasePrice;
 	private BigDecimal sumPrice;
+
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date purchaseTime;
 
 	public PurchaseRecord toPurchaseRecord(){
-		return new PurchaseRecord(id, medicineSmallDTO.getId(), supplierSmallDTO.getId(), userSmallDTO.getId(), purchaseCount, purchasePrice, purchaseTime);
+		return new PurchaseRecord(id, medicine.getId(), supplier.getId(), user.getId(), purchaseCount, purchasePrice, purchaseTime);
 	}
 }

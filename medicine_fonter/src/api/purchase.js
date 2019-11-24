@@ -7,7 +7,7 @@ export function add(data) {
         data
     })
 }
-export function downloadPurchase() {
+export function downloadPurchaseRecord() {
     return request({
         url: 'api/purchase/download',
         method: 'get',
@@ -16,7 +16,7 @@ export function downloadPurchase() {
 }
 export function edit(data) {
     return request({
-        url: 'api/purchase',
+        url: 'api/purchase/' + data.id,
         method: 'put',
         data
     })

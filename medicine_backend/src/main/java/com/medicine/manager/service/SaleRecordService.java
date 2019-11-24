@@ -6,6 +6,8 @@ import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.model.SaleRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
  */
 public interface SaleRecordService extends IService<SaleRecord> {
 
+	List<SaleRecordDTO> querySaleRecord(RecordQuery recordQuery);
+
 	Object querySaleRecord(RecordQuery recordQuery, PageInfo pageInfo);
 
 	boolean create(SaleRecord saleRecord);
@@ -25,4 +29,6 @@ public interface SaleRecordService extends IService<SaleRecord> {
 	boolean updateSaleRecord(Long id,SaleRecord saleRecord);
 
 	boolean deleteSaleRecordById(Long id);
+
+	void download(List<SaleRecordDTO> saleRecords, HttpServletResponse response) throws IOException;
 }

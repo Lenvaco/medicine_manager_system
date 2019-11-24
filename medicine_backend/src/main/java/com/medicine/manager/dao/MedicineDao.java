@@ -16,5 +16,5 @@ import java.util.Map;
  * @since 2019-09-26
  */
 public interface MedicineDao extends BaseMapper<Medicine> {
-	List<MedicineDTO> queryMedicineByMap(Map map);
+	boolean increInventory(Long id, Long increCount);
 }

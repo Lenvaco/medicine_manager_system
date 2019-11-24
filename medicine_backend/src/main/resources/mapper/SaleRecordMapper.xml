@@ -37,26 +37,7 @@
         ON sr.user_id = u.u_id
         <where>
             <if test="name != null">
-               AND sr.name LIKE concat(concat('%',#{name}),'%')
-            </if>
-            <if test="startTime != null">
-                AND sr.sale_time &gt;= #{startTime}
-            </if>
-            <if test="endTime != null">
-                AND sr.sale_time &lt;= #{endTime}
-            </if>
-        </where>
-        ORDER BY sr.sale_time DESC
-        LIMIT #{pageNo}, #{pageSize}
-    </select>
-    <select id="selectCountByMap" resultType="java.lang.Long">
-        SELECT
-          COUNT(id)
-        FROM
-          sale_record
-        <where>
-            <if test="name != null">
-                AND name LIKE concat(concat('%',#{name}),'%')
+               AND m.name LIKE concat(concat('%',#{name}),'%')
             </if>
             <if test="startTime != null">
                 AND sale_time &gt;= #{startTime}
@@ -65,5 +46,73 @@
                 AND sale_time &lt;= #{endTime}
             </if>
         </where>
+        ORDER BY sr.sale_time DESC
+        <if test="pageNo != null and pageSize != null">
+         LIMIT #{pageNo}, #{pageSize}
+        </if>
+    </select>
+    <select id="selectCountByMap" resultType="java.lang.Long">
+        SELECT
+          COUNT(sr.id)
+        FROM
+          sale_record AS sr
+        LEFT JOIN medicine AS m
+        ON sr.medicine_id = m.id
+        <where>
+            <if test="name != null">
+                AND m.name LIKE concat(concat('%',#{name}),'%')
+            </if>
+            <if test="startTime != null">
+                AND sale_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND sale_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectSummaryPrice" resultType="java.math.BigDecimal">
+        SELECT
+          SUM(sale_count * sale_price)
+        FROM
+          sale_record
+    </select>
+    <select id="getTopMedicine" resultType="com.medicine.manager.bean.dto.MedicineSmallDTO">
+        SELECT sr.medicine_id AS id, m.name, sr.medicine_count AS saleCount
+        FROM
+        (SELECT  medicine_id, SUM(sale_count) AS medicine_count FROM sale_record GROUP BY medicine_id ORDER BY medicine_count DESC LIMIT 0, #{topNumber})  sr
+        LEFT JOIN
+            medicine  m
+        ON
+	      sr.medicine_id = m.id
+    </select>
+    <select id="getRecentSaleCount" resultType="com.medicine.manager.bean.dto.SaleSummaryDTO">
+        SELECT a.ym_date AS date, IFNULL(b.saleCount, 0) AS saleCount
+        FROM (
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 5 MONTH), '%y/%m') AS ym_date
+            UNION ALL
+                SELECT DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 4 MONTH), '%y/%m') AS ym_date
+            UNION ALL
+                SELECT DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 3 MONTH), '%y/%m') AS ym_date
+            UNION ALL
+                SELECT DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 2 MONTH), '%y/%m') AS ym_date
+            UNION ALL
+                SELECT DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 MONTH), '%y/%m') AS ym_date
+            UNION ALL
+                SELECT DATE_FORMAT(CURDATE(), '%y/%m') AS ym_date
+        ) a
+        LEFT JOIN (
+            SELECT DATE_FORMAT(sale_time, '%y/%m') AS ym_date, SUM(sale_count) AS saleCount
+            FROM sale_record
+            WHERE 1 = 1
+            GROUP BY	DATE_FORMAT(sale_time, '%y/%m')
+        )b
+        ON
+		    a.ym_date = b.ym_date
+    </select>
+    <select id="getAllSaleCount" resultType="java.lang.Long">
+      SELECT
+         SUM(sale_count)
+      FROM
+	     sale_record
     </select>
 </mapper>

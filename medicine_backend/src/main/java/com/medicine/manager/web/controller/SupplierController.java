@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * <p>
  * 药品经销商表 前端控制器
@@ -38,14 +41,14 @@ public class SupplierController {
 
 	@PostMapping(value = "/supplier")
 	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_CREATE')")
-	public ResponseEntity createSupplier(@Validated Supplier supplier){
+	public ResponseEntity createSupplier(@RequestBody @Validated Supplier supplier){
 		supplierService.createSupplier(supplier);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/supplier/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_EDIT')")
-	public ResponseEntity updateSupplier(@PathVariable Long id, @Validated Supplier supplier){
+	public ResponseEntity updateSupplier(@PathVariable Long id, @RequestBody @Validated Supplier supplier){
 		supplierService.updateSupplier(id, supplier);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
@@ -54,5 +57,10 @@ public class SupplierController {
 	public ResponseEntity deleteSupplier(@PathVariable Long id){
 		supplierService.removeSupplierById(id);
 		return new ResponseEntity(HttpStatus.CREATED);
+	}
+	@GetMapping(value = "/supplier/download")
+	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_SELECT')")
+	public void download(String name, HttpServletResponse response) throws IOException {
+		supplierService.download(supplierService.querySuppliers(name), response);
 	}
 }

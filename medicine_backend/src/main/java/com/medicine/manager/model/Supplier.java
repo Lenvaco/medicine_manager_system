@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -54,6 +57,8 @@ public class Supplier extends Model<Supplier> {
     private String description;
 
     @ApiModelProperty(value = "合作时间")
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date cooperationTime;
 
 }

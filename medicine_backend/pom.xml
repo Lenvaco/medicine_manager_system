@@ -23,9 +23,17 @@
         <freemarker.version>2.3.29</freemarker.version>
         <jwt.version>0.9.1</jwt.version>
         <guava.version>28.1-jre</guava.version>
-        <hutool-core.version>4.6.8</hutool-core.version>
+        <hutool-all.version>4.6.8</hutool-all.version>
+        <poi.version>4.1.1</poi.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -34,8 +42,8 @@
 
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>${hutool-core.version}</version>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-all.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

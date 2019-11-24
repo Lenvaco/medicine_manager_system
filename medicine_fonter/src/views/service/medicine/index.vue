@@ -3,9 +3,10 @@
         <!--工具栏-->
         <div class="head-container">
             <!-- 搜索 -->
-            <el-input v-model="query.value" clearable placeholder="输入供应商名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+            <el-input v-model="query.value" clearable placeholder="输入药品名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
             <el-date-picker
-                v-model="query.productDate"
+                v-model="query.date"
+                value-format="yyyy-MM-dd"
                 class="filter-item"
                 type="date"
                 placeholder="起始生产日期">
@@ -36,12 +37,12 @@
         <medicineForm ref="form" :is-add="isAdd"/>
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-            <el-table-column prop="id" label="药品编号"/>
+            <el-table-column prop="id" width="160px" fixed label="药品编号"/>
             <el-table-column prop="name" label="药品名" />
             <el-table-column label="服用方式">
                 <template slot-scope="scope">
                     <span v-if="scope.row.mode == '0'">内服</span>
-                    <span v-else>外服</span>
+                    <span v-else>外用</span>
                 </template>
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true"prop="efficacy" label="使用功效" />
@@ -90,8 +91,8 @@
 <script>
     import checkPermission from '@/utils/permission'
     import initData from '@/mixin/initData'
-    import { del, downloadSupplier } from '@/api/medicine'
-    import { parseTime } from '@/utils/index'
+    import { del, downloadMedicine } from '@/api/medicine'
+    import { parseTime, downloadFile } from '@/utils/index'
     import medicineForm from './form'
     export default {
         name: 'Medicine',
@@ -120,6 +121,10 @@
                 const value = query.value
                 // const enabled = query.enabled
                 if (value) { this.params['name'] = value }
+                const date = query.date
+                if (date) {
+                    this.params['productDate'] = date
+                }
                 return true
             },
             subDelete(id) {
@@ -155,15 +160,15 @@
                     description: data.description,
                     caution: data.caution,
                     inventory: data.inventory,
-                    productTime: data.productTime,
-                    expireTime: data.expireTime
+                    productTime: parseTime(data.productTime),
+                    expireTime: parseTime(data.expireTime)
                 }
                 _this.dialog = true
             },
             // 导出
             download() {
                 this.downloadLoading = true
-                downloadSupplier().then(result => {
+                downloadMedicine().then(result => {
                     downloadFile(result, '药品列表', 'xlsx')
                     this.downloadLoading = false
                 }).catch(() => {

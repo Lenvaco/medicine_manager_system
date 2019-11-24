@@ -43,7 +43,8 @@
         </div>
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" max-width="250">
-          <af-table-column prop="name" fixed label="姓名"/>
+          <af-table-column prop="id" fixed label="编号"/>
+          <af-table-column prop="name" label="姓名"/>
           <af-table-column prop="username" label="用户名"/>
           <af-table-column prop="phone" label="电话"/>
           <af-table-column label="性别">

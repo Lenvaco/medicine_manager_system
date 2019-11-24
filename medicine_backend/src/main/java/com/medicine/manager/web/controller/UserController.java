@@ -10,6 +10,7 @@ import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.exception.BadRequestException;
 import com.medicine.manager.model.User;
 import com.medicine.manager.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -79,5 +85,11 @@ public class UserController {
 		}
 		userService.updatePasswordByUsername(userDetails.getUsername(), bCryptPasswordEncoder.encode(userPassVo.getNewPassword()));
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	@ApiOperation("导出用户数据")
+	@PreAuthorize("hasAnyRole('ADMIN','USER_ALL','USER_SELECT')")
+	@GetMapping(value = "/users/download")
+	public void download(UserQuery userQuery, HttpServletResponse response) throws IOException {
+		userService.download((userService.queryAllUsers(userQuery)), response);
 	}
 }

@@ -4,6 +4,7 @@ package com.medicine.manager.web.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.MedicineQuery;
 import com.medicine.manager.bean.PageInfo;
+import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.model.Medicine;
 import com.medicine.manager.service.MedicineService;
 import org.apache.ibatis.annotations.Delete;
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * <p>
@@ -33,22 +37,27 @@ public class MedicineController {
 	public ResponseEntity getMedicine(MedicineQuery medicineQuery, PageInfo pageInfo){
 		return new ResponseEntity(medicineService.queryMedicine(medicineQuery, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
-	@PostMapping(value = "medicine")
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_CREATE')")
-	public ResponseEntity createMedicine(@Validated Medicine medicine){
-		medicineService.createMedicine(medicine);
-		return new ResponseEntity(HttpStatus.CREATED);
-	}
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_EDIT')")
 	@PutMapping(value = "medicine/{id}")
-	public ResponseEntity updateMedicine(@PathVariable Long id, @Validated Medicine medicine){
+	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_EDIT')")
+	public ResponseEntity updateMedicine(@PathVariable Long id, @RequestBody @Validated Medicine medicine){
 		medicineService.updateMedicineById(id, medicine);
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	@PostMapping(value = "medicine")
+	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_CREATE')")
+	public ResponseEntity createMedicine(@RequestBody @Validated Medicine medicine){
+		medicineService.createMedicine(medicine);
+		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	@DeleteMapping(value = "medicine/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_DELETE')")
 	public ResponseEntity insertMedicine(@PathVariable Long id){
 		medicineService.removeMedicineById(id);
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	@GetMapping(value="medicine/download")
+	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_SELECT')")
+	public void download(MedicineQuery medicineQuery, HttpServletResponse response) throws IOException {
+		medicineService.download(medicineService.queryMedicine(medicineQuery), response);
 	}
 }

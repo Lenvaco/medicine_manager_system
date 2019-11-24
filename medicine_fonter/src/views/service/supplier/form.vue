@@ -10,8 +10,15 @@
             <el-form-item label="联系电话" prop="phone">
                 <el-input  v-model.number="form.phone" />
             </el-form-item>
-            <el-form-item v-if="!isAdd" label="合作时间" prop="cooperationTime">
-                <el-input  disabled v-model="form.cooperationTime"/>
+            <el-form-item  label="合作时间" prop="cooperationTime">
+                <el-date-picker
+                    v-model="form.cooperationTime"
+                    type="datetime"
+                    value-format="yyyy-MM-dd HH:mm:SS"
+                    :editable="false"
+                    :disabled="!isAdd"
+                    placeholder="选择日期">
+                </el-date-picker>
             </el-form-item>
             <el-form-item style="margin-bottom: 0px;" label="地址">
                 <el-input
@@ -77,7 +84,7 @@
                     ],
                     phone: [
                         {required: true, trigger: 'blur', validator: validPhone}
-                    ]
+        ]
                 }
             }
         },

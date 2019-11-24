@@ -1,12 +1,13 @@
 package com.medicine.manager;
 
-import com.medicine.manager.common.utils.IdWorker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@EnableAsync
 @SpringBootApplication
 @EnableTransactionManagement
 public class MedicineBackendApplication {
@@ -20,11 +21,6 @@ public class MedicineBackendApplication {
     public BCryptPasswordEncoder passwordEncoder() {
         // 设置默认的加密方式
         return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public IdWorker idWorker() {
-        //全局id
-        return new IdWorker();
     }
 }
 

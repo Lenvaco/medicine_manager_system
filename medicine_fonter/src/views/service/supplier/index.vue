@@ -30,11 +30,11 @@
         <supplierForm ref="form" :is-add="isAdd"/>
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-            <el-table-column prop="id" label="编号"/>
+            <el-table-column prop="id" width="160px" label="编号"/>
             <el-table-column prop="name" label="供应商名" />
-            <el-table-column prop="phone" label="电话" />
+            <el-table-column prop="phone"  label="电话" />
             <el-table-column :show-overflow-tooltip="true" prop="address" label="地址" />
-            <el-table-column :show-overflow-tooltip="true"  prop="description" label="简介" />
+            <el-table-column :show-overflow-tooltip="true" min-width="100px" prop="description" label="简介" />
             <el-table-column label="合作时间">
                 <template slot-scope="scope">
                     <span>{{ parseTime(scope.row.cooperationTime) }}</span>
@@ -73,7 +73,7 @@
     import checkPermission from '@/utils/permission'
     import initData from '@/mixin/initData'
     import { del, downloadSupplier } from '@/api/supplier'
-    import { parseTime } from '@/utils/index'
+    import { parseTime, downloadFile } from '@/utils/index'
     import supplierForm from './form'
     export default {
         name: 'Supplier',
@@ -135,7 +135,7 @@
                     phone: data.phone,
                     address: data.address,
                     description: data.description,
-                    cooperationTime: data.cooperationTime
+                    cooperationTime: parseTime(data.cooperationTime)
                 }
                 _this.dialog = true
             },

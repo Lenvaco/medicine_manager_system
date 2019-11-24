@@ -6,13 +6,17 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,7 +39,7 @@ public class Medicine extends Model<Medicine> {
     private static final long serialVersionUID = -4234855453233544533L;
 
     @ApiModelProperty(value = "药品id")
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.ID_WORKER)
     private Long id;
 
     @NotBlank
@@ -59,7 +63,7 @@ public class Medicine extends Model<Medicine> {
     private String caution;
 
     @NotNull
-    @Size
+    @Min(0)
     @ApiModelProperty(value = "库存量")
     private Integer inventory;
 
@@ -68,6 +72,6 @@ public class Medicine extends Model<Medicine> {
     private Date productTime;
 
     @NotNull
-    @ApiModelProperty(value = "有效日期")
+    @ApiModelProperty(value = "过期日期")
     private Date expireTime;
 }

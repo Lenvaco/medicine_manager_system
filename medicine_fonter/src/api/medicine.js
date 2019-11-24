@@ -15,8 +15,9 @@ export function downloadMedicine() {
     })
 }
 export function edit(data) {
+    console.log(data)
     return request({
-        url: 'api/medicine',
+        url: 'api/medicine/' + data.id,
         method: 'put',
         data
     })

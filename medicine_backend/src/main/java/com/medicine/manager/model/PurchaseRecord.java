@@ -14,6 +14,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p>
  * 采购记录表
@@ -45,14 +48,15 @@ public class PurchaseRecord extends Model<PurchaseRecord> {
     @ApiModelProperty(value = "采购人员id")
     private Long userId;
 
+    @Min(0)
     @ApiModelProperty(value = "采购数目")
     private Integer purchaseCount;
-
 
     @ApiModelProperty(value = "采购单价")
     private BigDecimal purchasePrice;
 
     @ApiModelProperty(value = "采购时间")
+    @NotNull
     private Date purchaseTime;
 
 }
