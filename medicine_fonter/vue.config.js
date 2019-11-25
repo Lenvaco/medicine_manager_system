@@ -101,7 +101,7 @@ module.exports = {
   devServer: {
       open: true,
 
-      host: '127.0.0.1',//本机ip地址
+      host: '10.70.2.27',//本机ip地址
 
       port: 8080,
 
@@ -112,8 +112,8 @@ module.exports = {
   proxy: {
   '/api': {
     // 目标 API 地址
-    target: 'http://127.0.0.1',//开发环境
-      target: 'http://127.0.0.1/',//域名环境
+    target: 'http://10.70.2.27',//开发环境
+      target: 'http://10.70.2.27/',//域名环境
       //如果要代理 websockets
       // ws: true,
       // 将主机标头的原点更改为目标URL
