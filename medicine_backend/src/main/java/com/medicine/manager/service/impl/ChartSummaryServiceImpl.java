@@ -5,7 +5,6 @@ import com.medicine.manager.dao.PurchaseRecordDao;
 import com.medicine.manager.dao.SaleRecordDao;
 import com.medicine.manager.service.ChartSummaryService;
 import com.medicine.manager.service.CustomerService;
-import com.medicine.manager.service.MedicineService;
 import com.medicine.manager.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

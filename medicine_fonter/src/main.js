@@ -4,7 +4,7 @@ import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import permission from './components/permission'
-import '@/icons' // 引入icon
+import './assets/icons' // icon
 import './router/index' // permission control
 import router from './router/routers'
 import '@/styles/index.scss' // global css

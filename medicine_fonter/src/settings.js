@@ -1,7 +1,11 @@
 /**
  * @description 系统全局配置
  */
-export default {
+module.exports = {
+  /**
+   * @description 此处修改网站名称
+   */
+   title: 'MEDICINE_SYSTEM',
   /**
    * @description 记住密码状态下的token在Cookie中存储的天数，默认1天
    */
@@ -10,10 +14,7 @@ export default {
    * @description 记住密码状态下的密码在Cookie中存储的天数，默认1天
    */
   passCookieExpires: 1,
-  /**
-   * @description 此处修改网站名称
-   */
-  webName: 'MEDICINE_SYSTEM',
+
   /**
    * @description 是否只保持一个子菜单的展开
    */

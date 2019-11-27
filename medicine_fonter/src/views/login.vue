@@ -33,7 +33,7 @@
 <script>
   import { getCaptchaImg } from '@/api/login'
   import { validateUsername, validatePassword } from '@/utils/validator'
-  import Config from '@/config'
+  import Config from '@/settings'
   import  crypt from '@/utils/crypt'
   import Cookies from 'js-cookie'
   export default {

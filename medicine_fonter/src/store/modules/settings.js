@@ -1,4 +1,4 @@
-import Config from '@/config'
+import Config from '@/settings'
 import variables from '@/styles/element-variables.scss'
 
 const settings = {
