@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 public class JobSmallDTO implements Serializable {
 	private static final long serialVersionUID = -4079022615455894020L;
-	@NotNull
+	@NotNull(message = "岗位编号不允许留空")
 	private Long id;
 	private String name;
 	public JobSmallDTO(Job job) {

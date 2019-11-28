@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -26,10 +27,11 @@ public class PurchaseRecordDTO implements Serializable {
 	private SupplierSmallDTO supplier;
 	@NotNull
 	private UserSmallDTO user;
-	@NotNull
+	@NotNull(message="采购数目不能为空")
+	@Min(value = 1, message = "采购数目须大于0")
 	private Integer purchaseCount;
 	@NotNull
-	@DecimalMin("0")
+	@DecimalMin(value = "0", message = "采购金额不能为负数")
 	private BigDecimal purchasePrice;
 	private BigDecimal sumPrice;
 

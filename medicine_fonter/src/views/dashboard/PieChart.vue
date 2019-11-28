@@ -1,7 +1,7 @@
 <template>
 
     <div :style="{height:height,width:width}">
-        <ve-pie :data="chartData" :settings="chartSettings"></ve-pie>
+        <ve-pie  :data="chartData" :settings="chartSettings"></ve-pie>
     </div>
 </template>
 

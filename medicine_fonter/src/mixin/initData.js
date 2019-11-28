@@ -3,7 +3,7 @@ import { initData } from '@/api/data'
 export default {
     data() {
         return {
-            loading: true, data: [], page: 0, size: 10, total: 0, url: '', params: {}, query: {}, time: 170, isAdd: false
+            loading: true, data: [], page: 1, size: 10, total: 0, url: '', params: {}, query: {}, time: 170, isAdd: false
         }
     },
     methods: {
@@ -30,11 +30,11 @@ export default {
             return true
         },
         pageChange(e) {
-            this.page = e - 1
+            this.page = e
             this.init()
         },
         sizeChange(e) {
-            this.page = 0
+            this.page = 1
             this.size = e
             this.init()
         },

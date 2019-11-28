@@ -72,7 +72,7 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 		if (recordQuery.getEndTime() != null) {
 			queryMap.put("endTime", recordQuery.getEndTime());
 		}
-		queryMap.put("pageNo", pageInfo.getPage());
+		queryMap.put("pageNo", pageInfo.getPage() - 1);
 		queryMap.put("pageSize", pageInfo.getSize());
 		List<PurchaseRecordDTO> purchaseRecordDTOList = this.baseMapper.queryByMap(queryMap);
 		Long totalRecord = this.baseMapper.selectCountByMap(queryMap);

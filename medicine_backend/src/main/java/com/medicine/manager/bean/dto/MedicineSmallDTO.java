@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 public class MedicineSmallDTO implements Serializable {
 	private static final long serialVersionUID = -4854176566090341354L;
-	@NotNull
+	@NotNull(message="药品编号不允许留空")
 	private Long id;
 	private String name;
 	private Long saleCount;

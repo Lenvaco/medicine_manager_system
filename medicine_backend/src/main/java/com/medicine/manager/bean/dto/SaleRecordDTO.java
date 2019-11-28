@@ -5,6 +5,7 @@ import com.medicine.manager.model.SaleRecord;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,10 +22,11 @@ public class SaleRecordDTO implements Serializable {
 	private MedicineSmallDTO medicine;
 	private CustomerSmallDTO customer;
 	private UserSmallDTO user;
-	@NotNull
+	@NotNull(message = "销售数目不能留空")
+	@Min(value = 1, message = "销售数目需大于0")
 	private Integer saleCount;
-	@NotNull
-	@DecimalMin("0")
+	@NotNull(message = "销售价格不能留空")
+	@DecimalMin(value = "0", message = "销售价格不能为负数")
 	private BigDecimal salePrice;
 	private BigDecimal sumPrice;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS")

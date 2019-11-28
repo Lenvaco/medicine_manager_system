@@ -2,7 +2,7 @@
 
     <div :style="{height:height,width:width}">
         <el-button type="primary" @click="changeType">切换图表类型</el-button>
-        <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>
+        <ve-chart height="350px" width="97%" :data="chartData" :settings="chartSettings"></ve-chart>
     </div>
 </template>
 
@@ -14,7 +14,7 @@
         props: {
             width: {
                 type: String,
-                default: '90%'
+                default: '100%'
             },
             height: {
                 type: String,

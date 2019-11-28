@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class SupplierSmallDTO implements Serializable {
 	private static final long serialVersionUID = -6188541573214250464L;
-	@NotNull
+	@NotNull(message = "供应商编号不能留空")
 	private Long id;
 	private String name;
 }

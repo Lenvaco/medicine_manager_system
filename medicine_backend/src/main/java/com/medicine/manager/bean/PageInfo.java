@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class PageInfo {
 	/**
-	 * 当前页
+	 * 当前页 默认为 1
 	 */
-	private Long page = 0L;
+	private Long page = 1L;
 	/**
 	 * 每页显示条数，默认 10
 	 */

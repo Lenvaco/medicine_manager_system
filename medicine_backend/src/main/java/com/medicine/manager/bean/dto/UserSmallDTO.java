@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Data
 public class UserSmallDTO implements Serializable {
 	private static final long serialVersionUID = 1183499425141283399L;
-	@NotNull
+	@NotNull(message = "系统用户编号出错")
 	private Long id;
 	private String name;
 }

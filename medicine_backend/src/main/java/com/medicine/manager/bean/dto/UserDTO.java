@@ -29,20 +29,20 @@ public class UserDTO implements Serializable {
 	private static final long serialVersionUID = 5491128699082883311L;
 	@ApiModelProperty(hidden = true)
 	private Long id;
-	@NotBlank
+	@NotBlank(message = "账号不能留空")
 	private String username;
 
 	private String password;
-	@NotBlank
+	@NotBlank(message = "姓名不能留空")
 	@Length(min = 2, max = 14)
 	private String name;
-	@NotBlank
-	@Pattern(regexp = "^1[3|4|5|7|8][0-9]\\d{8}$")
+	@NotBlank(message = "电话不能留空")
+	@Pattern(regexp = "^1[3|4|5|7|8][0-9]\\d{8}$", message = "电话格式出错")
 	private String phone;
 
 	private String sex;
-	@NotBlank
-	@Pattern(regexp = "^([a-zA-Z0-9]+[-_\\.]?)+@[a-zA-Z0-9]+\\.[a-z]+$")
+	@NotBlank(message = "邮箱不能留空")
+	@Pattern(regexp = "^([a-zA-Z0-9]+[-_.]?)+@[a-zA-Z0-9]+\\.[a-z]+$", message = "邮箱格式出错")
 	private String email;
 
 	private String address;
