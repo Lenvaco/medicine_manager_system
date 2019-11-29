@@ -115,7 +115,6 @@
                     id: '',
                     name: '',
                     sort: 999,
-                    enabled: 'true',
                     createTime: '',
                     dept: { id: '' }
                 }

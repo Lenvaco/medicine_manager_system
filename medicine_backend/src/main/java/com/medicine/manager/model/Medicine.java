@@ -50,6 +50,9 @@ public class Medicine extends Model<Medicine> {
     @ApiModelProperty(value = "使用方法（0内服1外用）")
     private String mode;
 
+    @ApiModelProperty(value = "使用量")
+    private String dosage;
+
     @NotBlank
     @ApiModelProperty(value = "使用功效")
     private String efficacy;
@@ -69,9 +72,11 @@ public class Medicine extends Model<Medicine> {
 
     @NotNull
     @ApiModelProperty(value = "生产日期")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date productTime;
 
     @NotNull
     @ApiModelProperty(value = "过期日期")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date expireTime;
 }

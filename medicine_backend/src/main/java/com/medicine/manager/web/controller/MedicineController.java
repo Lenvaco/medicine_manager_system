@@ -33,24 +33,24 @@ public class MedicineController {
 	private MedicineService medicineService;
 
 	@GetMapping(value = "medicine")
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','MEDICINE_ALL','MEDICINE_SELECT')")
 	public ResponseEntity getMedicine(MedicineQuery medicineQuery, PageInfo pageInfo){
 		return new ResponseEntity(medicineService.queryMedicine(medicineQuery, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
 	@PutMapping(value = "medicine/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','MEDICINE_ALL','MEDICINE_EDIT')")
 	public ResponseEntity updateMedicine(@PathVariable Long id, @RequestBody @Validated Medicine medicine){
 		medicineService.updateMedicineById(id, medicine);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@PostMapping(value = "medicine")
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','MEDICINE_ALL','MEDICINE_CREATE')")
 	public ResponseEntity createMedicine(@RequestBody @Validated Medicine medicine){
 		medicineService.createMedicine(medicine);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	@DeleteMapping(value = "medicine/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','MEDICINE_ALL','MEDICINE_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','MEDICINE_ALL','MEDICINE_DELETE')")
 	public ResponseEntity insertMedicine(@PathVariable Long id){
 		medicineService.removeMedicineById(id);
 		return new ResponseEntity(HttpStatus.OK);

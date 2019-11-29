@@ -129,7 +129,7 @@
                 _this.form = {
                     id: data.id,
                     name: data.name,
-                    // sort: data.sort,
+                    sort: data.sort,
                     // enabled: data.enabled.toString(),
                     createTime: data.createTime,
                     dept: { id: data.dept.id }

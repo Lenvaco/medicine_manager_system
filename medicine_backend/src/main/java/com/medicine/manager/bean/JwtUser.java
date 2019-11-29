@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @ApiModel(value="JwtUser对象", description="")
 public class JwtUser implements UserDetails {
+	private static final long serialVersionUID = -508013954443690106L;
 	@JsonIgnore
 	@ApiModelProperty(value = "用户id")
 	private Long id;

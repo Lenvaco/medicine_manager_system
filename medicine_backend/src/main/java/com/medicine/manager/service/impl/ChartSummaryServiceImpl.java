@@ -1,6 +1,7 @@
 package com.medicine.manager.service.impl;
 
 import com.medicine.manager.bean.dto.MedicineSmallDTO;
+import com.medicine.manager.bean.dto.SaleSummaryDTO;
 import com.medicine.manager.dao.PurchaseRecordDao;
 import com.medicine.manager.dao.SaleRecordDao;
 import com.medicine.manager.service.ChartSummaryService;

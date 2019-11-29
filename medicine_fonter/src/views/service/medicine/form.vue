@@ -10,18 +10,45 @@
             <el-form-item label="使用方式" prop="mode">
                 <el-radio v-for="item in modeOptions" :key="item.id" v-model="form.mode" :label="item.key" >{{item.display_name}}</el-radio>
             </el-form-item>
-            <el-form-item label="使用功效"  prop="efficacy">
-                <el-input v-model.number="form.efficacy"/>
+            <el-form-item label="使用量" prop="dosage">
+                <el-input maxlength="50" v-model="form.dosage"/>
             </el-form-item>
-            <el-form-item label="组成成份" prop="description">
-                <el-input v-model.number="form.description"/>
+            <el-form-item style="margin-bottom: 0px;" label="使用功效">
+                <el-input
+                    type="textarea"
+                    :rows="2"
+                    maxlength="90"
+                    show-word-limit
+                    placeholder="请输入使用功效"
+                    v-model="form.efficacy"
+                    clearable>
+                </el-input>
             </el-form-item>
-            <el-form-item label="注意事项" prop="caution">
-                <el-input v-model.number="form.caution"/>
+            <el-form-item style="margin-bottom: 0px;" label="组成成份">
+                <el-input
+                    type="textarea"
+                    :rows="2"
+                    maxlength="90"
+                    show-word-limit
+                    placeholder="请输入组成成份"
+                    v-model="form.description"
+                    clearable>
+                </el-input>
+            </el-form-item>
+            <el-form-item style="margin-bottom: 0px;" label="注意事项">
+                <el-input
+                    type="textarea"
+                    :rows="2"
+                    maxlength="90"
+                    show-word-limit
+                    placeholder="请输入注意事项"
+                    v-model="form.caution"
+                    clearable>
+                </el-input>
             </el-form-item>
             <el-form-item label="库存量" prop="inventory">
-            <el-input-number v-model.number="form.inventory"/>
-        </el-form-item>
+                <el-input-number v-model.number="form.inventory"/>
+            </el-form-item>
             <el-form-item label="生产日期" prop="productTime">
                 <el-date-picker
                     v-model="form.productTime"
@@ -65,7 +92,7 @@
         data() {
             return {
                 loading: false, dialog: false,
-                form: {id: '', name: '', mode: '0', efficacy: '', description: '',caution: '',inventory: 0, productTime: '',expireTime: ''},
+                form: {id: '', name: '', mode: '0', dosage: '', efficacy: '', description: '',caution: '',inventory: 0, productTime: '',expireTime: ''},
                 modeOptions: [
                     { key: '0', display_name: '内服' },
                     { key: '1', display_name: '外用' }
@@ -141,7 +168,7 @@
             resetForm() {
                 this.dialog = false
                 this.$refs['form'].resetFields()
-                this.form = {id: '', name: '', mode: '0', efficacy: '', description: '',caution: '',inventory: 0, productTime: '',expireTime: ''}
+                this.form = {id: '', name: '', mode: '0', dosage: '', efficacy: '', description: '',caution: '',inventory: 0, productTime: '',expireTime: ''}
             },
         }
     }

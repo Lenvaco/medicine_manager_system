@@ -34,26 +34,26 @@ public class SupplierController {
 	private SupplierService supplierService;
 
 	@GetMapping(value = "/supplier")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SUPPLIER_ALL','SUPPLIER_SELECT')")
 	public ResponseEntity getSuppliers(String name, PageInfo pageInfo){
 		return new ResponseEntity(supplierService.querySuppliers(name, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/supplier")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SUPPLIER_ALL','SUPPLIER_CREATE')")
 	public ResponseEntity createSupplier(@RequestBody @Validated Supplier supplier){
 		supplierService.createSupplier(supplier);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/supplier/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SUPPLIER_ALL','SUPPLIER_EDIT')")
 	public ResponseEntity updateSupplier(@PathVariable Long id, @RequestBody @Validated Supplier supplier){
 		supplierService.updateSupplier(id, supplier);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	@DeleteMapping("/supplier/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SUPPLIER_ALL','SUPPLIER_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SUPPLIER_ALL','SUPPLIER_DELETE')")
 	public ResponseEntity deleteSupplier(@PathVariable Long id){
 		supplierService.removeSupplierById(id);
 		return new ResponseEntity(HttpStatus.CREATED);

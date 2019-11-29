@@ -24,7 +24,7 @@ public interface SaleRecordService extends IService<SaleRecord> {
 
 	Object querySaleRecord(RecordQuery recordQuery, PageInfo pageInfo);
 
-	boolean create(SaleRecord saleRecord);
+	boolean createSaleRecord(SaleRecord saleRecord);
 
 	boolean updateSaleRecord(Long id,SaleRecord saleRecord);
 

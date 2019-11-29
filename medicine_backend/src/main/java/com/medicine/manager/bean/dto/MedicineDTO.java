@@ -15,6 +15,7 @@ public class MedicineDTO implements Serializable {
 	private Long id;
 	private String name;
 	private String model;
+	private String dosage;
 	private String efficacy;
 	private String description;
 	private String caution;

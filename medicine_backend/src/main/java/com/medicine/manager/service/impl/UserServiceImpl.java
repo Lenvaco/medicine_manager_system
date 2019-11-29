@@ -203,7 +203,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		for (UserDTO userDTO : userDTOS) {
 //			List roles = userDTO.getRoles().stream().map(RoleSmallDTO::getName).collect(Collectors.toList());
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("编号", userDTO.getId());
+			map.put("编号", userDTO.getId().toString());
 			map.put("账号", userDTO.getUsername());
 			map.put("姓名", userDTO.getName());
 			map.put("性别", "1".equals(userDTO.getSex())? "女" : "男");

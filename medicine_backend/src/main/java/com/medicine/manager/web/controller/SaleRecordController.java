@@ -35,7 +35,7 @@ public class SaleRecordController {
 	private SaleRecordService saleRecordService;
 
 	@GetMapping("/sale")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SALE_ALL','SALE_SELECT')")
 	public ResponseEntity getSaleRecord(RecordQuery recordQuery, PageInfo pageInfo){
 		return new ResponseEntity(saleRecordService.querySaleRecord(recordQuery, pageInfo),HttpStatus.OK);
 	}
@@ -43,25 +43,25 @@ public class SaleRecordController {
 	@PostMapping("/sale")
 	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_CREATE')")
 	public ResponseEntity createSaleRecord(@RequestBody @Validated SaleRecordDTO saleRecordDTO){
-		saleRecordService.create(saleRecordDTO.toSaleRecord());
+		saleRecordService.createSaleRecord(saleRecordDTO.toSaleRecord());
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 
 	@PutMapping("/sale/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SALE_ALL','SALE_EDIT')")
 	public ResponseEntity updateSaleRecord(@PathVariable Long id, @RequestBody @Validated SaleRecordDTO saleRecordDTO){
 		saleRecordService.updateSaleRecord(id, saleRecordDTO.toSaleRecord());
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@DeleteMapping("/sale/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SALE_ALL','SALE_DELETE')")
 	public ResponseEntity deleteSaleRecord(@PathVariable Long id){
 		saleRecordService.deleteSaleRecordById(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@GetMapping("/sale/download")
-	@PreAuthorize("hasAnyRole('ADMIN','SALE_ALL','SALE_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','SALE_ALL','SALE_SELECT')")
 	public void download(RecordQuery recordQuery, HttpServletResponse response) throws IOException {
 		saleRecordService.download(saleRecordService.querySaleRecord(recordQuery), response);
 	}

@@ -38,16 +38,17 @@
         <!--表格渲染-->
         <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
             <el-table-column prop="id" width="160px" fixed label="药品编号"/>
-            <el-table-column prop="name" label="药品名" />
+            <el-table-column prop="name" :show-overflow-tooltip="true" label="药品名" />
             <el-table-column label="服用方式">
                 <template slot-scope="scope">
                     <span v-if="scope.row.mode == '0'">内服</span>
                     <span v-else>外用</span>
                 </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true"prop="efficacy" label="使用功效" />
+            <el-table-column :show-overflow-tooltip="true" prop="dosage" label="使用量" />
+            <el-table-column :show-overflow-tooltip="true" prop="efficacy" label="使用功效" />
             <el-table-column :show-overflow-tooltip="true" prop="description" label="组成成份" />
-            <el-table-column :show-overflow-tooltip="true"  prop="caution" label="注意事项" />
+            <el-table-column :show-overflow-tooltip="true" prop="caution" label="注意事项" />
             <el-table-column prop="inventory" label="库存量" />
             <el-table-column :show-overflow-tooltip="true" label="生产日期">
                 <template slot-scope="scope">
@@ -156,6 +157,7 @@
                     id: data.id,
                     name: data.name,
                     mode: data.mode,
+                    dosage: data.dosage,
                     efficacy: data.efficacy,
                     description: data.description,
                     caution: data.caution,

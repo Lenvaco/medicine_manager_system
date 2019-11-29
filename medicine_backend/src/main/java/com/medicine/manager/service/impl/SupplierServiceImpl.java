@@ -79,7 +79,7 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierDao, Supplier> impl
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (Supplier supplier : suppliers) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("供应商编号", supplier.getId());
+			map.put("供应商编号", supplier.getId().toString());
 			map.put("供应商名称", supplier.getName());
 			map.put("电话", supplier.getPhone());
 			map.put("地址", supplier.getAddress());

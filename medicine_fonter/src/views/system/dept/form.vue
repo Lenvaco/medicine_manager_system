@@ -38,7 +38,6 @@
                     id: '',
                     name: '',
                     parentId: 1,
-                    enabled: 'true'
                 },
                 rules: {
                     name: [

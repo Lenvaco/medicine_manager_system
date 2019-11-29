@@ -7,7 +7,7 @@
             <el-form-item label="供应商编号" prop="supplier.id">
                 <el-input v-model.trim="form.supplier.id" />
             </el-form-item>
-            <el-form-item label="销售人员编号"  prop="user.id">
+            <el-form-item label="采购人员编号"  prop="user.id">
                 <el-input v-model.trim="form.user.id"/>
             </el-form-item>
             <el-form-item label="数目" prop="purchaseCount">

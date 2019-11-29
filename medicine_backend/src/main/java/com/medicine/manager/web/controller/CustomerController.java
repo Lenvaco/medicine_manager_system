@@ -34,30 +34,30 @@ public class CustomerController {
 	private  CustomerService customerService;
 
 	@GetMapping(value = "/customer")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','CUSTOMER_ALL','CUSTOMER_SELECT')")
 	public ResponseEntity getCustomers(CustomerQuery customerQuery, PageInfo pageInfo){
 		return new ResponseEntity(customerService.queryCustomers(customerQuery, new Page(pageInfo.getPage(), pageInfo.getSize())), HttpStatus.OK);
 	}
 	@PostMapping(value = "/customer")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','CUSTOMER_ALL','CUSTOMER_CREATE')")
 	public ResponseEntity createCustomer(@RequestBody @Validated  Customer customer){
 		customerService.createCustomer(customer);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	@PutMapping(value = "/customer/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','CUSTOMER_ALL','CUSTOMER_EDIT')")
 	public ResponseEntity updateCustomer(@PathVariable @NotNull Long id, @RequestBody @Validated Customer customer){
 		customerService.updateCustomer(id, customer);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@DeleteMapping(value = "/customer/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','CUSTOMER_ALL','CUSTOMER_DELETE')")
 	public ResponseEntity updateCustomer(@PathVariable @NotNull Long id){
 		customerService.removeCustomerById(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@GetMapping(value="customer/download")
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER_ALL','CUSTOMER_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','CUSTOMER_ALL','CUSTOMER_SELECT')")
 	public void download(CustomerQuery customerQuery, HttpServletResponse response) throws IOException {
 		customerService.download(customerService.queryCustomers(customerQuery), response);
 	}

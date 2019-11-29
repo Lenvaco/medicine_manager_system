@@ -14,7 +14,9 @@ import com.medicine.manager.dao.DeptDao;
 import com.medicine.manager.dao.JobDao;
 import com.medicine.manager.model.Dept;
 import com.medicine.manager.model.Job;
+import com.medicine.manager.model.User;
 import com.medicine.manager.service.JobService;
+import com.medicine.manager.service.UserService;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,8 @@ public class JobServiceImpl extends ServiceImpl<JobDao, Job> implements JobServi
 
 	@Autowired
 	private DeptDao deptDao;
+	@Autowired
+	private UserService userService;
 	@Override
 	public Object queryAll(JobQuery jobQuery, PageInfo pageInfo) {
 		QueryWrapper<Job> queryWrapper = new QueryWrapper<>();
@@ -78,5 +82,26 @@ public class JobServiceImpl extends ServiceImpl<JobDao, Job> implements JobServi
 				.set("d_id", job.getDId())
 				.eq("id", job.getId());
 		return update(updateWrapper);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean deleteById(Long id) {
+		UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+		updateWrapper.set("j_id", null);
+		updateWrapper.eq("j_id", id);
+		return removeById(id) && userService.update(updateWrapper);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean deleteByDid(Long dId) {
+		UpdateWrapper<Job> jobUpdateWrapper  = new UpdateWrapper<>();
+		jobUpdateWrapper.eq("d_id", dId);
+		List<Job> jobs = list(jobUpdateWrapper);
+		jobs.forEach(job -> {
+			this.deleteById(job.getId());
+		});
+		return true;
 	}
 }

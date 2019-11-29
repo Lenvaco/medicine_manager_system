@@ -27,8 +27,7 @@ import java.util.Optional;
 public class JwtUserServiceImpl implements JwtUserService {
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private RoleService roleService;
+
 	@Autowired
 	private JwtPermissionService jwtPermissionService;
 

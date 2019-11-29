@@ -117,12 +117,12 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (PurchaseRecordDTO purchaseRecordDTO : purchaseRecordDTOS) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("采购记录编号", purchaseRecordDTO.getId());
-			map.put("药品编号", purchaseRecordDTO.getMedicine() != null? purchaseRecordDTO.getMedicine().getId() : "");
+			map.put("采购记录编号", purchaseRecordDTO.getId().toString());
+			map.put("药品编号", purchaseRecordDTO.getMedicine() != null? purchaseRecordDTO.getMedicine().getId().toString() : "");
 			map.put("药品名", purchaseRecordDTO.getMedicine() != null? purchaseRecordDTO.getMedicine().getName() : "");
-			map.put("供应商编号", purchaseRecordDTO.getSupplier() != null? purchaseRecordDTO.getSupplier().getId() : "");
+			map.put("供应商编号", purchaseRecordDTO.getSupplier() != null? purchaseRecordDTO.getSupplier().getId().toString() : "");
 			map.put("供应商名", purchaseRecordDTO.getSupplier() != null? purchaseRecordDTO.getSupplier().getName() : "");
-			map.put("采购人员编号", purchaseRecordDTO.getUser() != null? purchaseRecordDTO.getUser().getId() : "");
+			map.put("采购人员编号", purchaseRecordDTO.getUser() != null? purchaseRecordDTO.getUser().getId().toString() : "");
 			map.put("采购人员姓名", purchaseRecordDTO.getUser() != null? purchaseRecordDTO.getUser().getName() : "");
 			map.put("采购总数", purchaseRecordDTO.getPurchaseCount());
 			map.put("采购价格", purchaseRecordDTO.getPurchasePrice());

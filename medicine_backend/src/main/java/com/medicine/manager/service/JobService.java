@@ -16,4 +16,8 @@ public interface JobService extends IService<Job> {
 	boolean create(Job job);
 
 	boolean updateJob(Job job);
+
+	boolean deleteById(Long id);
+
+	boolean deleteByDid(Long dId);
 }

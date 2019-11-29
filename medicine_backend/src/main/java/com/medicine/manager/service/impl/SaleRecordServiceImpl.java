@@ -91,14 +91,16 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean create(SaleRecord saleRecord) {
+	public boolean createSaleRecord(SaleRecord saleRecord) {
 		if (!isSaleRecordOk(saleRecord)) {
 			throw  new IllegalArgumentException("输入的编号错误");
 		}
-		Medicine medicine = medicineService.getById(saleRecord.getId());
+		Medicine medicine = medicineService.getById(saleRecord.getMedicineId());
 		if(medicine != null) {
 			if(medicine.getInventory() >= saleRecord.getSaleCount()) {
 				return medicineService.descInventory(saleRecord.getMedicineId(), (long)saleRecord.getSaleCount()) && save(saleRecord);
+			} else {
+				throw  new RuntimeException("库存不足");
 			}
 		}
 		return  false;
@@ -127,12 +129,12 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (SaleRecordDTO saleRecordDTO : saleRecords) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("销售记录编号", saleRecordDTO.getId());
-			map.put("药品编号", saleRecordDTO.getMedicine() != null? saleRecordDTO.getMedicine().getId() : "");
+			map.put("销售记录编号", saleRecordDTO.getId().toString());
+			map.put("药品编号", saleRecordDTO.getMedicine() != null? saleRecordDTO.getMedicine().getId().toString() : "");
 			map.put("药品名", saleRecordDTO.getMedicine() != null? saleRecordDTO.getMedicine().getName() : "");
-			map.put("顾客编号", saleRecordDTO.getCustomer() != null? saleRecordDTO.getCustomer().getId() : "");
+			map.put("顾客编号", saleRecordDTO.getCustomer() != null? saleRecordDTO.getCustomer().getId().toString() : "");
 			map.put("顾客名", saleRecordDTO.getCustomer() != null? saleRecordDTO.getCustomer().getName() : "");
-			map.put("销售人员编号", saleRecordDTO.getUser() != null? saleRecordDTO.getUser().getId() : "");
+			map.put("销售人员编号", saleRecordDTO.getUser() != null? saleRecordDTO.getUser().getId().toString() : "");
 			map.put("销售人员姓名", saleRecordDTO.getUser() != null? saleRecordDTO.getUser().getName() : "");
 			map.put("销售总数", saleRecordDTO.getSaleCount());
 			map.put("销售价格", saleRecordDTO.getSalePrice());

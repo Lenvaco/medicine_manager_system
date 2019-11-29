@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="mode" property="mode"/>
+        <result column="dosage" property="dosage"/>
         <result column="efficacy" property="efficacy"/>
         <result column="description" property="description"/>
         <result column="caution" property="caution"/>
@@ -18,7 +19,7 @@
         UPDATE
           medicine
         SET
-          inventory = inventory + #{inventory}
+          inventory = inventory + #{increCount}
         WHERE
           id = #{id}
     </update>

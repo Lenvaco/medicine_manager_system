@@ -60,6 +60,9 @@ public class AuthorizationController {
 		if(!bCryptPasswordEncoder.matches(authorizationUser.getPassword(), jwtUser.getPassword())){
 			throw new AccountExpiredException("密码错误");
 		}
+		if(!jwtUser.isEnabled()){
+			throw new AccountExpiredException("该账号已被停用");
+		}
 		// 生成令牌
 		final String token = jwtTokenUtil.generateToken(jwtUser);
 		// 返回 token

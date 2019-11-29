@@ -90,7 +90,7 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> impl
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (Customer customer : customers) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("顾客编号", customer.getId());
+			map.put("顾客编号", customer.getId().toString());
 			map.put("姓名", customer.getName());
 			map.put("性别", "0".equals(customer.getSex())? "男" : "女");
 			map.put("年龄", customer.getAge());

@@ -19,4 +19,6 @@ public interface DeptService extends IService<Dept> {
 	DeptDTO create(Dept dept);
 
 	void updateDept(Dept dept);
+
+	boolean deleteById(Long id);
 }

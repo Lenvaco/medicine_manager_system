@@ -24,7 +24,7 @@ public class JobController {
 	private JobService jobService;
 
 	@GetMapping(value = "/job")
-	@PreAuthorize("hasAnyRole('ADMIN','USERJOB_ALL','USERJOB_SELECT','USER_ALL','USER_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','JOB_ALL','JOB_SELECT','USER_ALL','USER_SELECT')")
 	public ResponseEntity getJobs(JobQuery jobQuery, PageInfo pageInfo){
 		if(pageInfo == null) {
 			pageInfo = new PageInfo();
@@ -33,7 +33,7 @@ public class JobController {
 	}
 
 	@PostMapping(value = "/job")
-	@PreAuthorize("hasAnyRole('ADMIN','USERJOB_ALL','USERJOB_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','JOB_ALL','JOB_CREATE')")
 	public ResponseEntity create(@Validated @RequestBody Job job){
 		if (job.getId() != null) {
 			throw new BadRequestException("A new job cannot already have an ID");
@@ -43,16 +43,16 @@ public class JobController {
 	}
 
 	@PutMapping(value = "/job")
-	@PreAuthorize("hasAnyRole('ADMIN','USERJOB_ALL','USERJOB_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','JOB_ALL','JOB_EDIT')")
 	public ResponseEntity update( @RequestBody Job job){
 		jobService.updateJob(job);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping(value = "/job/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','USERJOB_ALL','USERJOB_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','JOB_ALL','JOB_DELETE')")
 	public ResponseEntity delete(@PathVariable Long id){
-		jobService.removeById(id);
+		jobService.deleteById(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 }

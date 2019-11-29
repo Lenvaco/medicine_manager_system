@@ -51,7 +51,7 @@ public class DeptController {
 	@DeleteMapping(value = "/dept/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN','DEPT_ALL','DEPT_DELETE')")
 	public ResponseEntity delete(@PathVariable Long id){
-		deptService.removeById(id);
+		deptService.deleteById(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 }

@@ -34,12 +34,12 @@ public class PurchaseRecordController {
 	private PurchaseRecordService purchaseRecordService;
 
 	@GetMapping("purchase")
-	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','PURCHASE_ALL','PURCHASE_SELECT')")
 	public ResponseEntity getPurchaseRecord(RecordQuery recordQuery, PageInfo pageInfo){
 		return new ResponseEntity(purchaseRecordService.queryPurchaseRecord(recordQuery, pageInfo), HttpStatus.OK);
 	}
 	@PostMapping("purchase")
-	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','PURCHASE_ALL','PURCHASE_CREATE')")
 	public ResponseEntity createPurchaseRecord(@RequestBody @Validated PurchaseRecordDTO purchaseRecordDTO){
 		purchaseRecordService.createPurchase(purchaseRecordDTO.toPurchaseRecord());
 		return new ResponseEntity( HttpStatus.CREATED);
@@ -51,7 +51,7 @@ public class PurchaseRecordController {
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	@DeleteMapping("purchase/{id}")
-	@PreAuthorize("hasAnyRole('ADMIN','PURCHASE_ALL','PURCHASE_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','SERVICE','PURCHASE_ALL','PURCHASE_DELETE')")
 	public ResponseEntity deletePurchaseRecord(@PathVariable Long id){
 		purchaseRecordService.removePurchaseById(id);
 		return new ResponseEntity(HttpStatus.OK);

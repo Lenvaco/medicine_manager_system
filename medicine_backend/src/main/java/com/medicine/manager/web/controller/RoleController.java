@@ -48,7 +48,7 @@ public class RoleController {
 	 */
 	@GetMapping(value = "/roles/{roleId}")
 	@ApiOperation(value = "获取角色", notes = "根据roleId获取角色", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_SELECT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_SELECT')")
 	public ResponseEntity getRoles(@PathVariable Long roleId){
 		return new ResponseEntity(roleService.findByRoleId(roleId), HttpStatus.OK);
 	}
@@ -58,7 +58,7 @@ public class RoleController {
 	 */
 	@GetMapping(value = "/roles/all")
 	@ApiOperation(value = "获取全部角色", notes = "获取全部角色信息", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
 	public ResponseEntity getAll( PageInfo pageInfo){
 		if(pageInfo == null ){
 			pageInfo = new PageInfo();
@@ -68,7 +68,7 @@ public class RoleController {
 
 	@GetMapping(value = "/roles")
 	@ApiOperation(value = "获取全部角色", notes = "模糊查询获取全部角色信息", httpMethod = "GET", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','USER_ALL','USER_CREATE','USER_EDIT')")
 	public ResponseEntity getAll(String blurry, PageInfo pageInfo){
 		if(pageInfo == null ){
 			pageInfo = new PageInfo();
@@ -78,7 +78,7 @@ public class RoleController {
 
 	@PostMapping(value = "/roles")
 	@ApiOperation(value = "新增角色", notes = "新建新的角色", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_CREATE')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_CREATE')")
 	public ResponseEntity create(@RequestBody Role role){
 		if (role.getId() != null) {
 			throw new BadRequestException("RoleId should be null but failed!");
@@ -93,7 +93,7 @@ public class RoleController {
 	}
 
 	@PutMapping(value = "/roles")
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_EDIT')")
 	public ResponseEntity update(@RequestBody Role role){
 		if(role == null || role.getId() == null) {
 			throw new BadRequestException("Role id should not be null");
@@ -103,21 +103,21 @@ public class RoleController {
 	}
 
 	@DeleteMapping(value = "/roles/{roleId}")
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_DELETE')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_DELETE')")
 	public ResponseEntity delete(@PathVariable Long roleId){
 		roleService.removeRoleById(roleId);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@PutMapping(value = "/roles/permission")
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_EDIT')")
 	public ResponseEntity updatePermission(@RequestBody Role role){
 		roleService.updatePermission(role);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
 	@PutMapping(value = "/roles/menu")
-	@PreAuthorize("hasAnyRole('ADMIN','ROLES_ALL','ROLES_EDIT')")
+	@PreAuthorize("hasAnyRole('ADMIN','ROLE_ALL','ROLE_EDIT')")
 	public ResponseEntity updateMenu(@RequestBody Role role){
 		roleService.updateMenu(role);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);

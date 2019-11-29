@@ -1,6 +1,7 @@
 package com.medicine.manager.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.Update;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.Function;
@@ -9,8 +10,13 @@ import com.medicine.manager.bean.DeptQuery;
 import com.medicine.manager.bean.dto.DeptDTO;
 import com.medicine.manager.dao.DeptDao;
 import com.medicine.manager.model.Dept;
+import com.medicine.manager.model.Job;
+import com.medicine.manager.model.User;
 import com.medicine.manager.service.DeptService;
+import com.medicine.manager.service.JobService;
+import com.medicine.manager.service.UserService;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,8 +35,10 @@ import java.util.stream.Collectors;
 public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptService {
 
 	private static final String PARENT_ID = "0";
-
-
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private JobService jobService;
 	@Override
 	public List<DeptDTO> queryAll(DeptQuery deptQuery){
 		QueryWrapper<Dept>queryWrapper = new QueryWrapper();
@@ -63,6 +71,14 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 		updateWrapper.set("parent_id", dept.getParentId());
 		updateWrapper.eq("id", dept.getId());
 		update(updateWrapper);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean deleteById(Long id) {
+		UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
+		userUpdateWrapper.set("d_id", null).eq("d_id", id);
+		return removeById(id) && userService.update(userUpdateWrapper) && jobService.deleteByDid(id);
 	}
 
 	@Override

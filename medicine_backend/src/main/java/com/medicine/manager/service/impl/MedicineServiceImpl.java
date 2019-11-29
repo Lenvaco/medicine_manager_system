@@ -80,13 +80,14 @@ public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> impl
 	@Transactional(rollbackFor = Exception.class)
 	public boolean updateMedicineById(Long id, Medicine medicine) {
 		medicine.setId(id);
+		medicine.setProductTime(null);
+		medicine.setExpireTime(null);
 		return updateById(medicine);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removeMedicineById(Long id) {
-		System.err.println("remove id " + id);
 		return removeById(id);
 	}
 
@@ -99,9 +100,9 @@ public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> impl
 	@Transactional(rollbackFor = Exception.class)
 	public boolean descInventory(Long id, Long inventory) {
 		Medicine medicine = getById(id);
-		if (medicine != null && inventory >= 0){
+		if (medicine != null &&   inventory >= 0){
 			UpdateWrapper<Medicine> updateWrapper = new UpdateWrapper<>();
-			updateWrapper.set("inventory", medicine.getInventory() + inventory);
+			updateWrapper.set("inventory", medicine.getInventory() - inventory);
 			updateWrapper.eq("id", id);
 			update(updateWrapper);
 			return true;
@@ -115,7 +116,7 @@ public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> impl
 		List<Map<String, Object>> list = new ArrayList<>();
 		for (Medicine medicine : medicines) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("药品编号", medicine.getId());
+			map.put("药品编号", medicine.getId().toString());
 			map.put("药品名", medicine.getName());
 			map.put("使用方法", "0".equals(medicine.getMode())? "内服" : "外用");
 			map.put("使用功效", medicine.getEfficacy());
