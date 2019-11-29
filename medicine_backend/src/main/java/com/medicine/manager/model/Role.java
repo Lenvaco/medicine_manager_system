@@ -18,7 +18,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -39,6 +42,7 @@ public class Role extends Model<Role> {
 
     @ApiModelProperty(value = "角色id")
     @TableId(value = "id", type = IdType.AUTO)
+    @NotNull
     private Long id;
 
     @NotBlank
@@ -49,6 +53,9 @@ public class Role extends Model<Role> {
     private String remark;
 
     @ApiModelProperty(value = "级数")
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 999)
     private Integer level = 3;
 
     @ApiModelProperty(value = "创建日期")

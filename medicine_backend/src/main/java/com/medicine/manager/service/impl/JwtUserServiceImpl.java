@@ -10,6 +10,7 @@ import com.medicine.manager.service.JwtUserService;
 import com.medicine.manager.service.JwtPermissionService;
 import com.medicine.manager.service.RoleService;
 import com.medicine.manager.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Optional;
  * @author lenvaco
  * @date 2019/9/27 9:26
  */
+@Slf4j
 @Service(value="jwtUserService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class JwtUserServiceImpl implements JwtUserService {
@@ -37,6 +39,7 @@ public class JwtUserServiceImpl implements JwtUserService {
 		if (user == null) {
 			throw new BadRequestException("账号不存在");
 		} else {
+			log.info("用户账号为" + username + "登陆上线");
 			return createJwtUser(user);
 		}
 	}

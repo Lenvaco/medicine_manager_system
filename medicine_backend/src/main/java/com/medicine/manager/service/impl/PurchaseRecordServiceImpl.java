@@ -7,6 +7,7 @@ import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.PurchaseRecordDTO;
 import com.medicine.manager.common.utils.FileUtil;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.dao.PurchaseRecordDao;
 import com.medicine.manager.model.PurchaseRecord;
 import com.medicine.manager.service.MedicineService;
@@ -91,7 +92,13 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 		if (!isPurchaseRecordOk(purchaseRecord)) {
 			throw new IllegalArgumentException("输入的编号错误");
 		}
-		return  medicineService.increInventory(purchaseRecord.getMedicineId(), (long)purchaseRecord.getPurchaseCount()) && save(purchaseRecord);
+		if(medicineService.increInventory(purchaseRecord.getMedicineId(), (long)purchaseRecord.getPurchaseCount()) && save(purchaseRecord)){
+			log.info("用户编号为" + SecurityUtil.getUserId() + "创建采购记录成功,采购时间为" + purchaseRecord.getPurchaseTime());
+			return true;
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "创建采购记录失败");
+			return false;
+		}
 	}
 
 	@Override
@@ -103,13 +110,25 @@ public class PurchaseRecordServiceImpl extends ServiceImpl<PurchaseRecordDao, Pu
 		purchaseRecord.setPurchaseTime(null);
 		UpdateWrapper<PurchaseRecord> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
-		return update(purchaseRecord, updateWrapper);
+		boolean result = update(purchaseRecord, updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新采购记录[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新采购记录["+ id +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removePurchaseById(Long id) {
-		return removeById(id);
+		boolean result = removeById(id);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "删除采购记录[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "删除采购记录["+ id +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override

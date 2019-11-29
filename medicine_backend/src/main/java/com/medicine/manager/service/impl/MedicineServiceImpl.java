@@ -11,10 +11,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.bean.MedicineQuery;
 import com.medicine.manager.common.utils.FileUtil;
 import com.medicine.manager.common.utils.IdWorker;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.dao.MedicineDao;
 import com.medicine.manager.model.Medicine;
 import com.medicine.manager.service.MedicineService;
 import com.medicine.manager.service.SaleRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.Area;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import java.util.*;
  * @author lenvaco
  * @since 2019-09-26
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> implements MedicineService {
@@ -73,7 +76,13 @@ public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> impl
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean createMedicine(Medicine medicine) {
-		return save(medicine);
+		boolean result = save(medicine);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 新建药品[" + medicine.getName() + "]成功!");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 新建药品[" + medicine.getName() + "]操作失败!");
+		}
+		return result;
 	}
 
 	@Override
@@ -82,13 +91,25 @@ public class MedicineServiceImpl extends ServiceImpl<MedicineDao, Medicine> impl
 		medicine.setId(id);
 		medicine.setProductTime(null);
 		medicine.setExpireTime(null);
-		return updateById(medicine);
+		boolean result = updateById(medicine);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 更新药品Id[" + id + "]成功!");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 更新药品Id[" + id + "]操作失败!");
+		}
+		return result;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removeMedicineById(Long id) {
-		return removeById(id);
+		boolean result = removeById(id);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除药品Id[" + id + "]成功!");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 删除药品Id[" + id + "]操作失败!");
+		}
+		return result;
 	}
 
 	@Override

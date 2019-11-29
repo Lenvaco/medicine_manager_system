@@ -18,7 +18,7 @@ public class RedisServiceImpl implements RedisService {
 	@Autowired
 	RedisTemplate redisTemplate;
 
-	@Value("${jwt.expiration}")
+	@Value("${captcha.expiration}")
 	private Long expiration;
 
 /*	@Override
@@ -65,6 +65,6 @@ public class RedisServiceImpl implements RedisService {
 	@Override
 	public void saveCode(String key, Object val) {
 		redisTemplate.opsForValue().set(key,val);
-		redisTemplate.expire(key,expiration, TimeUnit.MINUTES);
+		redisTemplate.expire(key, expiration, TimeUnit.MINUTES);
 	}
 }

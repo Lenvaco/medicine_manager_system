@@ -7,6 +7,7 @@ import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.common.utils.FileUtil;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.model.Customer;
 import com.medicine.manager.model.Medicine;
 import com.medicine.manager.model.SaleRecord;
@@ -96,14 +97,20 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 			throw  new IllegalArgumentException("输入的编号错误");
 		}
 		Medicine medicine = medicineService.getById(saleRecord.getMedicineId());
+		boolean result = false;
 		if(medicine != null) {
 			if(medicine.getInventory() >= saleRecord.getSaleCount()) {
-				return medicineService.descInventory(saleRecord.getMedicineId(), (long)saleRecord.getSaleCount()) && save(saleRecord);
+				result = medicineService.descInventory(saleRecord.getMedicineId(), (long)saleRecord.getSaleCount()) && save(saleRecord);
 			} else {
 				throw  new RuntimeException("库存不足");
 			}
 		}
-		return  false;
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "创建销售记录成功,销售时间为" + saleRecord.getSaleTime());
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "创建销售记录失败");
+		}
+		return  result;
 	}
 
 	@Override
@@ -114,14 +121,26 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 		}
 		UpdateWrapper<SaleRecord> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
-		return update(saleRecord, updateWrapper);
+		boolean result = update(saleRecord, updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新销售记录[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新销售记录["+ id +"]操作失败");
+		}
+		return result;
 	}
 
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean deleteSaleRecordById(Long id) {
-		return removeById(id);
+		boolean result = removeById(id);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "删除销售记录[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "删除销售记录["+ id +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override

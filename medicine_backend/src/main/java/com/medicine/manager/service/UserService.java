@@ -20,12 +20,11 @@ import java.util.List;
  * @author lenvaco
  * @since 2019-09-26
  */
-@CacheConfig(cacheNames = "user")
 public interface UserService extends IService<User> {
 
-	void saveUser(UserDTO userDTO);
+	boolean saveUser(UserDTO userDTO);
 
-	void updateUser(UserDTO userDTO);
+	boolean updateUser(UserDTO userDTO);
 
 	UserDTO findByUsername(String username);
 

@@ -44,5 +44,8 @@ jwt:
   expiration: 3600000
   auth:
     path: login
+#captcha
+captcha:
+  expiration : 3
 logging:
   config: classpath:logback.xml

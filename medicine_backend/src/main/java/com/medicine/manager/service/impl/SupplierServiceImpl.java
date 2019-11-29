@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.common.utils.FileUtil;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.model.Supplier;
 import com.medicine.manager.dao.SupplierDao;
 import com.medicine.manager.service.SupplierService;
@@ -58,7 +59,13 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierDao, Supplier> impl
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean createSupplier(Supplier supplier) {
-		return save(supplier);
+		boolean result = save(supplier);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "新建供应商[" + supplier.getName() +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "新建供应商["+ supplier.getName() +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override
@@ -66,12 +73,24 @@ public class SupplierServiceImpl extends ServiceImpl<SupplierDao, Supplier> impl
 	public boolean updateSupplier(Long id, Supplier supplier) {
 		UpdateWrapper<Supplier> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
-		return update(supplier, updateWrapper);
+		boolean result = update(supplier, updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新供应商[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新供应商["+ id +"]操作失败");
+		}
+		return result;
 	}
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean removeSupplierById(Long id) {
-		return removeById(id);
+		boolean result = removeById(id);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "删除供应商[" + id +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "删除供应商["+ id +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override

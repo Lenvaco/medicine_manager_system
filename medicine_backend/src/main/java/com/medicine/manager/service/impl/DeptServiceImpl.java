@@ -8,6 +8,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.medicine.manager.bean.DeptQuery;
 import com.medicine.manager.bean.dto.DeptDTO;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.dao.DeptDao;
 import com.medicine.manager.model.Dept;
 import com.medicine.manager.model.Job;
@@ -15,6 +16,7 @@ import com.medicine.manager.model.User;
 import com.medicine.manager.service.DeptService;
 import com.medicine.manager.service.JobService;
 import com.medicine.manager.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
  * @author lenvaco
  * @date 2019/10/24 11:01
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptService {
@@ -59,7 +62,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	@Transactional(rollbackFor = Exception.class)
 	public DeptDTO create(Dept dept) {
 		dept.setCreateTime(new Date());
-		save(dept);
+		if (save(dept)) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 新建部门[" + dept.getName()  + "]成功!");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 新建部门[" + dept.getName()  + "]操作失败!" );
+		}
 		return new DeptDTO(dept);
 	}
 
@@ -70,7 +77,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 		updateWrapper.set("name", dept.getName());
 		updateWrapper.set("parent_id", dept.getParentId());
 		updateWrapper.eq("id", dept.getId());
-		update(updateWrapper);
+		 if(update(updateWrapper)) {
+		 	log.info("用户编号为" + SecurityUtil.getUserId() + " 更新部门[" + dept.getName()  + "]成功!");
+		 } else {
+			 log.warn("用户编号为" + SecurityUtil.getUserId() + " 更新部门[" + dept.getName()  + "]操作失败!");
+		 }
 	}
 
 	@Override
@@ -78,7 +89,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	public boolean deleteById(Long id) {
 		UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
 		userUpdateWrapper.set("d_id", null).eq("d_id", id);
-		return removeById(id) && userService.update(userUpdateWrapper) && jobService.deleteByDid(id);
+		if(removeById(id) && userService.update(userUpdateWrapper) && jobService.deleteByDid(id)) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除部门Id [" + id  + "]成功!");
+			return true;
+		} else {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除部门Id [" + id  + "]操作失败!");
+			return false;
+		}
 	}
 
 	@Override

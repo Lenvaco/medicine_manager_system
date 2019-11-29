@@ -9,6 +9,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.dto.RoleDTO;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.dao.MenuDao;
 import com.medicine.manager.dao.PermissionDao;
 import com.medicine.manager.dao.RoleDao;
@@ -19,6 +20,7 @@ import com.medicine.manager.service.RoleMenuService;
 import com.medicine.manager.service.RolePermissionService;
 import com.medicine.manager.service.RoleService;
 import com.medicine.manager.service.UserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ import java.util.*;
  * @author lenvaco
  * @since 2019-09-26
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleService {
@@ -59,7 +62,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 
 	@Override
 	public Set<Role> findByUserId(Long userId) {
-
 		return this.baseMapper.findByUserId(userId);
 	}
 
@@ -119,7 +121,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 			throw new EntityExistException(Role.class,"username",role.getName());
 		}
 		role.setCreateTime(new Date());
-		return super.save(role);
+		boolean result = super.save(role);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "增加角色[" + role.getName() +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "增加角色["+ role.getName() +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override
@@ -133,7 +141,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 		updateWrapper.set("remark", role.getRemark());
 		updateWrapper.set("level", role.getLevel() );
 		updateWrapper.eq("id", role.getId());
-		return update(updateWrapper);
+		boolean result = update(updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新角色[" + role.getId() +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新角色["+ role.getId() +"]操作失败");
+		}
+		return result;
 	}
 
 
@@ -182,6 +196,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 		rolePermissionUpdateWrapper.eq("r_id", roleId);
 		UpdateWrapper<UserRole> userRoleUpdateWrapper = new UpdateWrapper<>();
 		userRoleUpdateWrapper.eq("r_id", roleId);
-		return removeById(roleId) && roleMenuService.remove(roleMenuUpdateWrapper) && rolePermissionService.remove(rolePermissionUpdateWrapper) && userRoleService.remove(userRoleUpdateWrapper);
+		if(removeById(roleId) && roleMenuService.remove(roleMenuUpdateWrapper) && rolePermissionService.remove(rolePermissionUpdateWrapper) && userRoleService.remove(userRoleUpdateWrapper)) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "删除角色[" + roleId +"]成功");
+			return true;
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "删除角色[" + roleId +"]操作失败");
+			return false;
+		}
 	}
 }

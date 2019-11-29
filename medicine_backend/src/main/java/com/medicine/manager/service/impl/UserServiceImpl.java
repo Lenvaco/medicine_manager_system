@@ -10,6 +10,7 @@ import com.medicine.manager.bean.UserQuery;
 import com.medicine.manager.bean.dto.RoleSmallDTO;
 import com.medicine.manager.bean.dto.UserDTO;
 import com.medicine.manager.common.utils.FileUtil;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.common.utils.ValidationUtil;
 import com.medicine.manager.dao.DeptDao;
 import com.medicine.manager.dao.JobDao;
@@ -117,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 	}
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void saveUser(UserDTO userDTO) {
+	public boolean saveUser(UserDTO userDTO) {
 		//username 和 email 都不能已经被使用
 		String username  = userDTO.getUsername();
 		if(null != userDao.findByUsername(username)) {
@@ -133,16 +134,22 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		user.setModifyTime(now);
 		user.setCreateTime(now);
 		user.setPassword(bCryptPasswordEncoder.encode(DEFAULT_PASSWORD));
-		save(user);
+		boolean result = save(user);
 		Long id = findByUsername(username).getId();
-		userRoleService.saveBatch(userDTO.getRoles().stream().map(
+		result = result & userRoleService.saveBatch(userDTO.getRoles().stream().map(
 				roleSmallDTO -> new UserRole(id, roleSmallDTO.getId())
 		).collect(Collectors.toList()));
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "新建用户[" + user.getName() +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "新建用户["+ user.getName() +"]操作失败");
+		}
+		return result;
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void updateUser(UserDTO userDTO) {
+	public boolean updateUser(UserDTO userDTO) {
 		String username = userDTO.getUsername();
 		User user = userDao.findByEmail(userDTO.getEmail());
 		//判断是否存在这个个用户 ，并且根据username查出来的user_id是否相同
@@ -168,11 +175,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		}
 		//默认我们根据user_id来修改信息
 		updateWrapper.eq("u_id", userDTO.getId());
-		update(updateWrapper);
+		boolean result = update(updateWrapper);
 		UpdateWrapper<UserRole> userRoleUpdateWrapper = new UpdateWrapper<>();
 		userRoleUpdateWrapper.eq("u_id", userDTO.getId());
-		userRoleService.remove(userRoleUpdateWrapper);
-		userRoleService.saveBatch(userDTO.getRoles().stream().map(roleSmallDTO -> new UserRole(userDTO.getId(), roleSmallDTO.getId())).collect(Collectors.toList()));
+		result = result & userRoleService.remove(userRoleUpdateWrapper);
+		result =  result & userRoleService.saveBatch(userDTO.getRoles().stream().map(roleSmallDTO -> new UserRole(userDTO.getId(), roleSmallDTO.getId())).collect(Collectors.toList()));
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新用户[" + userDTO.getId() +"]成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新用户["+ userDTO.getId() +"]操作失败");
+		}
+		return result;
 
 	}
 
@@ -182,7 +195,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		UpdateWrapper updateWrapper= new UpdateWrapper();
 		updateWrapper.set("password", newPassword);
 		updateWrapper.eq("username", username);
-		return update(updateWrapper);
+		boolean result = update(updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + "更新[" + username + "]密码成功");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "更新[" + username + "]密码操作失败");
+		}
+		return result;
 	}
 
 	@Override
@@ -194,7 +213,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		UpdateWrapper<SaleRecord> saleRecordUpdateWrapper = new UpdateWrapper<>();
 		saleRecordUpdateWrapper.eq("user_id", id);
 		saleRecordUpdateWrapper.set("user_id", null);
-		return  removeById(id) && saleRecordService.update(saleRecordUpdateWrapper);
+		if(removeById(id) && saleRecordService.update(saleRecordUpdateWrapper)){
+			log.info("用户编号为" + SecurityUtil.getUserId() + "删除用户[" + id +"]成功");
+			return true;
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "删除用户["+ id +"]操作失败");
+			return false;
+		}
 	}
 
 	@Override

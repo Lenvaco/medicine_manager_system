@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.medicine.manager.bean.CustomerQuery;
 import com.medicine.manager.common.utils.FileUtil;
+import com.medicine.manager.common.utils.SecurityUtil;
 import com.medicine.manager.model.Customer;
 import com.medicine.manager.dao.CustomerDao;
 import com.medicine.manager.model.PurchaseRecord;
@@ -14,6 +15,7 @@ import com.medicine.manager.model.Supplier;
 import com.medicine.manager.service.CustomerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.service.PurchaseRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ import java.util.*;
  * @author lenvaco
  * @since 2019-09-26
  */
+@Slf4j
 @Service
 public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> implements CustomerService {
 
@@ -65,7 +68,13 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> impl
 	@Transactional(rollbackFor = Exception.class)
 	public boolean createCustomer(Customer customer) {
 		customer.setCreateTime(new Date());
-		return save(customer);
+		boolean result = save(customer);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 新建了顾客[" + customer.getName() +"]成功!" );
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + "新建顾客失败!");
+		}
+		return result;
 	}
 
 	@Override
@@ -74,7 +83,13 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> impl
 		UpdateWrapper<Customer> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.eq("id", id);
 		customer.setCreateTime(null);
-		return update(customer, updateWrapper);
+		boolean result = update(customer, updateWrapper);
+		if(result) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 修改了顾客Id[" + id + "]成功!");
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 修改顾客Id[" + id + "]操作失败!" );
+		}
+		return result;
 	}
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -82,7 +97,13 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> impl
 		UpdateWrapper<PurchaseRecord> purchaseRecordUpdateWrapper = new UpdateWrapper<>();
 		purchaseRecordUpdateWrapper.eq("user_id", id );
 		purchaseRecordUpdateWrapper.set("user_id", null);
-		return removeById(id) && purchaseRecordService.update(purchaseRecordUpdateWrapper);
+		if(removeById(id) && purchaseRecordService.update(purchaseRecordUpdateWrapper)) {
+			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除顾客Id[" + id + "]成功!");
+			return true;
+		} else {
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 删除顾客Id[" + id + "]操作失败!" );
+			return false;
+		}
 	}
 
 	@Override

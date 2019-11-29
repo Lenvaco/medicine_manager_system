@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @since 2019-09-26
  */
 @Service
-//@CacheConfig(cacheNames = "menu")
+@CacheConfig(cacheNames = "menu")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements MenuService, Serializable {
 
@@ -43,13 +43,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	private static final String ROOT_ID = "0";
 
 	@Override
-//	@Cacheable(key = "#p0")
+	@Cacheable(key = "#p0")
 	public MenuDTO queryById(Long id) {
 		return MenuDTO.toDTO(this.baseMapper.selectById(id), null);
 	}
 
 	@Override
-//	@Cacheable(key = "'parentId:' + #p0")
+	@Cacheable(key = "'parentId:' + #p0")
 	public List<MenuDTO> queryByPid(Long pId) {
 		QueryWrapper<Menu> queryWrapper = new QueryWrapper();
 		queryWrapper.eq("parent_id", pId);
@@ -152,6 +152,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu>  implements Menu
 	}
 
 	@Override
+	@Cacheable(key = "'tree'")
 	public Object getMenuTree(List<Menu> menus) {
 		List<Map<String,Object>> menuTree = new LinkedList<>();
 
