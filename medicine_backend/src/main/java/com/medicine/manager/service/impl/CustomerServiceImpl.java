@@ -97,7 +97,8 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerDao, Customer> impl
 		UpdateWrapper<PurchaseRecord> purchaseRecordUpdateWrapper = new UpdateWrapper<>();
 		purchaseRecordUpdateWrapper.eq("user_id", id );
 		purchaseRecordUpdateWrapper.set("user_id", null);
-		if(removeById(id) && purchaseRecordService.update(purchaseRecordUpdateWrapper)) {
+		purchaseRecordService.update(purchaseRecordUpdateWrapper);
+		if(removeById(id)) {
 			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除顾客Id[" + id + "]成功!");
 			return true;
 		} else {

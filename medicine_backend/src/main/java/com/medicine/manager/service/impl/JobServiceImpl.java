@@ -106,7 +106,8 @@ public class JobServiceImpl extends ServiceImpl<JobDao, Job> implements JobServi
 		UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
 		updateWrapper.set("j_id", null);
 		updateWrapper.eq("j_id", id);
-		if(removeById(id) && userService.update(updateWrapper)) {
+		userService.update(updateWrapper);
+		if(removeById(id)) {
 			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除岗位Id[" + id + "]成功!");
 			return true;
 		} else {
@@ -120,10 +121,6 @@ public class JobServiceImpl extends ServiceImpl<JobDao, Job> implements JobServi
 	public boolean deleteByDid(Long dId) {
 		UpdateWrapper<Job> jobUpdateWrapper  = new UpdateWrapper<>();
 		jobUpdateWrapper.eq("d_id", dId);
-		List<Job> jobs = list(jobUpdateWrapper);
-		jobs.forEach(job -> {
-			this.deleteById(job.getId());
-		});
-		return true;
+		return remove(jobUpdateWrapper);
 	}
 }

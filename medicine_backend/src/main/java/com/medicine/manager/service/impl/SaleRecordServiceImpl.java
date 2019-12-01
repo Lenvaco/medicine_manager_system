@@ -1,25 +1,21 @@
 package com.medicine.manager.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.bean.PageInfo;
 import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.common.utils.FileUtil;
 import com.medicine.manager.common.utils.SecurityUtil;
-import com.medicine.manager.model.Customer;
+import com.medicine.manager.dao.SaleRecordDao;
 import com.medicine.manager.model.Medicine;
 import com.medicine.manager.model.SaleRecord;
-import com.medicine.manager.dao.SaleRecordDao;
-import com.medicine.manager.model.User;
 import com.medicine.manager.service.CustomerService;
 import com.medicine.manager.service.MedicineService;
 import com.medicine.manager.service.SaleRecordService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.medicine.manager.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -77,7 +73,7 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 		if (recordQuery.getEndTime() != null) {
 			queryMap.put("endTime", recordQuery.getEndTime());
 		}
-		queryMap.put("pageNo", pageInfo.getPage() - 1);
+		queryMap.put("pageNo", (pageInfo.getPage() - 1)* pageInfo.getSize());
 		queryMap.put("pageSize", pageInfo.getSize());
 		List<SaleRecordDTO> saleRecordDTOList = this.baseMapper.queryByMap(queryMap);
 		Long totalRecord = this.baseMapper.selectCountByMap(queryMap);

@@ -62,6 +62,8 @@ public class AuthorizationController {
 		}
 		if(!jwtUser.isEnabled()){
 			throw new AccountExpiredException("该账号已被停用");
+		} else {
+			log.info("用户账号为" + authorizationUser.getUsername() + "登陆上线");
 		}
 		// 生成令牌
 		final String token = jwtTokenUtil.generateToken(jwtUser);

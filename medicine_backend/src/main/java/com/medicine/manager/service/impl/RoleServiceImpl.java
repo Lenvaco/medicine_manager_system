@@ -196,7 +196,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, Role> implements RoleS
 		rolePermissionUpdateWrapper.eq("r_id", roleId);
 		UpdateWrapper<UserRole> userRoleUpdateWrapper = new UpdateWrapper<>();
 		userRoleUpdateWrapper.eq("r_id", roleId);
-		if(removeById(roleId) && roleMenuService.remove(roleMenuUpdateWrapper) && rolePermissionService.remove(rolePermissionUpdateWrapper) && userRoleService.remove(userRoleUpdateWrapper)) {
+		roleMenuService.remove(roleMenuUpdateWrapper);
+		rolePermissionService.remove(rolePermissionUpdateWrapper);
+		userRoleService.remove(userRoleUpdateWrapper);
+		if(removeById(roleId)) {
 			log.info("用户编号为" + SecurityUtil.getUserId() + "删除角色[" + roleId +"]成功");
 			return true;
 		} else {

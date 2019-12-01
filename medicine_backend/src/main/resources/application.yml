@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.98.137.65:3306/medicine?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://47.98.137.65:3306/medicine?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: password
     type: com.zaxxer.hikari.HikariDataSource
@@ -26,8 +26,6 @@ spring:
         max-active: 8
         max-idle: 8
         max-wait: 10000
-  jackson:
-    time-zone: GMT+8
 server:
   port: 8081
 
@@ -36,7 +34,7 @@ mybatis-plus:
   type-aliases-package: com.medicine.manager.model
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #jwt
 jwt:
   header: Authorization

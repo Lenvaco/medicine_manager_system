@@ -58,7 +58,8 @@ public class Supplier extends Model<Supplier> {
 
     @ApiModelProperty(value = "合作时间")
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date cooperationTime;
 
 }

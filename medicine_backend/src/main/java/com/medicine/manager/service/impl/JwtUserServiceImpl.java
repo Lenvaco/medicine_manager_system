@@ -39,7 +39,6 @@ public class JwtUserServiceImpl implements JwtUserService {
 		if (user == null) {
 			throw new BadRequestException("账号不存在");
 		} else {
-			log.info("用户账号为" + username + "登陆上线");
 			return createJwtUser(user);
 		}
 	}

@@ -6,6 +6,7 @@ import com.medicine.manager.bean.RecordQuery;
 import com.medicine.manager.bean.dto.SaleRecordDTO;
 import com.medicine.manager.model.SaleRecord;
 import com.medicine.manager.service.SaleRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

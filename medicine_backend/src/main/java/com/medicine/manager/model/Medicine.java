@@ -72,7 +72,8 @@ public class Medicine extends Model<Medicine> {
 
     @NotNull
     @ApiModelProperty(value = "生产日期")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date productTime;
 
     @NotNull

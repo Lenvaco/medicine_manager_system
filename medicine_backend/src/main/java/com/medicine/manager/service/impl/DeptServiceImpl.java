@@ -89,11 +89,13 @@ public class DeptServiceImpl extends ServiceImpl<DeptDao, Dept> implements DeptS
 	public boolean deleteById(Long id) {
 		UpdateWrapper<User> userUpdateWrapper = new UpdateWrapper<>();
 		userUpdateWrapper.set("d_id", null).eq("d_id", id);
-		if(removeById(id) && userService.update(userUpdateWrapper) && jobService.deleteByDid(id)) {
+		userService.update(userUpdateWrapper);
+		jobService.deleteByDid(id);
+		if(removeById(id)) {
 			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除部门Id [" + id  + "]成功!");
 			return true;
 		} else {
-			log.info("用户编号为" + SecurityUtil.getUserId() + " 删除部门Id [" + id  + "]操作失败!");
+			log.warn("用户编号为" + SecurityUtil.getUserId() + " 删除部门Id [" + id  + "]操作失败!");
 			return false;
 		}
 	}

@@ -213,7 +213,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 		UpdateWrapper<SaleRecord> saleRecordUpdateWrapper = new UpdateWrapper<>();
 		saleRecordUpdateWrapper.eq("user_id", id);
 		saleRecordUpdateWrapper.set("user_id", null);
-		if(removeById(id) && saleRecordService.update(saleRecordUpdateWrapper)){
+		saleRecordService.update(saleRecordUpdateWrapper);
+		if(removeById(id)){
 			log.info("用户编号为" + SecurityUtil.getUserId() + "删除用户[" + id +"]成功");
 			return true;
 		} else {
