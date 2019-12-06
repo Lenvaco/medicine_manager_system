@@ -52,7 +52,7 @@
         LEFT JOIN  job j
         ON u.j_id = j.id
     </select>
-    <select id="findByEmail" resultMap="BaseResultMap">
+    <select id="findByEmail" resultMap="UserResultMap">
       SELECT
             u.*,
              d.id as dept_id, d.name as dept_name, d.parent_id, d.create_time as dept_create_time,
