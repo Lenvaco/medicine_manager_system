@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(Throwable.class)
 	public ResponseEntity handleException(Throwable e){
+		e.printStackTrace();
 		// 打印堆栈信息
 		log.error("发生了错误： {}", e.getMessage());
 		ApiError apiError = new ApiError(BAD_REQUEST.value(), e.getMessage());
