@@ -48,7 +48,7 @@ export default {
             }
         },
         toQuery() {
-            this.page = 0
+            this.page = 1
             this.init()
         }
     }

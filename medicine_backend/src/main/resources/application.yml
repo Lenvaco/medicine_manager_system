@@ -34,7 +34,7 @@ mybatis-plus:
   type-aliases-package: com.medicine.manager.model
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #jwt
 jwt:
   header: Authorization
