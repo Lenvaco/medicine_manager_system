@@ -73,7 +73,7 @@ public class SaleRecordServiceImpl extends ServiceImpl<SaleRecordDao, SaleRecord
 		if (recordQuery.getEndTime() != null) {
 			queryMap.put("endTime", recordQuery.getEndTime());
 		}
-		queryMap.put("pageNo", (pageInfo.getPage()-1)* pageInfo.getSize());
+		queryMap.put("pageNo", (pageInfo.getPage()  > 0? pageInfo.getPage() - 1 : 0) * pageInfo.getSize());
 		queryMap.put("pageSize", pageInfo.getSize());
 		List<SaleRecordDTO> saleRecordDTOList = this.baseMapper.queryByMap(queryMap);
 		Long totalRecord = this.baseMapper.selectCountByMap(queryMap);
