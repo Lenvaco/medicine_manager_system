@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.98.137.65:3306/medicine?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://127.0.0.1:3306/medicine?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: password
     type: com.zaxxer.hikari.HikariDataSource
@@ -15,7 +15,7 @@ spring:
       connection-test-query: SELECT 1
   redis:
     database: 0
-    host: 47.98.137.65
+    host: 127.0.0.1
     port: 6379
     password: password
     #连接超时时间
